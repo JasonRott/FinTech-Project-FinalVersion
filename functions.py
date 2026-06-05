@@ -3373,3 +3373,23 @@ def run_stage3_pipeline():
     
     comparison_df.to_csv(csv_weights_path, index=False, encoding='utf-8-sig')
     analytics_df.to_csv(csv_analytics_path, index=False, encoding='utf-8-sig')
+
+    # ── 將本次主系統的「全部圖表 + 報表」集中到 user_results/main_{case}_{timestamp}/ ──
+    try:
+        import glob as _glob
+        import shutil
+        from datetime import datetime as _dt
+        _stamp = _dt.now().strftime("%Y%m%d_%H%M%S")
+        _user_root = getattr(parameters, "USER_RESULTS_DIR", "user_results")
+        _dest = os.path.join(_user_root, f"main_{case}_{_stamp}")
+        os.makedirs(_dest, exist_ok=True)
+        _patterns = [f"png\\{case}_*.png", "png\\eda_*.png", "png\\*dea*.png", "png\\*DEA*.png",
+                     f"report\\{file_prefix}_*.txt", f"report\\{file_prefix}_*.csv"]
+        _n = 0
+        for _pat in _patterns:
+            for _f in _glob.glob(_pat):
+                shutil.copy2(_f, os.path.join(_dest, os.path.basename(_f)))
+                _n += 1
+        log.info(f"[user_results] 本次推薦全部圖表+報表（{_n} 檔）已集中到 {_dest}")
+    except Exception as _exc:
+        log.warning(f"[user_results] 集中輸出失敗：{_exc}")

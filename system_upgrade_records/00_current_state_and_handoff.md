@@ -12,7 +12,8 @@
 - **視覺化稽核**（`10`）：雷達報酬軸已深化為 beta、前緣圖加註描述性;死碼標記。前緣「標 VT+三核心」的深度重繪尚未做（待目視 QA）。
 - **兩份報告**：`REPORT_A_results_and_math.md`、`REPORT_B_design_story.md`（含假設）。
 - **GitHub 整理完成（本地）**：無硬編金鑰（.env + os.getenv）;`.env.example` 已建;`.gitignore` 擴充（排除 .env/FinBERT 模型/1.1GB active_preference results/價格庫/50MB新聞快取/生成輸出/日誌）;實驗腳本移到 `experiments/`;README 加最新演算法 banner + 報告連結。已 `git init` + 初始 commit（master,1289 檔/25MB,無敏感檔）。**push 待使用者提供 repo 網址/授權。**
-- **待辦**：(1) 前緣深度重繪（VT+三核心,需目視 QA）;(2) push 到 GitHub;(3) 報告請使用者審。
+- **輸出重整（2026-06-06）**：新增單一父資料夾 `user_results/`（`parameters.USER_RESULTS_DIR`,已 gitignore）。**主系統每次執行** → `user_results/main_{case}_{時間戳}/`（收齊 png/{case}_*、eda_*、dea*、report/{case}_* 全部圖+報表;在 `run_stage3_pipeline` 末段收集,已驗證）。**回測每次執行** → `user_results/backtest_{run_id}_arm{X}_{時間戳}/`（收齊該次 png_dir+report_dir+csv_dir 全部;改寫自 `_mirror_run_figures_to_upgrade`）。原 `png/`、`report/`、`backtest_report/`、`upgrade_figures/` 仍是工作輸出,user_results 是自包含彙整。
+- **待辦**：(1) 前緣深度重繪（VT+三核心,需目視 QA）;(2) push 到 GitHub（需 repo 網址）;(3) 報告請使用者審。
 
 ## 0. 一句話現況
 偏好驅動 ETF 投組最佳化專案。已從 Arm A（線性加權）→ Arm C（最小變異+傾斜）→ **Arm C2（profile-dependent 三核心，已實作並驗證成功，2026-06-05）**。C2 讓報酬導向使用者用 beta 核心換到**超過 VT 的絕對報酬**（aggressive 8.85%→13.80% CAGR）；且發現**拿掉傾斜中的資本利得排名（noCAGR）**就讓多個 profile 贏過 VT。**下一步 = walk-forward 多視窗驗證**（確認非單期運氣）。完整成果見 `06_overnight_experiment_report_2026-06-05.md`。

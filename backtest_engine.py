@@ -2019,27 +2019,26 @@ def _plot_preference_score_timeseries(
 
 
 def _mirror_run_figures_to_upgrade(png_dir: Path, prefix: str, run_id: str) -> Path:
-    """把本次回測產生的所有圖片複製到 upgrade_figures/<run_id>_arm<X>_<timestamp>/。
+    """把本次回測的「全部圖片 + 報表」集中到 user_results/<run_id>_arm<X>_<timestamp>/。
 
-    每次執行各自一個資料夾，方便逐次比較（含 V-1/V-6 與 portfolio_performance 等所有圖）。
+    每次執行各自一個自包含資料夾（所有 png + report/csv），方便使用者一次取走、逐次比較。
     """
     stamp = time.strftime("%Y%m%d_%H%M%S")
     arm = str(getattr(parameters, "OPTIMIZATION_ARM", "A")).upper()
-    dest = UPGRADE_FIGURES_DIR / f"{run_id}_arm{arm}_{stamp}"
+    user_root = Path(getattr(parameters, "USER_RESULTS_DIR", "user_results"))
+    dest = user_root / f"backtest_{run_id}_arm{arm}_{stamp}"
     dest.mkdir(parents=True, exist_ok=True)
-    # 只複製指定的六張圖：四張回測主圖 + 兩張偏好驗證圖（V-1/V-6）。
-    wanted_suffixes = (
-        "weight_evolution",
-        "portfolio_performance",
-        "dea_score_distribution",
-        "annual_returns",
-        "preference_predictive_scatter",
-        "preference_score_timeseries",
-    )
-    for suffix in wanted_suffixes:
-        fig_path = Path(png_dir) / f"{prefix}_{suffix}.png"
-        if fig_path.exists():
-            shutil.copy2(fig_path, dest / fig_path.name)
+    png_dir = Path(png_dir)
+    # png_dir = backtest_report/png/<run_id>;report/csv 為其同層 sibling。
+    report_dir = png_dir.parent.parent / "report" / run_id
+    csv_dir = png_dir.parent.parent / "csv" / run_id
+    copied = 0
+    for src_dir in (png_dir, report_dir, csv_dir):
+        if src_dir.exists():
+            for f in src_dir.iterdir():
+                if f.is_file():
+                    shutil.copy2(f, dest / f.name)
+                    copied += 1
     return dest
 
 
@@ -2282,7 +2281,7 @@ def _write_unified_backtest_report(
     _write_output_inventory(config, prefix, run_id)
     # 把本次所有圖片（含 V-1/V-6 與 portfolio_performance 等）集中複製到 upgrade_figures/ 的本次專屬資料夾。
     mirrored_dir = _mirror_run_figures_to_upgrade(png_dir, prefix, run_id)
-    print(f"[upgrade_figures] 本次圖片已複製到 {mirrored_dir}")
+    print(f"[user_results] 本次回測全部圖表+報表已集中到 {mirrored_dir}")
 
 
 def run_rolling_backtest(config: BacktestConfig | None = None) -> dict[str, pd.DataFrame]:

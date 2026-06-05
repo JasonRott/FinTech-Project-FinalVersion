@@ -57,3 +57,6 @@ active_preference/synthetic_training_records_debug.jsonl
 active_preference/synthetic_feature_records_debug.jsonl
 active_preference/bnn_preference_model_debug.npz
 active_preference/bnn_training_summary_debug.json
+
+# 使用者結果（每次執行的圖表+報表;可重新產生）
+user_results/
