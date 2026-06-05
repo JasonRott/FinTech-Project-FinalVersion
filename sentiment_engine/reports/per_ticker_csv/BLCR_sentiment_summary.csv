@@ -1,2 +1,0 @@
-﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
-BLCR,5,5,2,Benzinga,3,5,0,0,0.410776,0.405137,0.0,0.905564,0.885637,253,5,181,5,1.9763,2.7624,2026-01-14,2026-04-29

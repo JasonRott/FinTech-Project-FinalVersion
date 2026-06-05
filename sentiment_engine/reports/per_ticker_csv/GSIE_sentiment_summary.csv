@@ -1,2 +1,0 @@
-﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
-GSIE,49,49,2,SeekingAlpha,48,11,27,11,-0.0342,0.138792,-0.381797,0.23706,-0.105759,253,42,181,41,16.6008,22.6519,2025-09-22,2026-05-19

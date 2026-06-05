@@ -1,2 +1,0 @@
-﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
-REMX,156,156,3,Benzinga,73,61,78,17,0.211073,0.071379,0.0,0.505966,0.162497,253,100,181,92,39.5257,50.8287,2025-09-12,2026-05-20

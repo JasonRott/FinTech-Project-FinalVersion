@@ -1,2 +1,0 @@
-﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
-FNDC,28,28,2,SeekingAlpha,26,6,16,6,0.019067,0.121918,-0.337006,0.29047,-0.054053,253,26,181,24,10.2767,13.2597,2025-09-22,2026-05-18

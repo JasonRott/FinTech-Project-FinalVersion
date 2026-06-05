@@ -1,2 +1,0 @@
-﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
-XSD,306,306,3,Yahoo,152,144,88,74,0.193346,0.145543,-0.012986,0.940691,0.178439,253,174,181,158,68.7747,87.2928,2025-09-12,2026-05-22

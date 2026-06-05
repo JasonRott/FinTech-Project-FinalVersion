@@ -1,2 +1,0 @@
-﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
-SOXQ,141,141,4,SeekingAlpha,116,49,78,14,0.233056,0.122869,0.0,0.890007,0.179139,253,105,181,91,41.502,50.2762,2025-09-23,2026-05-22

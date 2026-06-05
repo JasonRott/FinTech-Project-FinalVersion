@@ -1,2 +1,0 @@
-﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
-VONE,13,13,2,SeekingAlpha,9,3,9,1,0.062235,0.089321,-0.13337,0.261363,0.148282,253,13,181,11,5.1383,6.0773,2025-10-09,2026-04-24

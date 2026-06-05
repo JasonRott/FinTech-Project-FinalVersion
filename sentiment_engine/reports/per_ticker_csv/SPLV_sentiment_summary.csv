@@ -1,2 +1,0 @@
-﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
-SPLV,1810,1810,3,SeekingAlpha,1791,359,796,655,-0.156246,0.025191,-0.304269,-0.088274,-0.13155,253,251,181,180,99.2095,99.4475,2025-09-12,2026-05-22

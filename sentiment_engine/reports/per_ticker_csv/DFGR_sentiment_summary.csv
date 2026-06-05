@@ -1,2 +1,0 @@
-﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
-DFGR,10,10,2,Benzinga,6,1,6,3,-0.14104,0.169072,-0.639053,0.0,-0.280516,253,9,181,9,3.5573,4.9724,2025-09-16,2026-05-14

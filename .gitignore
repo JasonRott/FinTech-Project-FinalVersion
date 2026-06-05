@@ -61,3 +61,25 @@ active_preference/bnn_training_summary_debug.json
 
 # 使用者結果（每次執行的圖表+報表;可重新產生）
 user_results/
+
+# ==========================================
+# 最終系統整理（2026-06-06）：排除生成輸出與非生產檔，只保留「最終系統」
+# 生成輸出已改集中到 user_results/，且可由管線/回測重新產生 → 不進 repo
+# ==========================================
+backtest/
+png/
+report/
+sentiment_engine/reports/
+sentiment_engine/plots/
+sentiment_engine/news_sentiment_report.md
+
+# 舊版 / 探索性筆記本 / 示範（非生產，不上 GitHub）
+version_0/
+test_LLM/
+demo/
+.vscode/
+
+# 殘留測試/重複下載的 JSON（非生產）
+json/active_bayesian_pipeline_test_weights(1).json
+json/active_preference_synthetic_test.jsonl
+json/active_preference_test_weights.json

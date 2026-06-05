@@ -1,2 +1,0 @@
-﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
-FNGU,11,11,2,Benzinga,6,3,2,6,-0.214561,0.237372,-0.668387,0.0,-0.299191,253,10,181,9,3.9526,4.9724,2025-10-08,2026-04-08
