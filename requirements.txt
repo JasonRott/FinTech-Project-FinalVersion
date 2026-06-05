@@ -23,3 +23,6 @@ seaborn>=0.12.0
 
 # Environment variable loading
 python-dotenv>=1.0.0
+
+# Stage 2_1 preference_engine（投資理念 + 逐輪問答 → 9 維偏好權重；BGE-M3 文字編碼）
+sentence-transformers>=2.2.0

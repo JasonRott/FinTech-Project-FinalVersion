@@ -1,0 +1,146 @@
+{
+  "Return_CAGR": {
+    "selected_sigma": "entropy_calibrated",
+    "gaussian_calibrator": {
+      "a_mc_scale": 4.198366067976916,
+      "b_error_floor": 0.052266471007171876,
+      "validation_nll": -0.492900013923645,
+      "optimizer_success": true
+    },
+    "entropy_calibrator": {
+      "a_mc_scale": 1.0021768346806443,
+      "b_error_floor": 0.08295083893162333,
+      "validation_nll": -0.5701767206192017,
+      "optimizer_success": true,
+      "c_entropy_scale": 0.31888351126763376
+    }
+  },
+  "Return_Div": {
+    "selected_sigma": "entropy_calibrated",
+    "gaussian_calibrator": {
+      "a_mc_scale": 3.5649362741596775,
+      "b_error_floor": 0.08741462995994492,
+      "validation_nll": -0.47885653376579285,
+      "optimizer_success": true
+    },
+    "entropy_calibrator": {
+      "a_mc_scale": 1.0020591188351222,
+      "b_error_floor": 0.11456727983828052,
+      "validation_nll": -0.49340328574180603,
+      "optimizer_success": true,
+      "c_entropy_scale": 0.23179824824378764
+    }
+  },
+  "Risk_Vol": {
+    "selected_sigma": "gaussian_calibrated",
+    "gaussian_calibrator": {
+      "a_mc_scale": 4.067107086675335,
+      "b_error_floor": 0.09337852376241261,
+      "validation_nll": -0.42326992750167847,
+      "optimizer_success": true
+    },
+    "entropy_calibrator": {
+      "a_mc_scale": 1.001492078924809,
+      "b_error_floor": 0.13422605593443127,
+      "validation_nll": -0.41842713952064514,
+      "optimizer_success": true,
+      "c_entropy_scale": 0.21015366873370636
+    }
+  },
+  "Risk_MaxDD": {
+    "selected_sigma": "entropy_calibrated",
+    "gaussian_calibrator": {
+      "a_mc_scale": 2.6396183939496787,
+      "b_error_floor": 0.10879639491414754,
+      "validation_nll": -0.41857510805130005,
+      "optimizer_success": true
+    },
+    "entropy_calibrator": {
+      "a_mc_scale": 0.9995741608419395,
+      "b_error_floor": 0.1005387878581799,
+      "validation_nll": -0.4460364580154419,
+      "optimizer_success": true,
+      "c_entropy_scale": 0.220814716646105
+    }
+  },
+  "Cost_ExpRatio": {
+    "selected_sigma": "entropy_calibrated",
+    "gaussian_calibrator": {
+      "a_mc_scale": 4.081287531813492,
+      "b_error_floor": 0.05818862198346773,
+      "validation_nll": -0.46598684787750244,
+      "optimizer_success": true
+    },
+    "entropy_calibrator": {
+      "a_mc_scale": 3.10562322596516,
+      "b_error_floor": 0.066985022620754,
+      "validation_nll": -0.4842824637889862,
+      "optimizer_success": true,
+      "c_entropy_scale": 0.19417513467368752
+    }
+  },
+  "Liq_Volume": {
+    "selected_sigma": "entropy_calibrated",
+    "gaussian_calibrator": {
+      "a_mc_scale": 3.890564340901465,
+      "b_error_floor": 0.00021720781531144257,
+      "validation_nll": -0.6807854175567627,
+      "optimizer_success": true
+    },
+    "entropy_calibrator": {
+      "a_mc_scale": 3.4778934734697655,
+      "b_error_floor": 0.03128401976443072,
+      "validation_nll": -0.6856082677841187,
+      "optimizer_success": true,
+      "c_entropy_scale": 0.13715152165440672
+    }
+  },
+  "Liq_AUM": {
+    "selected_sigma": "gaussian_calibrated",
+    "gaussian_calibrator": {
+      "a_mc_scale": 3.5888768805690896,
+      "b_error_floor": 0.06882776308038074,
+      "validation_nll": -0.5340439081192017,
+      "optimizer_success": true
+    },
+    "entropy_calibrator": {
+      "a_mc_scale": 1.001659417586317,
+      "b_error_floor": 0.10612310950126501,
+      "validation_nll": -0.5326550006866455,
+      "optimizer_success": true,
+      "c_entropy_scale": 0.2530323216114967
+    }
+  },
+  "Div_Score": {
+    "selected_sigma": "entropy_calibrated",
+    "gaussian_calibrator": {
+      "a_mc_scale": 3.8907658235324125,
+      "b_error_floor": 0.02205857761424588,
+      "validation_nll": -0.6136865615844727,
+      "optimizer_success": true
+    },
+    "entropy_calibrator": {
+      "a_mc_scale": 1.0007781497734283,
+      "b_error_floor": 0.09610364097903254,
+      "validation_nll": -0.6261591911315918,
+      "optimizer_success": true,
+      "c_entropy_scale": 0.19609891489574452
+    }
+  },
+  "FinBERT_score": {
+    "selected_sigma": "entropy_calibrated",
+    "gaussian_calibrator": {
+      "a_mc_scale": 4.849145567031472,
+      "b_error_floor": 9.672246569066774e-05,
+      "validation_nll": -0.5357990264892578,
+      "optimizer_success": true
+    },
+    "entropy_calibrator": {
+      "a_mc_scale": 1.0021210128496225,
+      "b_error_floor": 0.10040571430758144,
+      "validation_nll": -0.5534058213233948,
+      "optimizer_success": true,
+      "c_entropy_scale": 0.24679335273232894
+    }
+  }
+}

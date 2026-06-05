@@ -1,0 +1,3530 @@
+{
+  "Return_CAGR": [
+    {
+      "qid": "overnightV1_Return_CAGR_q055",
+      "question": "您對 ETF 的長期價值成長有多大的期望？",
+      "score": 0.92966
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q042",
+      "question": "您對 ETF 的長期增長潛力有多重視？",
+      "score": 0.92612
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q036",
+      "question": "您對 ETF 的長期資本增值有多大的期待？",
+      "score": 0.92404
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q049",
+      "question": "您對 ETF 的長期資本增值有多大的偏好？",
+      "score": 0.9236
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q021",
+      "question": "您對 ETF 的長期價值增長有多大的信心？",
+      "score": 0.92329
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q030",
+      "question": "您對 ETF 的長期回報增長是否有明確的偏好？",
+      "score": 0.92163
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q006",
+      "question": "對於 ETF 的長期增長，您的偏好是怎樣的？",
+      "score": 0.92154
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q047",
+      "question": "您如何看待 ETF 的長期增長對您投資目標的貢獻？",
+      "score": 0.92143
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q052",
+      "question": "您對 ETF 長期而言的價格上漲有多看重？",
+      "score": 0.92055
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q013",
+      "question": "您如何評估 ETF 的長期增長潛力在您的投資組合中的重要性？",
+      "score": 0.92026
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q002",
+      "question": "在 ETF 選擇上，您對資本增值的期望有多高？",
+      "score": 0.91889
+    },
+    {
+      "qid": "direct_Return_CAGR",
+      "question": "在您心中，長期下來，您有多看重 ETF 的『資本增值』潛力呢？",
+      "score": 0.91394
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q066",
+      "question": "您認為 ETF 的長期增長對您的投資組合有多大的影響？",
+      "score": 0.91283
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q075",
+      "question": "您是否傾向於選擇那些能提供更高長期資本增值的 ETF？",
+      "score": 0.91222
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q076",
+      "question": "您在 ETF 的選擇上，會將其價格的長期成長潛力視為重要因素嗎？",
+      "score": 0.90856
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q043",
+      "question": "您是否會優先考慮 ETF 的長期資本增值能力？",
+      "score": 0.90823
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q001",
+      "question": "您比較在意 ETF 價格的長期上漲潛力嗎？",
+      "score": 0.90785
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q070",
+      "question": "您對 ETF 的總報酬增長有多大的偏好？",
+      "score": 0.90783
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q044",
+      "question": "您在 ETF 投資中，對長期價格的成長有多在意？",
+      "score": 0.90735
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q073",
+      "question": "您對 ETF 的價格長期上漲有多高的期望？",
+      "score": 0.90658
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q050",
+      "question": "您在挑選 ETF 時，會著重於其長期成長的潛力嗎？",
+      "score": 0.90559
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q068",
+      "question": "您在選擇 ETF 時，會把價格的長期增長潛力放在首位嗎？",
+      "score": 0.90465
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q063",
+      "question": "您對 ETF 的資本增值有多大的重視程度？",
+      "score": 0.90454
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q039",
+      "question": "您對 ETF 的總體回報成長有什麼樣的看法？",
+      "score": 0.90358
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q048",
+      "question": "您認為 ETF 的價格增長是您追求的重點嗎？",
+      "score": 0.90334
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q040",
+      "question": "您是否傾向於 ETF 的長期價格成長，即使伴隨波動？",
+      "score": 0.89996
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q045",
+      "question": "您對 ETF 的總報酬成長有什麼樣的期望？",
+      "score": 0.89973
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q008",
+      "question": "您對 ETF 長遠的價格走勢有多看重？",
+      "score": 0.89906
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q074",
+      "question": "您認為 ETF 的長期成長對您的投資策略有多關鍵？",
+      "score": 0.89819
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q020",
+      "question": "您認為 ETF 的長期成長性是否對您很重要？",
+      "score": 0.897
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q007",
+      "question": "您會優先選擇能提供顯著資本增值的 ETF 嗎？",
+      "score": 0.89535
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q017",
+      "question": "您對 ETF 的總體回報增長有什麼樣的期待？",
+      "score": 0.89497
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q037",
+      "question": "在 ETF 的選擇上，您對價格增長的要求有多高？",
+      "score": 0.89479
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q058",
+      "question": "您在 ETF 的選擇上，會優先考慮其長期增長的空間嗎？",
+      "score": 0.89431
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q038",
+      "question": "您會將 ETF 的長期資本利得作為重要的考量嗎？",
+      "score": 0.89363
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q065",
+      "question": "您是否傾向於 ETF 的長期價格成長，即使它意味著較高的波動性？",
+      "score": 0.89274
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q067",
+      "question": "您對 ETF 的資本利得成長有多大的期待？",
+      "score": 0.89225
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q071",
+      "question": "您願意為了 ETF 的長期資本增值而承擔較大的風險嗎？",
+      "score": 0.89213
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q057",
+      "question": "您是否傾向於選擇能帶來顯著長期資本利得的 ETF？",
+      "score": 0.89142
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q028",
+      "question": "您是否傾向於選擇能提供較高長期資本利得的 ETF？",
+      "score": 0.89086
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q026",
+      "question": "您對 ETF 的長期資本累積有多大的目標？",
+      "score": 0.88874
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q056",
+      "question": "您認為 ETF 的價格增長對您的財務目標有多重要？",
+      "score": 0.88847
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q029",
+      "question": "您認為 ETF 的價格上升空間對您的投資策略有多大影響？",
+      "score": 0.88832
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q005",
+      "question": "您認為 ETF 的價格成長對您來說有多重要？",
+      "score": 0.88647
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q069",
+      "question": "您是否認為 ETF 的資本增值是您投資的主要目標之一？",
+      "score": 0.88449
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q019",
+      "question": "您在選擇 ETF 時，會將資本增值的空間列入考量嗎？",
+      "score": 0.88408
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q003",
+      "question": "您是否將 ETF 的總報酬成長視為首要考量？",
+      "score": 0.88271
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q077",
+      "question": "您對 ETF 的總體回報增長有多高的要求？",
+      "score": 0.88216
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q059",
+      "question": "您對 ETF 的總體回報有多高的期待？",
+      "score": 0.88059
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q041",
+      "question": "您認為 ETF 的資本增值對您來說有多優先？",
+      "score": 0.87899
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q035",
+      "question": "您是否認為 ETF 的價格上漲是您投資的主要目的？",
+      "score": 0.87754
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q018",
+      "question": "如果 ETF 的價格成長潛力很高，您會考慮嗎？",
+      "score": 0.8773
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q061",
+      "question": "您願意為 ETF 的長期報酬增長而承受一定的市場波動嗎？",
+      "score": 0.87644
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q033",
+      "question": "您願意為 ETF 的長期資本增值承擔多少風險？",
+      "score": 0.87565
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q051",
+      "question": "您是否將 ETF 的資本增值視為您投資的主要驅動力？",
+      "score": 0.87192
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q011",
+      "question": "您對 ETF 的預期報酬成長率有多高的要求？",
+      "score": 0.87119
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q060",
+      "question": "您是否認為 ETF 的價格長期上漲是獲利的核心？",
+      "score": 0.86835
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q016",
+      "question": "您會把 ETF 的長期資本增值作為篩選標準嗎？",
+      "score": 0.8629
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q015",
+      "question": "對您而言，ETF 的價格持續上漲有多大的吸引力？",
+      "score": 0.86239
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q009",
+      "question": "在 ETF 投資中，您追求的是穩定的現金流還是資產的增值？",
+      "score": 0.86209
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q046",
+      "question": "您是否願意為 ETF 的潛在資本增值而承受價格波動？",
+      "score": 0.86078
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q024",
+      "question": "您在 ETF 投資中，是否更看重資產的增值而非僅僅是配息？",
+      "score": 0.8602
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q054",
+      "question": "您願意為了 ETF 的高報酬而接受較大的風險嗎？",
+      "score": 0.85879
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q025",
+      "question": "您願意承擔 ETF 價格波動的風險來換取更高的成長嗎？",
+      "score": 0.8587
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q023",
+      "question": "您是否認為 ETF 的價格成長是獲利的主要來源？",
+      "score": 0.85857
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q022",
+      "question": "您會特別關注那些長期而言表現強勁的 ETF 嗎？",
+      "score": 0.85267
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q062",
+      "question": "您如何權衡 ETF 的成長潛力與風險？",
+      "score": 0.84827
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q064",
+      "question": "您在 ETF 投資中，是更追求資本的增長還是現金流的穩定？",
+      "score": 0.84809
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q072",
+      "question": "您在 ETF 投資中，更在意的是資產的增值還是配息的穩定性？",
+      "score": 0.84259
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q032",
+      "question": "您在 ETF 投資中，是更看重資產的增值還是現金流？",
+      "score": 0.8425
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q053",
+      "question": "您在 ETF 投資組合中，希望看到資產的增值還是穩定的配息？",
+      "score": 0.84069
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q034",
+      "question": "您如何看待 ETF 的長期成長與短期波動之間的關係？",
+      "score": 0.83517
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q010",
+      "question": "您是否認為 ETF 的長期資本利得是投資成功的關鍵？",
+      "score": 0.82974
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q031",
+      "question": "您是否會尋找那些歷史上長期報酬表現優異的 ETF？",
+      "score": 0.82763
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q027",
+      "question": "在 ETF 的眾多特性中，您認為哪項最能代表您的投資目標？",
+      "score": 0.80255
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q004",
+      "question": "您願意為了追求更高的長期報酬而承擔一些波動嗎？",
+      "score": 0.72843
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q014",
+      "question": "您是否願意為了較高的潛在報酬而接受較大的價格波動？",
+      "score": 0.69609
+    },
+    {
+      "qid": "overnightV1_Return_CAGR_q012",
+      "question": "當面臨報酬與風險的權衡時，您更傾向於哪一方？",
+      "score": 0.65247
+    }
+  ],
+  "Return_Div": [
+    {
+      "qid": "direct_Return_Div",
+      "question": "您對於 ETF 能提供『穩定現金流』或『股息收入』有多大的期待？",
+      "score": 0.91582
+    },
+    {
+      "qid": "overnightV1_Return_Div_q047",
+      "question": "您對 ETF 的現金收入來源有什麼偏好？",
+      "score": 0.91554
+    },
+    {
+      "qid": "overnightV1_Return_Div_q065",
+      "question": "您對 ETF 的現金收入是否有明確的期望值？",
+      "score": 0.9077
+    },
+    {
+      "qid": "overnightV1_Return_Div_q025",
+      "question": "您對 ETF 的預期收益是否有現金分配的要求？",
+      "score": 0.89836
+    },
+    {
+      "qid": "overnightV1_Return_Div_q019",
+      "question": "您認為 ETF 的現金流是您做出投資決策時的考量嗎？",
+      "score": 0.89705
+    },
+    {
+      "qid": "overnightV1_Return_Div_q018",
+      "question": "您希望 ETF 能夠提供多少比例的現金回報？",
+      "score": 0.89453
+    },
+    {
+      "qid": "overnightV1_Return_Div_q053",
+      "question": "您是否傾向於那些提供可預期現金流的 ETF？",
+      "score": 0.89451
+    },
+    {
+      "qid": "overnightV1_Return_Div_q038",
+      "question": "您對 ETF 的現金回報是否有特定的目標？",
+      "score": 0.89225
+    },
+    {
+      "qid": "overnightV1_Return_Div_q007",
+      "question": "您認為 ETF 的現金收益對您的整體投資策略有多重要？",
+      "score": 0.89177
+    },
+    {
+      "qid": "overnightV1_Return_Div_q076",
+      "question": "您是否傾向於 ETF 提供穩定的現金收入，即使成長較慢？",
+      "score": 0.8914
+    },
+    {
+      "qid": "overnightV1_Return_Div_q028",
+      "question": "您對 ETF 的現金流產生方式有什麼樣的看法？",
+      "score": 0.89129
+    },
+    {
+      "qid": "overnightV1_Return_Div_q036",
+      "question": "您認為 ETF 的配息頻率和金額重要嗎？",
+      "score": 0.89021
+    },
+    {
+      "qid": "overnightV1_Return_Div_q034",
+      "question": "您是否偏好那些能夠穩定支付股息的 ETF？",
+      "score": 0.88904
+    },
+    {
+      "qid": "overnightV1_Return_Div_q071",
+      "question": "您對 ETF 的現金股利是否有特別的偏好？",
+      "score": 0.88787
+    },
+    {
+      "qid": "overnightV1_Return_Div_q062",
+      "question": "您認為 ETF 的配息能力對您的投資決策有多大影響？",
+      "score": 0.88773
+    },
+    {
+      "qid": "overnightV1_Return_Div_q056",
+      "question": "您是否將 ETF 的配息視為一種穩定的收入來源？",
+      "score": 0.88756
+    },
+    {
+      "qid": "overnightV1_Return_Div_q014",
+      "question": "您認為 ETF 的現金回報對您的財務目標有多大幫助？",
+      "score": 0.88728
+    },
+    {
+      "qid": "overnightV1_Return_Div_q074",
+      "question": "您對 ETF 的現金流的穩定性有多麼重視？",
+      "score": 0.88665
+    },
+    {
+      "qid": "overnightV1_Return_Div_q016",
+      "question": "您對 ETF 的經常性收入有什麼樣的期待？",
+      "score": 0.88604
+    },
+    {
+      "qid": "overnightV1_Return_Div_q043",
+      "question": "您對 ETF 的現金流穩定性有多在意？",
+      "score": 0.88375
+    },
+    {
+      "qid": "overnightV1_Return_Div_q039",
+      "question": "您認為 ETF 的現金流對於應付日常開銷有幫助嗎？",
+      "score": 0.88286
+    },
+    {
+      "qid": "overnightV1_Return_Div_q078",
+      "question": "您對 ETF 的現金流預期是否有一個具體的數字？",
+      "score": 0.88257
+    },
+    {
+      "qid": "overnightV1_Return_Div_q057",
+      "question": "您對 ETF 的現金流預測性有多看重？",
+      "score": 0.88191
+    },
+    {
+      "qid": "overnightV1_Return_Div_q032",
+      "question": "您對 ETF 的定期現金發放有何期待？",
+      "score": 0.88135
+    },
+    {
+      "qid": "overnightV1_Return_Div_q021",
+      "question": "您對 ETF 的現金流穩定性有什麼要求？",
+      "score": 0.88039
+    },
+    {
+      "qid": "overnightV1_Return_Div_q005",
+      "question": "您對 ETF 的配息政策有什麼樣的期望？",
+      "score": 0.87991
+    },
+    {
+      "qid": "overnightV1_Return_Div_q009",
+      "question": "您對 ETF 的收益分配方式有什麼偏好？",
+      "score": 0.87948
+    },
+    {
+      "qid": "overnightV1_Return_Div_q075",
+      "question": "您認為 ETF 的股息收入對於您實現財務目標有何助益？",
+      "score": 0.8789
+    },
+    {
+      "qid": "overnightV1_Return_Div_q049",
+      "question": "您是否將 ETF 的現金流視為投資組合的重要組成部分？",
+      "score": 0.877
+    },
+    {
+      "qid": "overnightV1_Return_Div_q050",
+      "question": "您對 ETF 的股息收入的穩定性有多高的要求？",
+      "score": 0.87615
+    },
+    {
+      "qid": "overnightV1_Return_Div_q059",
+      "question": "您認為 ETF 的現金股息是否應該成為您投資組合的核心？",
+      "score": 0.87538
+    },
+    {
+      "qid": "overnightV1_Return_Div_q013",
+      "question": "您是否希望 ETF 能夠模擬您個人的現金流需求？",
+      "score": 0.8746
+    },
+    {
+      "qid": "overnightV1_Return_Div_q061",
+      "question": "您對 ETF 的現金流波動性有什麼樣的容忍度？",
+      "score": 0.87047
+    },
+    {
+      "qid": "overnightV1_Return_Div_q055",
+      "question": "您認為 ETF 的股息對於增加您的可支配收入有幫助嗎？",
+      "score": 0.86853
+    },
+    {
+      "qid": "overnightV1_Return_Div_q041",
+      "question": "您如何評估 ETF 的現金收益與其總體報酬的關係？",
+      "score": 0.86849
+    },
+    {
+      "qid": "overnightV1_Return_Div_q024",
+      "question": "您是否尋求能夠提供穩定現金收入的 ETF 產品？",
+      "score": 0.86843
+    },
+    {
+      "qid": "overnightV1_Return_Div_q020",
+      "question": "您是否認為 ETF 的股息是您投資組合中不可或缺的一部分？",
+      "score": 0.86812
+    },
+    {
+      "qid": "overnightV1_Return_Div_q063",
+      "question": "您是否會優先考慮 ETF 的現金流穩定性？",
+      "score": 0.86806
+    },
+    {
+      "qid": "overnightV1_Return_Div_q030",
+      "question": "您認為 ETF 的股息收益對於累積財富有多大的貢獻？",
+      "score": 0.86726
+    },
+    {
+      "qid": "overnightV1_Return_Div_q070",
+      "question": "您是否將 ETF 的現金收入視為一種風險緩衝？",
+      "score": 0.86367
+    },
+    {
+      "qid": "overnightV1_Return_Div_q008",
+      "question": "您會優先考慮哪些能定期發放現金的 ETF 嗎？",
+      "score": 0.86327
+    },
+    {
+      "qid": "overnightV1_Return_Div_q029",
+      "question": "您是否將 ETF 的現金收入視為一種被動收入的來源？",
+      "score": 0.863
+    },
+    {
+      "qid": "overnightV1_Return_Div_q072",
+      "question": "您認為 ETF 的現金回報是否應該成為您投資的首要考量？",
+      "score": 0.86186
+    },
+    {
+      "qid": "overnightV1_Return_Div_q023",
+      "question": "您認為 ETF 的現金收入對您的生活品質有影響嗎？",
+      "score": 0.8618
+    },
+    {
+      "qid": "overnightV1_Return_Div_q077",
+      "question": "您會不會將 ETF 的配息作為您選擇該產品的主要依據？",
+      "score": 0.86098
+    },
+    {
+      "qid": "overnightV1_Return_Div_q012",
+      "question": "您如何看待 ETF 的配息功能？",
+      "score": 0.86092
+    },
+    {
+      "qid": "overnightV1_Return_Div_q045",
+      "question": "您認為 ETF 的現金股利對您的退休規劃有多重要？",
+      "score": 0.8605
+    },
+    {
+      "qid": "overnightV1_Return_Div_q052",
+      "question": "您認為 ETF 的現金回報能夠幫助您達成財務自由嗎？",
+      "score": 0.86014
+    },
+    {
+      "qid": "overnightV1_Return_Div_q040",
+      "question": "您是否傾向於那些有良好配息記錄的 ETF？",
+      "score": 0.85705
+    },
+    {
+      "qid": "overnightV1_Return_Div_q033",
+      "question": "您認為 ETF 的收益是否應該以現金形式回饋給投資者？",
+      "score": 0.85564
+    },
+    {
+      "qid": "overnightV1_Return_Div_q026",
+      "question": "您認為 ETF 的配息金額對您的吸引力有多大？",
+      "score": 0.85326
+    },
+    {
+      "qid": "overnightV1_Return_Div_q015",
+      "question": "您是否傾向於那些會將部分利潤分配給投資者的 ETF？",
+      "score": 0.85264
+    },
+    {
+      "qid": "overnightV1_Return_Div_q080",
+      "question": "您是否願意為了追求較高的資本增值而放棄 ETF 的現金收益？",
+      "score": 0.85235
+    },
+    {
+      "qid": "overnightV1_Return_Div_q010",
+      "question": "您是否認為 ETF 的股息收入是衡量其表現的關鍵指標？",
+      "score": 0.85045
+    },
+    {
+      "qid": "overnightV1_Return_Div_q064",
+      "question": "您如何權衡 ETF 的配息金額與其長期增長能力？",
+      "score": 0.84973
+    },
+    {
+      "qid": "overnightV1_Return_Div_q079",
+      "question": "您認為 ETF 的現金股利是衡量其表現的必要條件嗎？",
+      "score": 0.84938
+    },
+    {
+      "qid": "overnightV1_Return_Div_q003",
+      "question": "您認為 ETF 分配現金股息的重要性有多高？",
+      "score": 0.84919
+    },
+    {
+      "qid": "overnightV1_Return_Div_q002",
+      "question": "對於 ETF，您更看重每年的現金收益還是資產增值？",
+      "score": 0.84884
+    },
+    {
+      "qid": "overnightV1_Return_Div_q048",
+      "question": "您認為 ETF 的配息政策是否應該符合您的投資目標？",
+      "score": 0.84818
+    },
+    {
+      "qid": "overnightV1_Return_Div_q017",
+      "question": "您會如何權衡 ETF 的配息能力與其長期增長潛力？",
+      "score": 0.84676
+    },
+    {
+      "qid": "overnightV1_Return_Div_q068",
+      "question": "您對 ETF 的現金流產生機制有什麼樣的理解？",
+      "score": 0.84391
+    },
+    {
+      "qid": "overnightV1_Return_Div_q035",
+      "question": "您會優先考慮 ETF 的現金流出還是其資產價值的增長？",
+      "score": 0.84384
+    },
+    {
+      "qid": "overnightV1_Return_Div_q069",
+      "question": "您認為 ETF 的配息對於吸引投資者有多重要？",
+      "score": 0.84373
+    },
+    {
+      "qid": "overnightV1_Return_Div_q022",
+      "question": "您會不會因為 ETF 的配息而調整您的投資組合？",
+      "score": 0.84347
+    },
+    {
+      "qid": "overnightV1_Return_Div_q042",
+      "question": "您是否認為 ETF 的股息是衡量其長期價值的重要指標？",
+      "score": 0.84126
+    },
+    {
+      "qid": "overnightV1_Return_Div_q004",
+      "question": "如果 ETF 能提供穩定的現金流，您是否願意接受稍低的成長潛力？",
+      "score": 0.83957
+    },
+    {
+      "qid": "overnightV1_Return_Div_q054",
+      "question": "您如何看待 ETF 的收益分配，是更重視現金還是再投資？",
+      "score": 0.83941
+    },
+    {
+      "qid": "overnightV1_Return_Div_q058",
+      "question": "您會不會因為 ETF 不定期配息而卻步？",
+      "score": 0.83734
+    },
+    {
+      "qid": "overnightV1_Return_Div_q044",
+      "question": "您是否願意為了追求資本增值而放棄 ETF 的配息？",
+      "score": 0.83565
+    },
+    {
+      "qid": "overnightV1_Return_Div_q011",
+      "question": "您是否願意為了更高的穩定現金流而選擇成長性較低的 ETF？",
+      "score": 0.83546
+    },
+    {
+      "qid": "overnightV1_Return_Div_q073",
+      "question": "您是否會因為 ETF 的配息政策而改變您的投資策略？",
+      "score": 0.83119
+    },
+    {
+      "qid": "overnightV1_Return_Div_q066",
+      "question": "您認為 ETF 的股息是否是您衡量其價值的唯一標準？",
+      "score": 0.81764
+    },
+    {
+      "qid": "overnightV1_Return_Div_q051",
+      "question": "您會不會因為 ETF 的配息不高而感到失望？",
+      "score": 0.81163
+    },
+    {
+      "qid": "overnightV1_Return_Div_q031",
+      "question": "您會不會因為 ETF 不配息而排除它？",
+      "score": 0.80886
+    },
+    {
+      "qid": "overnightV1_Return_Div_q046",
+      "question": "您會不會為了更高的股息而選擇波動性較大的 ETF？",
+      "score": 0.80642
+    },
+    {
+      "qid": "overnightV1_Return_Div_q001",
+      "question": "您希望投資組合能定期提供現金流入嗎？",
+      "score": 0.78698
+    },
+    {
+      "qid": "overnightV1_Return_Div_q006",
+      "question": "您是否偏好能提供額外現金收入的投資工具？",
+      "score": 0.77253
+    },
+    {
+      "qid": "overnightV1_Return_Div_q067",
+      "question": "您是否願意接受較低的股價增長以換取穩定的現金流？",
+      "score": 0.73018
+    },
+    {
+      "qid": "overnightV1_Return_Div_q060",
+      "question": "您是否尋求一種能夠提供持續現金回報的投資方式？",
+      "score": 0.73005
+    },
+    {
+      "qid": "overnightV1_Return_Div_q027",
+      "question": "您是否願意犧牲一部分潛在的資本利得來換取穩定的現金流？",
+      "score": 0.72705
+    },
+    {
+      "qid": "overnightV1_Return_Div_q037",
+      "question": "您是否尋求一種能夠提供持續現金收入的投資策略？",
+      "score": 0.72272
+    }
+  ],
+  "Risk_Vol": [
+    {
+      "qid": "overnightV1_Risk_Vol_q053",
+      "question": "您是否傾向於那些能夠提供相對穩定回報的投資？",
+      "score": 0.87654
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q009",
+      "question": "您希望投資過程是平穩的，還是可以接受有較大的上下震盪？",
+      "score": 0.87473
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q015",
+      "question": "您在做投資決策時，是否會特別關注潛在的波動性？",
+      "score": 0.87472
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q018",
+      "question": "您是否介意投資標的短期內的價格大幅度波動？",
+      "score": 0.86708
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q029",
+      "question": "您是否傾向於避開那些價格波動劇烈的投資？",
+      "score": 0.86258
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q037",
+      "question": "您在投資時，是希望看到穩定的緩慢增長，還是快速的起伏？",
+      "score": 0.86041
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q007",
+      "question": "您對於投資的價格變動幅度，有沒有一個心理預期？",
+      "score": 0.85797
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q025",
+      "question": "您對於高波動的投資標的，通常持什麼態度？",
+      "score": 0.85644
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q032",
+      "question": "您在尋找投資機會時，會特別關注其價格穩定性嗎？",
+      "score": 0.85614
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q075",
+      "question": "您對『波動較小』的投資產品，是否比較青睞？",
+      "score": 0.85506
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q004",
+      "question": "您是否希望您的投資組合能盡量減少價格的大幅起伏？",
+      "score": 0.85418
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q021",
+      "question": "您在選擇投資時，會把『波動性』列為考量重點嗎？",
+      "score": 0.85322
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q064",
+      "question": "您在選擇投資時，會如何權衡『波動風險』與『潛在收益』？",
+      "score": 0.85163
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q011",
+      "question": "您會優先考慮那些價格波動較小的投資標的嗎？",
+      "score": 0.85044
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q074",
+      "question": "您在選擇投資時，會不會特別關注『風險控制』？",
+      "score": 0.84873
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q044",
+      "question": "您在選擇投資時，是否會考慮其長期波動的趨勢？",
+      "score": 0.84738
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q078",
+      "question": "您是否會傾向於那些能提供『可預期』回報的投資？",
+      "score": 0.84306
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q017",
+      "question": "您認為投資中的『穩定』，對您有多大的吸引力？",
+      "score": 0.84219
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q066",
+      "question": "您是否希望您的投資組合能盡量減少不確定性？",
+      "score": 0.8407
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q001",
+      "question": "您投資時，最在意的是什麼？",
+      "score": 0.83887
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q043",
+      "question": "您對『資產的穩定性』有多看重？",
+      "score": 0.8386
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q042",
+      "question": "您是否會因為擔心短期的價格波動而頻繁買賣？",
+      "score": 0.83357
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q005",
+      "question": "在追求投資增長時，穩定性對您有多重要？",
+      "score": 0.83207
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q006",
+      "question": "如果有一種投資，報酬可能較溫和但波動小，您會考慮嗎？",
+      "score": 0.83165
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q020",
+      "question": "您對市場的短期劇烈波動，有多大的容忍度？",
+      "score": 0.82871
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q031",
+      "question": "您會如何衡量投資中的『風險』？",
+      "score": 0.82868
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q034",
+      "question": "您對『穩健型』投資的看法是什麼？",
+      "score": 0.82831
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q056",
+      "question": "您會不會特別關注投資的『平滑曲線』？",
+      "score": 0.82398
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q059",
+      "question": "您對『保守的投資方式』有何偏好？",
+      "score": 0.82334
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q012",
+      "question": "您覺得投資的風險高低，哪個對您來說更關鍵？",
+      "score": 0.8201
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q060",
+      "question": "您在面臨市場波動時，是選擇持有還是調整？",
+      "score": 0.81965
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q033",
+      "question": "您是否希望您的投資過程盡量避免驚濤駭浪？",
+      "score": 0.81895
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q016",
+      "question": "您是否希望您的資產價值能夠保持相對穩定？",
+      "score": 0.81785
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q068",
+      "question": "您認為，『風險承受能力』對您的投資決策有多大影響？",
+      "score": 0.81663
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q070",
+      "question": "您對於『市場的劇烈起伏』，有多大的警惕性？",
+      "score": 0.81584
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q069",
+      "question": "您是否會優先考慮那些能夠提供持續、穩定回報的選項？",
+      "score": 0.81443
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q035",
+      "question": "您是否會因為擔心短期價格波動而猶豫不決？",
+      "score": 0.81366
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q058",
+      "question": "您是否希望您的投資能像『一條平穩的河流』？",
+      "score": 0.8129
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q045",
+      "question": "您認為，什麼樣的投資策略最適合您？",
+      "score": 0.81157
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q036",
+      "question": "您認為投資的『可預測性』有多重要？",
+      "score": 0.81131
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q072",
+      "question": "您認為，『情緒穩定』在投資中有多關鍵？",
+      "score": 0.80918
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q055",
+      "question": "您在投資時，是否會考慮到潛在的心理壓力？",
+      "score": 0.8091
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q057",
+      "question": "您認為，投資的『確定性』有多重要？",
+      "score": 0.80855
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q027",
+      "question": "如果有一種投資，雖然風險低，但預期報酬也較低，您會怎麼選？",
+      "score": 0.80821
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q003",
+      "question": "面對市場的短期劇烈波動，您會感到不安嗎？",
+      "score": 0.80601
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q063",
+      "question": "您是否會避免那些可能導致您大幅虧損的投資？",
+      "score": 0.80484
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q023",
+      "question": "您會因為擔心短期價格下跌而錯失投資機會嗎？",
+      "score": 0.80468
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q065",
+      "question": "您對『穩定增長』的投資有何看法？",
+      "score": 0.80383
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q026",
+      "question": "您希望您的投資組合能提供怎樣的體驗？",
+      "score": 0.80377
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q047",
+      "question": "您在面對市場的任何變化時，都能保持平常心嗎？",
+      "score": 0.80266
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q076",
+      "question": "您認為，投資的『平靜』能否帶來長期的成功？",
+      "score": 0.80134
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q022",
+      "question": "您希望投資回報是細水長流，還是大起大落？",
+      "score": 0.80118
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q048",
+      "question": "您是否會尋找那些歷史上波動幅度較小的投資選項？",
+      "score": 0.8007
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q046",
+      "question": "您是否希望投資能夠讓您睡得安穩？",
+      "score": 0.80007
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q071",
+      "question": "您在投資時，會不會擔心『一夜之間財富縮水』？",
+      "score": 0.79994
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q052",
+      "question": "您在評估一項投資時，會花多少時間關注其價格波動歷史？",
+      "score": 0.79932
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q077",
+      "question": "您在面臨市場的大幅波動時，會如何應對？",
+      "score": 0.79643
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q050",
+      "question": "您認為，投資的『平穩性』和『增長性』之間，哪個更重要？",
+      "score": 0.79516
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q028",
+      "question": "您在面對市場的不確定性時，會感到壓力嗎？",
+      "score": 0.79466
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q041",
+      "question": "您認為在投資中，『保持冷靜』有多難？",
+      "score": 0.79421
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q054",
+      "question": "您對『市場的震盪』，持何種態度？",
+      "score": 0.79332
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q008",
+      "question": "您偏好穩健前行，還是願意冒險追求更高潛在回報？",
+      "score": 0.79234
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q039",
+      "question": "您是否會為了追求較低的波動，而放棄一些潛在的高收益？",
+      "score": 0.7916
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q061",
+      "question": "您會不會因為市場的劇烈波動而感到焦慮？",
+      "score": 0.7916
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q038",
+      "question": "您對『風險管理』在投資中的角色，有什麼看法？",
+      "score": 0.78871
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q062",
+      "question": "您認為，投資的『安全性』和『收益性』，哪一個優先？",
+      "score": 0.78635
+    },
+    {
+      "qid": "direct_Risk_Vol",
+      "question": "您有多重視 ETF 在投資過程中『價格波動小』、『穩健前行』的特性？",
+      "score": 0.78258
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q030",
+      "question": "您認為投資的『平順』，是否比追求極致收益更重要？",
+      "score": 0.78236
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q002",
+      "question": "相較於獲取高報酬，您更傾向哪種投資方式？",
+      "score": 0.78167
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q013",
+      "question": "您是否傾向於選擇那些歷史價格變動較為平緩的產品？",
+      "score": 0.78082
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q024",
+      "question": "您認為投資的『安全感』來源於何處？",
+      "score": 0.77753
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q040",
+      "question": "您在投資時，更看重的是『心理上的安寧』還是『賬面上的數字』？",
+      "score": 0.77542
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q073",
+      "question": "您是否會避免那些讓您夜不能寐的投資？",
+      "score": 0.77514
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q051",
+      "question": "您是否會把『避免大幅虧損』作為首要目標？",
+      "score": 0.77495
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q014",
+      "question": "對於潛在的短期虧損，您的承受能力如何？",
+      "score": 0.77309
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q049",
+      "question": "您對『風險規避』的程度有多高？",
+      "score": 0.76201
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q067",
+      "question": "您在觀察投資標的時，最先注意到的是什麼？",
+      "score": 0.75981
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q019",
+      "question": "與其追逐高點，您更看重的是什麼？",
+      "score": 0.75361
+    },
+    {
+      "qid": "overnightV1_Risk_Vol_q010",
+      "question": "當市場突然下跌時，您的第一反應是什麼？",
+      "score": 0.69461
+    }
+  ],
+  "Risk_MaxDD": [
+    {
+      "qid": "overnightV1_Risk_MaxDD_q030",
+      "question": "您是否希望在投資旅程中，盡量少經歷大幅度的下跌？",
+      "score": 0.87323
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q049",
+      "question": "您會因為擔心大幅下跌而不敢投入嗎？",
+      "score": 0.86456
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q035",
+      "question": "您是否希望在不利市場環境下，資產盡量少虧損？",
+      "score": 0.86014
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q023",
+      "question": "您對能夠承受較大虧損的投資標的有什麼看法？",
+      "score": 0.85971
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q043",
+      "question": "您對短期內資產價值的大幅縮水有何顧慮？",
+      "score": 0.85928
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q067",
+      "question": "您認為潛在的大幅虧損會影響您的投資決策嗎？",
+      "score": 0.85886
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q010",
+      "question": "您希望投資的下跌空間盡量控制在一個範圍內嗎？",
+      "score": 0.85603
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q001",
+      "question": "您最在意投資組合的最大虧損幅度嗎？",
+      "score": 0.85599
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q072",
+      "question": "您是否會特別在意投資的『最大跌幅』指標？",
+      "score": 0.85451
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q052",
+      "question": "您會選擇一個即使下跌，但幅度不會太誇張的投資嗎？",
+      "score": 0.85096
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q056",
+      "question": "您對於資產價值出現較深幅度回調的容忍度如何？",
+      "score": 0.84984
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q029",
+      "question": "您會考慮在市場低迷時，資產會跌多少嗎？",
+      "score": 0.84981
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q016",
+      "question": "您覺得投資中，資產回撤的幅度有多大的警戒線？",
+      "score": 0.84796
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q041",
+      "question": "您對於資產價值的大幅滑落，能接受到什麼程度？",
+      "score": 0.84503
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q021",
+      "question": "您希望您的投資組合在任何情況下，損失都不要太嚴重？",
+      "score": 0.84382
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q076",
+      "question": "您是否會因為擔心損失而不敢進行某些投資？",
+      "score": 0.84309
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q006",
+      "question": "您對短期的劇烈下跌有多大的容忍度？",
+      "score": 0.84066
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q004",
+      "question": "比起可能的獲利，您更擔心資產大幅縮水嗎？",
+      "score": 0.83984
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q003",
+      "question": "您希望您的資產在市場不好時，盡量少跌一點，對嗎？",
+      "score": 0.83613
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q059",
+      "question": "您對『資產縮水』的警戒程度有多高？",
+      "score": 0.83208
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q014",
+      "question": "您對於資產價值的大幅波動感到不安嗎？",
+      "score": 0.83035
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q069",
+      "question": "您對於資產價值的大幅回落，有什麼策略應對？",
+      "score": 0.82967
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q028",
+      "question": "您對『損失規避』的心理現象在投資上有多在意？",
+      "score": 0.82921
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q022",
+      "question": "您是否認為嚴格控制資產的最大跌幅是關鍵？",
+      "score": 0.82781
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q039",
+      "question": "您在挑選投資時，會考量它過去最慘烈的下跌情況嗎？",
+      "score": 0.82565
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q068",
+      "question": "您是否希望盡量減少投資組合的『帳面虧損』？",
+      "score": 0.82116
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q019",
+      "question": "您對於潛在的大幅虧損有什麼樣的心理準備？",
+      "score": 0.81831
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q013",
+      "question": "您認為投資時，避免大幅虧損比追求極高報酬更重要嗎？",
+      "score": 0.81716
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q065",
+      "question": "您會選擇一個歷史上跌得比較少的投資嗎？",
+      "score": 0.81696
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q050",
+      "question": "您是否會特別關注投資的『下行風險』？",
+      "score": 0.81663
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q032",
+      "question": "您對於潛在的重大損失是否感到擔憂？",
+      "score": 0.8164
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q024",
+      "question": "您是否曾經因為資產大幅下跌而感到壓力很大？",
+      "score": 0.81528
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q040",
+      "question": "您認為能夠預防重大虧損的投資有多重要？",
+      "score": 0.81366
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q048",
+      "question": "您對『資產回撤』這個概念有多敏感？",
+      "score": 0.81263
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q018",
+      "question": "如果您的投資有20%的潛在跌幅，您會猶豫嗎？",
+      "score": 0.81247
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q009",
+      "question": "如果市場突然崩盤，您能接受資產縮水多少？",
+      "score": 0.81215
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q002",
+      "question": "如果投資組合下跌超過10%，您會有什麼感覺？",
+      "score": 0.812
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q078",
+      "question": "您認為在任何市場情況下，都要盡量少虧損嗎？",
+      "score": 0.81171
+    },
+    {
+      "qid": "direct_Risk_MaxDD",
+      "question": "在市場下跌時，您有多在意 ETF 的『抗跌性』或『避免重大虧損』的能力？",
+      "score": 0.81131
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q060",
+      "question": "您認為長期持有能否彌補潛在的大幅下跌？",
+      "score": 0.81037
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q026",
+      "question": "您認為下跌空間是衡量投資風險的重要指標嗎？",
+      "score": 0.81019
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q077",
+      "question": "您對『大幅度資產回撤』的看法是什麼？",
+      "score": 0.80787
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q038",
+      "question": "您會不會特別尋找那些回撤幅度較小的投資選項？",
+      "score": 0.80725
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q055",
+      "question": "您認為能夠有效控制下跌風險的投資產品有多吸引人？",
+      "score": 0.80481
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q008",
+      "question": "您願意為了更高的潛在報酬，承受更大的資產回撤嗎？",
+      "score": 0.80359
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q025",
+      "question": "您會如何評價一個投資產品的風險承受度？",
+      "score": 0.80219
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q047",
+      "question": "您是否希望您的資產能夠平穩增長，避免劇烈波動？",
+      "score": 0.80064
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q058",
+      "question": "您會考量投資產品的歷史最大虧損記錄嗎？",
+      "score": 0.79805
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q054",
+      "question": "您是否曾因擔心資產大幅縮水而錯過投資機會？",
+      "score": 0.798
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q031",
+      "question": "您認為能夠控制最大虧損的策略有多重要？",
+      "score": 0.79751
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q034",
+      "question": "您傾向於選擇波動度相對較低的投資嗎？",
+      "score": 0.79591
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q005",
+      "question": "您是否傾向選擇那些波動較小、較穩健的投資？",
+      "score": 0.79459
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q073",
+      "question": "您對『資產波動性』的接受程度如何？",
+      "score": 0.79218
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q066",
+      "question": "您對『本金安全』的重視程度有多高？",
+      "score": 0.78986
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q042",
+      "question": "您是否認為風險管理的首要任務是控制下跌幅度？",
+      "score": 0.78502
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q017",
+      "question": "您會優先考慮那些歷史最大跌幅較小的標的嗎？",
+      "score": 0.78414
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q007",
+      "question": "您認為在投資中，保住本金的重要性有多高？",
+      "score": 0.78386
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q075",
+      "question": "您認為『穩定性』對您的投資有多重要？",
+      "score": 0.78342
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q020",
+      "question": "您認為資產的穩定性比短期的高漲幅更吸引您嗎？",
+      "score": 0.77948
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q011",
+      "question": "您會選擇一個有較低歷史最大回撤的產品嗎？",
+      "score": 0.77856
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q062",
+      "question": "您對『向下波動』的風險有多大的心理預期？",
+      "score": 0.77811
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q036",
+      "question": "您認為『保本』在您的投資決策中佔比多重？",
+      "score": 0.77718
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q057",
+      "question": "您是否認為『避免嚴重虧損』是投資成功的第一步？",
+      "score": 0.77677
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q045",
+      "question": "您認為投資中最讓您感到不安的是什麼？",
+      "score": 0.7749
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q027",
+      "question": "您是否比較偏好能讓您安心持有的產品？",
+      "score": 0.77356
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q044",
+      "question": "您是否會選擇那些歷史回撤風險較低的基金？",
+      "score": 0.76972
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q046",
+      "question": "您會如何權衡潛在的高報酬與大幅回撤的可能性？",
+      "score": 0.76534
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q071",
+      "question": "您認為投資中，『不虧損』比『賺大錢』更重要嗎？",
+      "score": 0.76415
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q037",
+      "question": "您對可能出現的『斷崖式下跌』有何反應？",
+      "score": 0.7641
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q012",
+      "question": "您是否會特別留意ETF過去的下跌紀錄？",
+      "score": 0.7632
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q074",
+      "question": "您會考慮在投資前，先了解它的最大歷史虧損嗎？",
+      "score": 0.76039
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q063",
+      "question": "您會如何衡量一個投資的『安全邊際』？",
+      "score": 0.75821
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q051",
+      "question": "您認為在投資中，『虧得少』和『賺得多』哪個更優先？",
+      "score": 0.75067
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q070",
+      "question": "您會優先考慮風險控制，還是報酬最大化？",
+      "score": 0.75013
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q053",
+      "question": "您對『最大回撤』的數值有多看重？",
+      "score": 0.74743
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q061",
+      "question": "您是否希望您的投資組合能像『定海神針』一樣穩定？",
+      "score": 0.74019
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q064",
+      "question": "您認為在市場動盪時，什麼最重要？",
+      "score": 0.73907
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q033",
+      "question": "您會因為ETF的歷史最大回撤而卻步嗎？",
+      "score": 0.7341
+    },
+    {
+      "qid": "overnightV1_Risk_MaxDD_q015",
+      "question": "您對『黑天鵝事件』造成的短期損失有何看法？",
+      "score": 0.71076
+    }
+  ],
+  "Cost_ExpRatio": [
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q057",
+      "question": "你對 ETF 的費用結構有什麼樣的考量？",
+      "score": 0.94875
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q063",
+      "question": "你對 ETF 的費用有哪些考量？",
+      "score": 0.94352
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q067",
+      "question": "你對 ETF 的費用結構有什麼樣的看法？",
+      "score": 0.94156
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q061",
+      "question": "你對 ETF 的費用率有什麼樣的偏好？",
+      "score": 0.93556
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q038",
+      "question": "你對 ETF 的費用結構有什麼偏好？",
+      "score": 0.93426
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q050",
+      "question": "你對 ETF 的費用率有什麼樣的預期？",
+      "score": 0.93363
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q066",
+      "question": "你認為 ETF 的費用率會影響你的投資選擇嗎？",
+      "score": 0.93056
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q009",
+      "question": "你如何看待 ETF 的各項費用？",
+      "score": 0.92926
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q011",
+      "question": "你對 ETF 的費用結構有什麼樣的期待？",
+      "score": 0.92659
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q015",
+      "question": "你對 ETF 的總體持有成本有什麼樣的敏感度？",
+      "score": 0.92629
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q056",
+      "question": "你認為 ETF 的費用率會影響你的投資決策嗎？",
+      "score": 0.92566
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q041",
+      "question": "你對 ETF 的各項費用的敏感度如何？",
+      "score": 0.9254
+    },
+    {
+      "qid": "direct_Cost_ExpRatio",
+      "question": "您在選擇 ETF 時，會多在意『費用率』或『管理成本』的高低嗎？",
+      "score": 0.92479
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q060",
+      "question": "你如何看待 ETF 的總體持有成本？",
+      "score": 0.92476
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q071",
+      "question": "你對 ETF 的費用率有什麼樣的期待？",
+      "score": 0.92461
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q065",
+      "question": "你對 ETF 的總體持有成本有多敏感？",
+      "score": 0.92374
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q054",
+      "question": "你對 ETF 的總體持有成本有多在意？",
+      "score": 0.92268
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q030",
+      "question": "你對 ETF 的總持有成本的敏感度如何？",
+      "score": 0.92255
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q032",
+      "question": "你認為 ETF 的費用率會影響你的投資獲利嗎？",
+      "score": 0.91476
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q046",
+      "question": "你認為 ETF 的總體持有成本對你的投資目標有什麼影響？",
+      "score": 0.91439
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q072",
+      "question": "你認為 ETF 的總體持有成本對你的投資回報有多大影響？",
+      "score": 0.91352
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q028",
+      "question": "你如何評估 ETF 的費用是否合理？",
+      "score": 0.91349
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q062",
+      "question": "你認為 ETF 的開銷對你的投資報酬率有多大影響？",
+      "score": 0.91269
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q044",
+      "question": "你是否會因為 ETF 的費用率較高而感到不安？",
+      "score": 0.91137
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q002",
+      "question": "你認為 ETF 的管理費高低，會不會是個重要的考量點？",
+      "score": 0.90923
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q019",
+      "question": "你覺得 ETF 的費用率是越高越好還是越低越好？",
+      "score": 0.90822
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q073",
+      "question": "你對 ETF 的費用有哪些特別的關注？",
+      "score": 0.90763
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q055",
+      "question": "你希望 ETF 的費用越低越好嗎？",
+      "score": 0.90752
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q048",
+      "question": "你認為 ETF 的管理費高低，對你的投資組合有多大影響？",
+      "score": 0.90652
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q013",
+      "question": "你認為 ETF 的管理費用對你的投資報酬有多大影響？",
+      "score": 0.90649
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q047",
+      "question": "你對 ETF 的費用有哪些特別的關注點？",
+      "score": 0.90637
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q068",
+      "question": "你認為 ETF 的管理費高低，會不會是你選擇 ETF 的首要條件？",
+      "score": 0.90485
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q020",
+      "question": "你傾向於選擇費用率較低的 ETF 嗎？",
+      "score": 0.90463
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q033",
+      "question": "你是否會因為 ETF 的費用率較高而放棄？",
+      "score": 0.90437
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q051",
+      "question": "你認為 ETF 的開銷是否會影響你的投資回報？",
+      "score": 0.90411
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q024",
+      "question": "你是否會因為 ETF 費用率較高而卻步？",
+      "score": 0.90357
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q027",
+      "question": "你對 ETF 的開銷有哪些顧慮？",
+      "score": 0.9027
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q039",
+      "question": "你認為 ETF 的總體持有成本會影響你的長期投資計劃嗎？",
+      "score": 0.9027
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q037",
+      "question": "你如何看待 ETF 的費用與其績效之間的關係？",
+      "score": 0.89788
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q029",
+      "question": "你認為 ETF 的管理費是越高越好嗎？",
+      "score": 0.89731
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q059",
+      "question": "你願意為 ETF 的策略付出更高的費用嗎？",
+      "score": 0.89622
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q049",
+      "question": "你希望 ETF 的總體持有成本盡量低嗎？",
+      "score": 0.89497
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q005",
+      "question": "對於 ETF 的總支出，你的看法是？",
+      "score": 0.89402
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q058",
+      "question": "你認為 ETF 的管理費高低，會不會影響你的長期投資？",
+      "score": 0.89294
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q031",
+      "question": "你希望 ETF 的交易成本能有多低？",
+      "score": 0.88931
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q043",
+      "question": "你認為 ETF 的管理費是越低越好嗎？",
+      "score": 0.88749
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q018",
+      "question": "你如何權衡 ETF 的費用與其提供的潛在價值？",
+      "score": 0.88736
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q070",
+      "question": "你如何權衡 ETF 的費用與其長期表現？",
+      "score": 0.88735
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q036",
+      "question": "你願意為了更低的費用，選擇風險較高的 ETF 嗎？",
+      "score": 0.88545
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q040",
+      "question": "你希望 ETF 的費用率能控制在什麼範圍？",
+      "score": 0.88489
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q025",
+      "question": "你認為 ETF 的總體成本對投資組合的長期表現有多重要？",
+      "score": 0.88487
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q034",
+      "question": "你對 ETF 的長期成本控制有什麼看法？",
+      "score": 0.88293
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q010",
+      "question": "你覺得 ETF 的內在費用會影響你的投資決策嗎？",
+      "score": 0.88292
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q012",
+      "question": "在選擇 ETF 時，你是否會仔細比較各項開銷？",
+      "score": 0.88282
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q053",
+      "question": "你願意為 ETF 的低費用承擔什麼樣的風險？",
+      "score": 0.88263
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q026",
+      "question": "你傾向於選擇長期持有成本較低的 ETF 嗎？",
+      "score": 0.88235
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q006",
+      "question": "你希望 ETF 的開銷盡量壓到最低嗎？",
+      "score": 0.88193
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q045",
+      "question": "你如何平衡 ETF 的費用與其帶來的便利性？",
+      "score": 0.8721
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q022",
+      "question": "你願意為 ETF 的穩定性支付較高的管理費嗎？",
+      "score": 0.87052
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q064",
+      "question": "你傾向於選擇費用率較低的 ETF 嗎，哪怕它的流動性稍差？",
+      "score": 0.86334
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q023",
+      "question": "你認為 ETF 的低費用是吸引你的主要原因嗎？",
+      "score": 0.86194
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q035",
+      "question": "你認為 ETF 的管理費是投資決策中的關鍵因素嗎？",
+      "score": 0.86081
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q007",
+      "question": "你比較在意 ETF 的長期累積成本，還是短期績效？",
+      "score": 0.8524
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q021",
+      "question": "你對 ETF 的追蹤誤差和費用率，哪個更重視？",
+      "score": 0.8524
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q016",
+      "question": "你希望 ETF 越便宜越好嗎？",
+      "score": 0.84898
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q069",
+      "question": "你願意為 ETF 的品牌效應支付較高的費用嗎？",
+      "score": 0.84726
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q052",
+      "question": "你更看重 ETF 的費用率還是它的追蹤標的？",
+      "score": 0.84723
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q042",
+      "question": "你傾向於選擇費用率較低的 ETF，即使它不那麼知名？",
+      "score": 0.84685
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q003",
+      "question": "如果兩檔 ETF 表現差不多，你會選哪個費用率較低的？",
+      "score": 0.84145
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q008",
+      "question": "如果有一檔 ETF 費用率略高，但策略特別吸引你，你會考慮嗎？",
+      "score": 0.84079
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q014",
+      "question": "如果另一檔 ETF 費用較低，你會不會考慮轉換？",
+      "score": 0.83646
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q001",
+      "question": "長期下來，交易成本對你的影響大嗎？",
+      "score": 0.74951
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q004",
+      "question": "你願意為了較低的總持有成本，稍微犧牲一點點其他條件嗎？",
+      "score": 0.69585
+    },
+    {
+      "qid": "overnightV1_Cost_ExpRatio_q017",
+      "question": "你是否願意為了更低的成本，接受稍微複雜一點的選擇？",
+      "score": 0.68813
+    }
+  ],
+  "Liq_Volume": [
+    {
+      "qid": "overnightV1_Liq_Volume_q016",
+      "question": "您在買賣 ETF 時，會不會擔心流動性不足？",
+      "score": 0.91176
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q075",
+      "question": "您在 ETF 選擇時，會不會特別看重它的交易活躍度？",
+      "score": 0.91125
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q077",
+      "question": "您在 ETF 投資中，對流動性的要求是否很高？",
+      "score": 0.91031
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q008",
+      "question": "對於 ETF 的流動性，您的重視程度如何？",
+      "score": 0.90533
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q020",
+      "question": "您在選擇 ETF 時，會不會以流動性為主要標準？",
+      "score": 0.90391
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q041",
+      "question": "您在 ETF 選擇上，會不會以流動性為主要考量因素？",
+      "score": 0.90365
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q070",
+      "question": "您是否會因為 ETF 交易量大而傾向於選擇它？",
+      "score": 0.90222
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q069",
+      "question": "您在 ETF 投資中，是否會因為流動性不足而感到猶豫？",
+      "score": 0.90131
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q056",
+      "question": "您認為 ETF 的成交量高低，會影響您的操作彈性嗎？",
+      "score": 0.8992
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q078",
+      "question": "您是否會因為 ETF 交易量大而更看好它的表現？",
+      "score": 0.89694
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q057",
+      "question": "您在 ETF 投資中，對流動性的要求有多高？",
+      "score": 0.89647
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q025",
+      "question": "您在 ETF 投資中，對交易活躍度有什麼期望？",
+      "score": 0.89472
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q042",
+      "question": "您是否會因為 ETF 容易買賣而增加投資頻率？",
+      "score": 0.8932
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q071",
+      "question": "您在 ETF 選擇上，流動性是您考慮的重要因素嗎？",
+      "score": 0.89316
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q037",
+      "question": "您認為 ETF 的流動性對您的投資體驗有多重要？",
+      "score": 0.8931
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q013",
+      "question": "您對 ETF 的活躍交易性有什麼看法？",
+      "score": 0.89259
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q045",
+      "question": "您是否會因為 ETF 的交易量大而增加對它的信心？",
+      "score": 0.89204
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q023",
+      "question": "您認為 ETF 的交易頻率高低重要嗎？",
+      "score": 0.89185
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q067",
+      "question": "您在 ETF 選擇時，會不會把流動性排在前面？",
+      "score": 0.89085
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q066",
+      "question": "您是否會因為 ETF 容易買賣而更頻繁地進行交易？",
+      "score": 0.89027
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q024",
+      "question": "您是否會因為 ETF 流動性佳而給予較高評價？",
+      "score": 0.8886
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q031",
+      "question": "您在 ETF 選擇上，是否會優先考慮流動性？",
+      "score": 0.88847
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q047",
+      "question": "您會不會因為 ETF 流動性差而感到不安？",
+      "score": 0.88846
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q018",
+      "question": "您是否看重 ETF 的即時成交能力？",
+      "score": 0.88726
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q005",
+      "question": "當您考慮 ETF 時，流動性是否為您的首要考量？",
+      "score": 0.88644
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q059",
+      "question": "您在 ETF 選擇時，會不會優先考慮流動性好的標的？",
+      "score": 0.88644
+    },
+    {
+      "qid": "direct_Liq_Volume",
+      "question": "您有多看重 ETF 的『成交量』是否活躍，讓您能輕鬆買賣呢？",
+      "score": 0.88631
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q001",
+      "question": "您會不會特別留意 ETF 的每日成交筆數？",
+      "score": 0.88478
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q074",
+      "question": "您是否會因為 ETF 容易買賣而提高您的投資意願？",
+      "score": 0.88367
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q055",
+      "question": "您在 ETF 選擇上，會不會以流動性作為初步篩選條件？",
+      "score": 0.88329
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q051",
+      "question": "您在 ETF 選擇時，會不會特別留意它的流動性指標？",
+      "score": 0.88239
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q029",
+      "question": "您對 ETF 的流動性是否有一定要求？",
+      "score": 0.88155
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q038",
+      "question": "您是否傾向於選擇成交量大的 ETF 來進行頻繁操作？",
+      "score": 0.87931
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q015",
+      "question": "您是否認為 ETF 的流動性影響報酬率？",
+      "score": 0.87871
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q050",
+      "question": "您是否會因為 ETF 交易量大而增加投資金額？",
+      "score": 0.8782
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q063",
+      "question": "您在 ETF 選擇上，流動性是否為您必須關注的面向？",
+      "score": 0.87591
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q046",
+      "question": "您在 ETF 選擇上，流動性是您的重要指標嗎？",
+      "score": 0.87533
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q053",
+      "question": "您在 ETF 投資時，會不會因為流動性問題而錯失良機？",
+      "score": 0.87524
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q036",
+      "question": "您會不會特別注意 ETF 的掛單量？",
+      "score": 0.87477
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q072",
+      "question": "您認為 ETF 的成交量會影響其未來表現嗎？",
+      "score": 0.87458
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q007",
+      "question": "您會優先選擇那些交易量大的 ETF 嗎？",
+      "score": 0.8741
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q033",
+      "question": "您認為 ETF 的交易量與投資便利性有關聯嗎？",
+      "score": 0.87377
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q004",
+      "question": "您覺得 ETF 的買賣價差大小會影響您的決策嗎？",
+      "score": 0.87266
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q073",
+      "question": "您在 ETF 投資時，是否會因為流動性差而影響您的心情？",
+      "score": 0.87241
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q062",
+      "question": "您是否會因為 ETF 交易活躍而增加您的投資組合比例？",
+      "score": 0.86984
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q009",
+      "question": "您是否傾向選擇成交量較高的 ETF 標的？",
+      "score": 0.86822
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q034",
+      "question": "您會不會因為 ETF 流動性不足而影響您的投資策略？",
+      "score": 0.86818
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q003",
+      "question": "您偏好市場上交易非常活躍的 ETF 嗎？",
+      "score": 0.86814
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q054",
+      "question": "您是否會因為 ETF 交易活絡而感到投資更安心？",
+      "score": 0.86743
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q060",
+      "question": "您認為 ETF 的買賣價差，會是您決定買賣時機的因素嗎？",
+      "score": 0.86677
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q048",
+      "question": "您認為 ETF 的交易活躍度與市場風險有關嗎？",
+      "score": 0.86664
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q064",
+      "question": "您認為 ETF 的成交量是否代表其受歡迎程度？",
+      "score": 0.86642
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q002",
+      "question": "如果 ETF 買賣非常順暢，這對您來說重要嗎？",
+      "score": 0.86552
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q076",
+      "question": "您認為 ETF 的買賣價差，會是您評估 ETF 的關鍵嗎？",
+      "score": 0.86407
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q017",
+      "question": "您會不會因為 ETF 交易量不大而猶豫？",
+      "score": 0.86211
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q010",
+      "question": "您會因為 ETF 交易不活絡而卻步嗎？",
+      "score": 0.86157
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q068",
+      "question": "您認為 ETF 的買賣價差，是否會讓您覺得交易成本過高？",
+      "score": 0.8613
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q061",
+      "question": "您在 ETF 投資時，是否會因為流動性問題而限制您的部位大小？",
+      "score": 0.8574
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q032",
+      "question": "您是否會因為 ETF 買賣價差小而感到安心？",
+      "score": 0.85701
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q052",
+      "question": "您認為 ETF 的買賣價差是否直接影響您的投資成本？",
+      "score": 0.85493
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q021",
+      "question": "您是否希望 ETF 的買賣過程順暢無阻？",
+      "score": 0.85187
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q058",
+      "question": "您是否會因為 ETF 容易進出而更願意嘗試？",
+      "score": 0.8509
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q030",
+      "question": "您是否希望 ETF 能夠快速完成交易？",
+      "score": 0.85069
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q028",
+      "question": "您在挑選 ETF 時，會不會先看它的交易熱度？",
+      "score": 0.85056
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q006",
+      "question": "您是否希望 ETF 隨時都能輕鬆地買進賣出？",
+      "score": 0.84749
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q049",
+      "question": "您在 ETF 投資中，是否會優先考慮易於買賣的產品？",
+      "score": 0.84735
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q026",
+      "question": "您會不會因為 ETF 買賣困難而放棄？",
+      "score": 0.84686
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q039",
+      "question": "您在 ETF 投資組合中，會不會納入流動性較低的標的？",
+      "score": 0.84473
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q043",
+      "question": "您認為 ETF 的買賣價差大小會影響您的實際獲利嗎？",
+      "score": 0.84379
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q011",
+      "question": "您會不會花時間研究 ETF 的每日交易額？",
+      "score": 0.84219
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q012",
+      "question": "您覺得 ETF 越容易買賣越好，是嗎？",
+      "score": 0.84187
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q014",
+      "question": "您會特別關注 ETF 的市場深度嗎？",
+      "score": 0.83541
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q022",
+      "question": "您會不會比較不同 ETF 的成交量數據？",
+      "score": 0.8344
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q019",
+      "question": "您會不會認為交易量小的 ETF 風險較高？",
+      "score": 0.83415
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q027",
+      "question": "您是否認為 ETF 的成交量反映了市場信心？",
+      "score": 0.8306
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q065",
+      "question": "您在 ETF 投資時，會不會擔心因為買盤不足而賣不掉？",
+      "score": 0.83055
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q044",
+      "question": "您在 ETF 投資時，是否會關注其市場深度？",
+      "score": 0.82293
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q035",
+      "question": "您在 ETF 交易時，是否希望市場隨時有人接手？",
+      "score": 0.81588
+    },
+    {
+      "qid": "overnightV1_Liq_Volume_q040",
+      "question": "您是否認為 ETF 越活躍，代表越適合短線操作？",
+      "score": 0.81317
+    }
+  ],
+  "Liq_AUM": [
+    {
+      "qid": "overnightV1_Liq_AUM_q075",
+      "question": "您是否會因為 ETF 的規模較大而認為它更適合長期持有？",
+      "score": 0.91687
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q050",
+      "question": "您認為 ETF 的規模是否代表了其被較多投資者看好？",
+      "score": 0.91324
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q063",
+      "question": "您是否會因為 ETF 的規模較大而認為它更具代表性？",
+      "score": 0.91309
+    },
+    {
+      "qid": "direct_Liq_AUM",
+      "question": "您對於 ETF 的『基金規模』大小，或是產品的『穩定性』有多重視？",
+      "score": 0.91059
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q039",
+      "question": "您是否會因為 ETF 的規模較大而增加您的投資意願？",
+      "score": 0.91011
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q051",
+      "question": "您是否會因為 ETF 的規模較大而感到更安心？",
+      "score": 0.90935
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q033",
+      "question": "您認為規模較大的 ETF 是否在交易成本上更有優勢？",
+      "score": 0.90805
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q002",
+      "question": "對於 ETF 的選擇，您會優先考量其規模大小嗎？",
+      "score": 0.90652
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q016",
+      "question": "您是否會將 ETF 的規模作為篩選條件之一？",
+      "score": 0.90535
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q025",
+      "question": "您如何評價 ETF 的規模對其長期表現的影響？",
+      "score": 0.90428
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q024",
+      "question": "您會不會因為 ETF 的規模而影響您的投資決策？",
+      "score": 0.90313
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q028",
+      "question": "您是否會特別關注 ETF 的資產規模變化？",
+      "score": 0.89898
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q005",
+      "question": "您是否傾向於選擇那些交易量龐大的 ETF？",
+      "score": 0.89719
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q078",
+      "question": "您認為 ETF 的規模是否影響了其分散風險的能力？",
+      "score": 0.89638
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q014",
+      "question": "您會不會因為 ETF 的規模較小而擔心其表現？",
+      "score": 0.89592
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q077",
+      "question": "您是否會為了更高的操作靈活性而接受較小的 ETF 規模？",
+      "score": 0.89444
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q042",
+      "question": "您認為 ETF 的規模是否影響了其被納入指數的機會？",
+      "score": 0.89396
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q010",
+      "question": "您是否相信規模越大的 ETF 越值得信賴？",
+      "score": 0.89383
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q046",
+      "question": "您是否會因為 ETF 的規模較小而對其潛在報酬感到疑慮？",
+      "score": 0.89312
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q052",
+      "question": "您如何看待 ETF 的規模與其管理費用的關係？",
+      "score": 0.89297
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q043",
+      "question": "您是否會將 ETF 的規模視為一種安全感的來源？",
+      "score": 0.89271
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q017",
+      "question": "您對於 ETF 的產品穩定性，會不會聯想到它的規模？",
+      "score": 0.89265
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q001",
+      "question": "您是否偏好資產管理規模較大的 ETF 產品？",
+      "score": 0.89245
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q065",
+      "question": "您是否會為了更具吸引力的預期報酬而考慮規模較小的 ETF？",
+      "score": 0.89039
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q076",
+      "question": "您如何看待 ETF 的規模與其投資目標的匹配度？",
+      "score": 0.88977
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q041",
+      "question": "您是否會為了較高的策略彈性而接受較小的 ETF 規模？",
+      "score": 0.88967
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q071",
+      "question": "您是否會為了更符合個人投資風格而選擇規模較小的 ETF？",
+      "score": 0.8886
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q003",
+      "question": "您認為規模大的 ETF 是否代表著較高的穩定性？",
+      "score": 0.88537
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q009",
+      "question": "您認為規模是判斷 ETF 品質的重要指標嗎？",
+      "score": 0.88445
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q019",
+      "question": "您在 ETF 選擇上，是看重規模還是其他特點？",
+      "score": 0.88365
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q070",
+      "question": "您如何權衡 ETF 的規模與其長期增長潛力？",
+      "score": 0.88327
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q057",
+      "question": "您是否會因為 ETF 的規模較小而擔心其流動性不足？",
+      "score": 0.88325
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q030",
+      "question": "您認為 ETF 的規模是否反映了市場的認可度？",
+      "score": 0.88146
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q072",
+      "question": "您認為 ETF 的規模是否影響了其對市場變動的反應速度？",
+      "score": 0.88013
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q007",
+      "question": "您會因為 ETF 的規模較小而卻步嗎？",
+      "score": 0.8795
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q040",
+      "question": "您如何看待 ETF 的規模與其追蹤指數的關聯？",
+      "score": 0.87783
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q031",
+      "question": "您是否會以 ETF 的規模來判斷其流動性？",
+      "score": 0.87763
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q035",
+      "question": "您在 ETF 選擇上，會不會比較不同規模的 ETF？",
+      "score": 0.87726
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q069",
+      "question": "您是否會因為 ETF 的規模較小而擔心其成分股的集中度？",
+      "score": 0.87385
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q029",
+      "question": "您是否願意為了其他優勢而選擇規模較小的 ETF？",
+      "score": 0.87328
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q045",
+      "question": "您如何權衡 ETF 的規模與其投資策略的契合度？",
+      "score": 0.87268
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q053",
+      "question": "您是否會為了更貼近特定市場而選擇規模較小的 ETF？",
+      "score": 0.87135
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q038",
+      "question": "您認為 ETF 的規模是否與其經理人的經驗有關？",
+      "score": 0.86985
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q054",
+      "question": "您認為 ETF 的規模是否影響了其再投資股息的能力？",
+      "score": 0.86933
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q034",
+      "question": "您是否會因為 ETF 的規模較小而擔心其下市風險？",
+      "score": 0.8686
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q037",
+      "question": "您是否會優先考慮那些被認為是「大型股」的 ETF？",
+      "score": 0.86585
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q058",
+      "question": "您如何評估 ETF 的規模對其申購贖回機制的影響？",
+      "score": 0.86111
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q022",
+      "question": "您對於 ETF 的總市值有什麼樣的偏好？",
+      "score": 0.86014
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q066",
+      "question": "您認為 ETF 的規模是否影響了其被動管理策略的執行？",
+      "score": 0.85994
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q006",
+      "question": "您如何看待小型 ETF 與大型 ETF 在風險上的差異？",
+      "score": 0.85896
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q032",
+      "question": "您是否傾向於選擇那些有較多資金投入的 ETF？",
+      "score": 0.85866
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q060",
+      "question": "您認為 ETF 的規模是否與其成分股的流動性有關？",
+      "score": 0.85855
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q012",
+      "question": "您對於 ETF 的流動性與其規模之間的關聯怎麼看？",
+      "score": 0.85451
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q059",
+      "question": "您是否會為了獲得更獨特的投資主題而接受較小的 ETF 規模？",
+      "score": 0.85434
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q064",
+      "question": "您如何看待 ETF 的規模與其跟蹤誤差的關係？",
+      "score": 0.85418
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q018",
+      "question": "您是否會優先考慮那些已經營運很久且規模龐大的 ETF？",
+      "score": 0.85311
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q020",
+      "question": "您認為資金規模大的 ETF 是否較不易受到市場波動影響？",
+      "score": 0.85056
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q011",
+      "question": "您在挑選 ETF 時，會不會特別留意其市場佔有率？",
+      "score": 0.8499
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q023",
+      "question": "您是否認為規模大的 ETF 在資訊透明度上較佳？",
+      "score": 0.84928
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q008",
+      "question": "您對 ETF 的 AUM（資產管理規模）是否有特別的要求？",
+      "score": 0.8369
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q044",
+      "question": "您是否傾向於選擇那些在市場上較為「成熟」的 ETF？",
+      "score": 0.83328
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q049",
+      "question": "您是否願意為了較低的內扣費用而選擇規模較小的 ETF？",
+      "score": 0.83066
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q079",
+      "question": "您是否會優先考慮那些市場上較為「成熟」的 ETF？",
+      "score": 0.82654
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q055",
+      "question": "您是否會優先考慮那些被廣泛使用的 ETF？",
+      "score": 0.82288
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q048",
+      "question": "您是否會優先選擇那些被認為是「主流」的 ETF？",
+      "score": 0.82275
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q073",
+      "question": "您是否會優先選擇那些被認為是「旗艦級」的 ETF？",
+      "score": 0.8226
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q013",
+      "question": "您是否曾經因為 ETF 規模不大而放棄投資？",
+      "score": 0.81909
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q026",
+      "question": "您是否傾向於投資那些市場領導地位的 ETF？",
+      "score": 0.81549
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q004",
+      "question": "在 ETF 投資中，您對基金的總資產值有什麼看法？",
+      "score": 0.81462
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q047",
+      "question": "您認為 ETF 的 AUM 是否會影響其在市場上的能見度？",
+      "score": 0.81169
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q074",
+      "question": "您認為 ETF 的 AUM 是否與其未來發展潛力有關？",
+      "score": 0.8109
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q021",
+      "question": "您是否會主動尋找那些 AUM 較高的 ETF？",
+      "score": 0.80566
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q080",
+      "question": "您認為 ETF 的 AUM 是否與其投資組合的品質有關？",
+      "score": 0.80147
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q027",
+      "question": "您認為 ETF 的 AUM 與其管理團隊的實力有關聯嗎？",
+      "score": 0.80097
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q062",
+      "question": "您認為 ETF 的 AUM 是否影響了其發行方的承諾？",
+      "score": 0.79458
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q067",
+      "question": "您是否會優先考慮那些被市場認可為「穩健」的 ETF？",
+      "score": 0.79357
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q061",
+      "question": "您是否會優先選擇那些在新聞報導中較常出現的 ETF？",
+      "score": 0.78986
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q068",
+      "question": "您認為 ETF 的 AUM 是否反映了其投資組合的多元性？",
+      "score": 0.78978
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q056",
+      "question": "您認為 ETF 的 AUM 與其基金公司的聲譽是否有關？",
+      "score": 0.78232
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q036",
+      "question": "您是否認為 AUM 越高的 ETF 越值得推薦？",
+      "score": 0.76507
+    },
+    {
+      "qid": "overnightV1_Liq_AUM_q015",
+      "question": "您認為較大的 AUM 是否能帶來更好的投資信心？",
+      "score": 0.69241
+    }
+  ],
+  "Div_Score": [
+    {
+      "qid": "overnightV1_Div_Score_q052",
+      "question": "您對 ETF 的產業分散度有什麼樣的考量？",
+      "score": 0.92255
+    },
+    {
+      "qid": "overnightV1_Div_Score_q032",
+      "question": "您會重視 ETF 在不同產業間的配置嗎？",
+      "score": 0.91425
+    },
+    {
+      "qid": "overnightV1_Div_Score_q064",
+      "question": "您對 ETF 的產業分散度有哪些考量點？",
+      "score": 0.91391
+    },
+    {
+      "qid": "overnightV1_Div_Score_q001",
+      "question": "您比較在意 ETF 的持股是否盡量分散嗎？",
+      "score": 0.90681
+    },
+    {
+      "qid": "overnightV1_Div_Score_q062",
+      "question": "您認為 ETF 的風險是否會因過度集中於特定產業而增加？",
+      "score": 0.90448
+    },
+    {
+      "qid": "overnightV1_Div_Score_q066",
+      "question": "您認為 ETF 應該盡量分散在不同的產業嗎？",
+      "score": 0.90437
+    },
+    {
+      "qid": "overnightV1_Div_Score_q036",
+      "question": "您會不會擔心 ETF 的持股過度集中？",
+      "score": 0.90397
+    },
+    {
+      "qid": "overnightV1_Div_Score_q070",
+      "question": "您會重視 ETF 在不同資產類別間的配置嗎？",
+      "score": 0.90349
+    },
+    {
+      "qid": "overnightV1_Div_Score_q042",
+      "question": "您對 ETF 的產業集中度，您的看法是什麼？",
+      "score": 0.90295
+    },
+    {
+      "qid": "overnightV1_Div_Score_q029",
+      "question": "您對 ETF 的產業集中度有什麼樣的容忍度？",
+      "score": 0.90099
+    },
+    {
+      "qid": "overnightV1_Div_Score_q026",
+      "question": "您對 ETF 的產業分散度要求很高嗎？",
+      "score": 0.89958
+    },
+    {
+      "qid": "overnightV1_Div_Score_q002",
+      "question": "您會擔心 ETF 過度集中在少數幾家公司嗎？",
+      "score": 0.89734
+    },
+    {
+      "qid": "overnightV1_Div_Score_q060",
+      "question": "您會因為 ETF 集中於少數幾個大型股而猶豫嗎？",
+      "score": 0.89446
+    },
+    {
+      "qid": "overnightV1_Div_Score_q061",
+      "question": "您會不會因為 ETF 的持股太集中而感到不安？",
+      "score": 0.89356
+    },
+    {
+      "qid": "overnightV1_Div_Score_q007",
+      "question": "您認為 ETF 的風險分散程度會影響您的投資決策嗎？",
+      "score": 0.89323
+    },
+    {
+      "qid": "overnightV1_Div_Score_q067",
+      "question": "您對 ETF 的產業集中度有什麼樣的偏好？",
+      "score": 0.89297
+    },
+    {
+      "qid": "overnightV1_Div_Score_q073",
+      "question": "您對 ETF 的產業多元化程度有哪些考量？",
+      "score": 0.89206
+    },
+    {
+      "qid": "overnightV1_Div_Score_q039",
+      "question": "您對 ETF 的產業分散程度有什麼樣的標準？",
+      "score": 0.89115
+    },
+    {
+      "qid": "overnightV1_Div_Score_q022",
+      "question": "您會如何評估 ETF 的分散程度？",
+      "score": 0.89064
+    },
+    {
+      "qid": "overnightV1_Div_Score_q055",
+      "question": "您對 ETF 的產業集中度有多大的接受度？",
+      "score": 0.89039
+    },
+    {
+      "qid": "overnightV1_Div_Score_q072",
+      "question": "您會因為 ETF 集中於少數幾個績優股而猶豫嗎？",
+      "score": 0.88963
+    },
+    {
+      "qid": "overnightV1_Div_Score_q045",
+      "question": "您會重視 ETF 在不同國家或地區的佈局嗎？",
+      "score": 0.88842
+    },
+    {
+      "qid": "overnightV1_Div_Score_q074",
+      "question": "您會不會因為 ETF 的持股過度集中而改變主意？",
+      "score": 0.88507
+    },
+    {
+      "qid": "overnightV1_Div_Score_q047",
+      "question": "您會因為 ETF 集中於少數幾個熱門產業而卻步嗎？",
+      "score": 0.88487
+    },
+    {
+      "qid": "overnightV1_Div_Score_q013",
+      "question": "您會優先考慮 ETF 的分散風險特性嗎？",
+      "score": 0.88484
+    },
+    {
+      "qid": "overnightV1_Div_Score_q012",
+      "question": "您對 ETF 的產業分散性有什麼樣的要求？",
+      "score": 0.8848
+    },
+    {
+      "qid": "overnightV1_Div_Score_q046",
+      "question": "您認為 ETF 的分散程度會影響其穩定性嗎？",
+      "score": 0.8845
+    },
+    {
+      "qid": "overnightV1_Div_Score_q010",
+      "question": "對於 ETF 的集中度，您的接受程度如何？",
+      "score": 0.88406
+    },
+    {
+      "qid": "overnightV1_Div_Score_q027",
+      "question": "您會優先考慮 ETF 的持股分散度，還是其他因素？",
+      "score": 0.88372
+    },
+    {
+      "qid": "overnightV1_Div_Score_q037",
+      "question": "您認為 ETF 的風險是否會因為過度集中而提高？",
+      "score": 0.88356
+    },
+    {
+      "qid": "overnightV1_Div_Score_q054",
+      "question": "您認為 ETF 應該盡量分散在不同的公司裡嗎？",
+      "score": 0.88315
+    },
+    {
+      "qid": "overnightV1_Div_Score_q069",
+      "question": "您如何看待 ETF 的分散化程度對投資風險的影響？",
+      "score": 0.8831
+    },
+    {
+      "qid": "overnightV1_Div_Score_q050",
+      "question": "您認為 ETF 的風險是否與其產業集中度有關？",
+      "score": 0.88308
+    },
+    {
+      "qid": "overnightV1_Div_Score_q011",
+      "question": "您會因為 ETF 集中於少數幾支股票而卻步嗎？",
+      "score": 0.88279
+    },
+    {
+      "qid": "overnightV1_Div_Score_q017",
+      "question": "您認為 ETF 持股過於集中會不會影響長期報酬？",
+      "score": 0.88223
+    },
+    {
+      "qid": "overnightV1_Div_Score_q035",
+      "question": "您對 ETF 的產業分散有什麼具體的期望？",
+      "score": 0.8813
+    },
+    {
+      "qid": "direct_Div_Score",
+      "question": "您希望 ETF 的『持股或產業分散度』有多高，來降低單一標的風險？",
+      "score": 0.88116
+    },
+    {
+      "qid": "overnightV1_Div_Score_q025",
+      "question": "您會尋找那些盡量分散在不同公司裡的 ETF 嗎？",
+      "score": 0.88052
+    },
+    {
+      "qid": "overnightV1_Div_Score_q043",
+      "question": "您會因為 ETF 投資於單一產業而感到擔憂嗎？",
+      "score": 0.8804
+    },
+    {
+      "qid": "overnightV1_Div_Score_q014",
+      "question": "您覺得 ETF 投資組合太集中會有哪些潛在風險？",
+      "score": 0.87989
+    },
+    {
+      "qid": "overnightV1_Div_Score_q058",
+      "question": "您會重視 ETF 在不同市值股票間的配置嗎？",
+      "score": 0.87973
+    },
+    {
+      "qid": "overnightV1_Div_Score_q016",
+      "question": "您對 ETF 持股的集中度有特別的偏好嗎？",
+      "score": 0.87913
+    },
+    {
+      "qid": "overnightV1_Div_Score_q031",
+      "question": "您會如何權衡 ETF 的集中度與潛在報酬？",
+      "score": 0.87742
+    },
+    {
+      "qid": "overnightV1_Div_Score_q034",
+      "question": "您會因為 ETF 集中於少數幾個熱門股票而卻步嗎？",
+      "score": 0.87729
+    },
+    {
+      "qid": "overnightV1_Div_Score_q020",
+      "question": "您對 ETF 的產業別權重分配有什麼看法？",
+      "score": 0.87722
+    },
+    {
+      "qid": "overnightV1_Div_Score_q048",
+      "question": "您對 ETF 的產業多元化程度有什麼樣的期待？",
+      "score": 0.87507
+    },
+    {
+      "qid": "overnightV1_Div_Score_q009",
+      "question": "您是否偏好涵蓋多個產業的 ETF？",
+      "score": 0.87492
+    },
+    {
+      "qid": "overnightV1_Div_Score_q019",
+      "question": "如果 ETF 集中投資於某個領域，您會猶豫嗎？",
+      "score": 0.87479
+    },
+    {
+      "qid": "overnightV1_Div_Score_q004",
+      "question": "您希望 ETF 的投資組合盡可能多元化嗎？",
+      "score": 0.87444
+    },
+    {
+      "qid": "overnightV1_Div_Score_q038",
+      "question": "您會尋找那些能分散不同類別股票的 ETF 嗎？",
+      "score": 0.87378
+    },
+    {
+      "qid": "overnightV1_Div_Score_q041",
+      "question": "您認為 ETF 應該避免過度集中於某幾家公司嗎？",
+      "score": 0.87259
+    },
+    {
+      "qid": "overnightV1_Div_Score_q008",
+      "question": "您會主動尋找持股分散度高的 ETF 嗎？",
+      "score": 0.87193
+    },
+    {
+      "qid": "overnightV1_Div_Score_q053",
+      "question": "您會優先考慮 ETF 的分散性，還是其特定策略？",
+      "score": 0.8697
+    },
+    {
+      "qid": "overnightV1_Div_Score_q059",
+      "question": "您認為 ETF 的分散性對投資組合的長期表現重要嗎？",
+      "score": 0.86885
+    },
+    {
+      "qid": "overnightV1_Div_Score_q075",
+      "question": "您認為 ETF 的風險是否與其持股集中度有關？",
+      "score": 0.86776
+    },
+    {
+      "qid": "overnightV1_Div_Score_q006",
+      "question": "如果 ETF 集中於熱門產業，您會感到不安嗎？",
+      "score": 0.86687
+    },
+    {
+      "qid": "overnightV1_Div_Score_q057",
+      "question": "您如何衡量 ETF 的分散化程度？",
+      "score": 0.86481
+    },
+    {
+      "qid": "overnightV1_Div_Score_q033",
+      "question": "您認為 ETF 的分散性對於穩定投資組合有幫助嗎？",
+      "score": 0.8646
+    },
+    {
+      "qid": "overnightV1_Div_Score_q049",
+      "question": "您會不會因為 ETF 的持股集中度過高而放棄？",
+      "score": 0.86331
+    },
+    {
+      "qid": "overnightV1_Div_Score_q044",
+      "question": "您如何看待 ETF 持股的集中與分散之間的關係？",
+      "score": 0.8618
+    },
+    {
+      "qid": "overnightV1_Div_Score_q023",
+      "question": "您認為 ETF 的集中度越高，風險就越大嗎？",
+      "score": 0.86154
+    },
+    {
+      "qid": "overnightV1_Div_Score_q040",
+      "question": "您會優先考慮 ETF 的持股分散度，還是其追蹤的市場？",
+      "score": 0.86034
+    },
+    {
+      "qid": "overnightV1_Div_Score_q028",
+      "question": "您認為 ETF 應該盡量避免集中在幾個大公司嗎？",
+      "score": 0.85905
+    },
+    {
+      "qid": "overnightV1_Div_Score_q071",
+      "question": "您認為 ETF 的分散性對投資組合的韌性有幫助嗎？",
+      "score": 0.85588
+    },
+    {
+      "qid": "overnightV1_Div_Score_q068",
+      "question": "您會因為 ETF 投資於單一類型的資產而卻步嗎？",
+      "score": 0.85488
+    },
+    {
+      "qid": "overnightV1_Div_Score_q065",
+      "question": "您會優先選擇 ETF 的分散度，還是其成長潛力？",
+      "score": 0.85469
+    },
+    {
+      "qid": "overnightV1_Div_Score_q051",
+      "question": "您會尋找 ETF 盡可能涵蓋不同類型股票的嗎？",
+      "score": 0.85352
+    },
+    {
+      "qid": "overnightV1_Div_Score_q063",
+      "question": "您會尋找 ETF 盡量涵蓋不同投資風格的嗎？",
+      "score": 0.85205
+    },
+    {
+      "qid": "overnightV1_Div_Score_q024",
+      "question": "您是否會因為 ETF 容易受到單一事件影響而卻步？",
+      "score": 0.85022
+    },
+    {
+      "qid": "overnightV1_Div_Score_q015",
+      "question": "您會避免投資那些高度集中於特定主題的 ETF 嗎？",
+      "score": 0.84818
+    },
+    {
+      "qid": "overnightV1_Div_Score_q018",
+      "question": "您傾向於選擇能降低單一風險的 ETF 嗎？",
+      "score": 0.84304
+    },
+    {
+      "qid": "overnightV1_Div_Score_q030",
+      "question": "您會因為 ETF 投資主題過於單一而卻步嗎？",
+      "score": 0.84266
+    },
+    {
+      "qid": "overnightV1_Div_Score_q056",
+      "question": "您會因為 ETF 投資於某個特定主題而卻步嗎？",
+      "score": 0.83319
+    },
+    {
+      "qid": "overnightV1_Div_Score_q021",
+      "question": "您希望 ETF 能夠涵蓋盡可能多的市場角落嗎？",
+      "score": 0.83208
+    },
+    {
+      "qid": "overnightV1_Div_Score_q005",
+      "question": "比起集中押注，您更傾向於廣泛的市場佈局嗎？",
+      "score": 0.70152
+    },
+    {
+      "qid": "overnightV1_Div_Score_q003",
+      "question": "降低單一股票或產業的風險對您來說有多重要？",
+      "score": 0.69427
+    }
+  ],
+  "FinBERT_score": [
+    {
+      "qid": "overnightV1_FinBERT_score_q052",
+      "question": "您會關注市場的正面預期嗎？",
+      "score": 0.93107
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q060",
+      "question": "您會關注市場的正面語氣嗎？",
+      "score": 0.93086
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q073",
+      "question": "您會將市場的正面情緒當作參考嗎？",
+      "score": 0.93025
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q058",
+      "question": "您會將市場的正面情緒納入您的考量嗎？",
+      "score": 0.92099
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q056",
+      "question": "您會留意市場的正面討論嗎？",
+      "score": 0.91669
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q001",
+      "question": "您會特別關注市場的樂觀情緒嗎？",
+      "score": 0.91637
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q025",
+      "question": "您會將市場的樂觀氣氛視為參考嗎？",
+      "score": 0.91513
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q064",
+      "question": "您會留意市場的正面評價流嗎？",
+      "score": 0.91504
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q044",
+      "question": "您會關注市場的正面新聞流嗎？",
+      "score": 0.90893
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q071",
+      "question": "您會留意市場的正面討論聲嗎？",
+      "score": 0.90776
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q050",
+      "question": "您會把市場的樂觀情緒當作參考依據嗎？",
+      "score": 0.90555
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q035",
+      "question": "您會將市場的積極氛圍列入考量嗎？",
+      "score": 0.90507
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q038",
+      "question": "您會把市場的正面情緒當作訊號嗎？",
+      "score": 0.90434
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q069",
+      "question": "您會把市場的正面情緒當作主要依據嗎？",
+      "score": 0.89848
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q062",
+      "question": "您會把市場的正面解讀納入您的考量嗎？",
+      "score": 0.89819
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q065",
+      "question": "您會如何評估市場的正面氛圍？",
+      "score": 0.89453
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q013",
+      "question": "您會將市場的正面評價納入考量嗎？",
+      "score": 0.89063
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q046",
+      "question": "您會將市場的正面情緒視為重要指標嗎？",
+      "score": 0.89028
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q019",
+      "question": "您會傾向於跟隨市場的樂觀情緒嗎？",
+      "score": 0.88989
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q031",
+      "question": "您會留意近期市場的整體氛圍嗎？",
+      "score": 0.88677
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q037",
+      "question": "您會對市場的樂觀情緒保持警惕嗎？",
+      "score": 0.88457
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q040",
+      "question": "您會留意市場的整體語氣嗎？",
+      "score": 0.88157
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q029",
+      "question": "您會把市場的正面解讀納入決策嗎？",
+      "score": 0.87843
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q004",
+      "question": "您會把市場的普遍氛圍納入考量嗎？",
+      "score": 0.87441
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q033",
+      "question": "您會信任市場的正面評價嗎？",
+      "score": 0.87385
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q023",
+      "question": "您會留意市場的討論熱度嗎？",
+      "score": 0.87107
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q016",
+      "question": "您會關注新聞媒體對市場的評論嗎？",
+      "score": 0.86972
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q061",
+      "question": "您會如何看待市場的近期正面動態？",
+      "score": 0.86732
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q028",
+      "question": "您會如何看待市場的普遍樂觀情緒？",
+      "score": 0.86315
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q049",
+      "question": "您會如何看待市場的整體正面訊號？",
+      "score": 0.86215
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q030",
+      "question": "您會因市場的短期樂觀而調整配置嗎？",
+      "score": 0.86183
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q045",
+      "question": "您會如何評估市場的近期氣氛？",
+      "score": 0.8568
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q011",
+      "question": "您會忽略市場的短期情緒嗎？",
+      "score": 0.85679
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q017",
+      "question": "您是否重視投資市場的正面訊號？",
+      "score": 0.85674
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q015",
+      "question": "您會受市場的悲觀情緒影響嗎？",
+      "score": 0.85497
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q041",
+      "question": "您會如何看待市場的短期消息面？",
+      "score": 0.85269
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q020",
+      "question": "您會如何評估市場的整體走向？",
+      "score": 0.84959
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q068",
+      "question": "您會如何看待市場的短期正面解讀？",
+      "score": 0.84944
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q009",
+      "question": "您會如何衡量市場的整體氣氛？",
+      "score": 0.84912
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q048",
+      "question": "您會留意財經媒體的正面報導嗎？",
+      "score": 0.849
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q027",
+      "question": "您會關注財經新聞的正面導向嗎？",
+      "score": 0.84846
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q043",
+      "question": "您會因市場的短期看漲而猶豫嗎？",
+      "score": 0.8468
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q063",
+      "question": "您會因為市場的短期樂觀而加倉嗎？",
+      "score": 0.84641
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q036",
+      "question": "您會如何評估新聞對市場的影響？",
+      "score": 0.8408
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q008",
+      "question": "您會相信市場的熱度嗎？",
+      "score": 0.8404
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q059",
+      "question": "您會因為市場的短期熱潮而跟進嗎？",
+      "score": 0.83606
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q006",
+      "question": "您會留意分析師對市場的語氣嗎？",
+      "score": 0.83286
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q002",
+      "question": "對於市場的短期波動，您會如何看待？",
+      "score": 0.82707
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q053",
+      "question": "您會如何解讀市場的短期情緒？",
+      "score": 0.82699
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q007",
+      "question": "您會因為市場的負面消息而感到不安嗎？",
+      "score": 0.82626
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q066",
+      "question": "您會將新聞的正面訊號納入您的決策嗎？",
+      "score": 0.82378
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q005",
+      "question": "如果市場普遍看好，您會更傾向於投資嗎？",
+      "score": 0.82135
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q014",
+      "question": "您會如何解讀市場的即時動態？",
+      "score": 0.82088
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q012",
+      "question": "您會尋找市場上普遍看好的標的嗎？",
+      "score": 0.82054
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q039",
+      "question": "您會因為市場的短期熱絡而追高嗎？",
+      "score": 0.81992
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q074",
+      "question": "您會因為市場的短期熱度而投入嗎？",
+      "score": 0.8193
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q026",
+      "question": "您會因為市場的短期利多而心動嗎？",
+      "score": 0.81777
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q054",
+      "question": "您會將新聞的正面性作為決策輔助嗎？",
+      "score": 0.81753
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q051",
+      "question": "您會因為市場的短期利多而增加投資嗎？",
+      "score": 0.81738
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q072",
+      "question": "您會如何評估新聞的正面預期？",
+      "score": 0.81709
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q070",
+      "question": "您會因為市場的短期看漲而卻步嗎？",
+      "score": 0.81638
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q018",
+      "question": "您會把市場的熱點作為決策依據嗎？",
+      "score": 0.81484
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q022",
+      "question": "您會因為市場的看漲預期而加碼嗎？",
+      "score": 0.81432
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q003",
+      "question": "您是否認為新聞的正面報導會影響您的投資決策？",
+      "score": 0.81254
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q010",
+      "question": "您會根據最近的新聞來調整您的投資嗎？",
+      "score": 0.80948
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q042",
+      "question": "您會把新聞的正面性融入您的策略嗎？",
+      "score": 0.80755
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q067",
+      "question": "您會因為市場的短期利空而避開嗎？",
+      "score": 0.8064
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q021",
+      "question": "您會考慮新聞的積極性來做決定嗎？",
+      "score": 0.80637
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q032",
+      "question": "您會如何處理市場的短期利空？",
+      "score": 0.79708
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q034",
+      "question": "您會因新聞的正面消息而加碼嗎？",
+      "score": 0.79335
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q055",
+      "question": "您會因為市場的短期看跌而卻步嗎？",
+      "score": 0.78874
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q024",
+      "question": "您會如何應對市場的恐慌情緒？",
+      "score": 0.78759
+    },
+    {
+      "qid": "direct_FinBERT_score",
+      "question": "您會多參考 ETF 相關的『市場情緒』或『新聞語氣』來做投資決策嗎？",
+      "score": 0.78715
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q047",
+      "question": "您會因為市場的短期波動而改變計劃嗎？",
+      "score": 0.78667
+    },
+    {
+      "qid": "overnightV1_FinBERT_score_q057",
+      "question": "您會如何評估新聞的正面影響力？",
+      "score": 0.78468
+    }
+  ]
+}

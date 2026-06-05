@@ -890,6 +890,22 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - **七使用者回測圖以「已跑出的 CSV」重繪**（不重跑回測），標題改成 `{profile}_{原標題}`（如 `aggressive_growth_Rolling Robo-Advisor Backtest NAV`）。臨時 driver 讀 `04_data_csv/*.csv` → 呼叫上述函式重畫到各自 `02_eda_dea_figures/`、`03_performance_figures/`，跑完刪除。已目視確認標題正確。
 - **縮短回測彙整夾名稱**：`_mirror_run_figures_to_upgrade` 的 `backtest_{run_id}_arm{arm}_{stamp}`（run_id 很長→`backtest_backtest_q_lookback-3y_minhist-8y_dca-0_armC2_...`）改成 `{prefix}_arm{arm}_{stamp}`（=`backtest_q_armC2_...`）。原因：巢狀進 `showcase_7_profiles/main_*/` 後完整路徑超過 Windows 260 字元上限導致 savefig FileNotFound。既有 7 夾一併改名為 `backtest_q_armC2`。
 
+## 2026-06-06：接上 preference_engine（投資理念 + 逐輪問答 → 9 維偏好權重）
+
+狀態：完成（程式接好 + import/格式驗證）。非 optimizer 改動（新的偏好來源）。
+
+### 接點（極窄、無需維度映射）
+- 使用者把自製引擎放進 `preference_engine/`（`phase3_system/` 引擎 + `assets/` 模型 12MB + `integrate_example.py`）。其 `extract_preferences(philosophy, answer_fn)` 回傳的 `Ew` 是 **9 維、總和=1、鍵與本系統完全相同**（`DIM_LABELS` = Return_CAGR…FinBERT_score）→ 直接當 `Global_Weights`。
+- 編碼器 BGE-M3（~2.2GB）首次 `Phase3Engine()` 自動下載（或放 `encoder_model/` 離線）；**載入在 instantiation，import 安全**。
+
+### 改了什麼
+- `pipeline_stages.py`：`PreferenceMode` 加 `"preference_engine"`；新增 `stage2_1_preference_engine_elicitation()`（把 `preference_engine/` 加進 sys.path → 呼叫 `extract_preferences` → 終端逐題互動取答，或傳入 `philosophy_text`/`answers` 非互動 → 9 維權重正規化後寫 `json/stage2_ahp_global_weights.json`，格式同 AHP 路徑：`{CR, Global_Weights, Source, Sigma_alpha, ci_note}`）；router 加分支。相依缺失/載入失敗 → 退回既有 fallback 權重、管線不中斷。
+- `requirements.txt`：加 `sentence-transformers>=2.2.0`（BGE-M3；torch/scipy/numpy 已有）。
+- `.gitignore`：排除 `preference_engine/encoder_model/`（2.2GB）與 `__pycache__`；`assets/`(12MB) 追蹤。
+- `main.py`：preference_mode 註解加 `preference_engine`。
+- 驗證：`import phase3_system` / `integrate_example.extract_preferences` OK；router 路由正確；24 檔將被追蹤（不含 encoder/pycache）。**未實跑完整誘出（需 2.2GB BGE-M3 下載）**——引擎本身使用者已在他處測過，adapter 僅照 README 介面呼叫。
+- 用法：`preference_mode="preference_engine"` 跑 `main.py` → 終端輸入投資理念 + 逐題回答 → 9 維權重進入既有 stage2_2/stage3/回測。與 `ACTIVE_USER_PROFILE`（靜態原型）獨立。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

@@ -1,0 +1,76 @@
+{
+  "a_prior": 0.3333333333333333,
+  "c_count": 1.0,
+  "t_trust": 1.0,
+  "rel_min": 0.2,
+  "w_conf": 1.0,
+  "w_sig": 0.0,
+  "rho_max": 0.6,
+  "s_lo": 0.1,
+  "s_hi": 0.9,
+  "plateau_delta": 0.02,
+  "plateau_minsteps": 2,
+  "gate_pct": 1,
+  "gate_width": 0.04,
+  "readout_temp_T": 0.4,
+  "stop_tau": 2.5,
+  "M_global": 4.0,
+  "M_foc": 4.0,
+  "M_bal": 3.0,
+  "conc_med": 0.205,
+  "mc_passes": 120,
+  "bnn_dir": "active_preference_v2/experiments/20260531_gemini10_1d_bnn_bgem3/runs/multitask_mc_dropout/models",
+  "bnn_suffix": "_gemini10_multitask_mc_dropout.pt",
+  "uncertainty_calib": "active_preference_v2/experiments/20260531_gemini10_1d_bnn_bgem3/runs/multitask_mc_dropout/uncertainty_calibration/uncertainty_calibration_params.json",
+  "cv_performance_79": {
+    "at_stop": {
+      "k_stop": 2.9,
+      "top1": 0.68,
+      "top2": 0.9,
+      "spearman": 0.637,
+      "mae": 0.082,
+      "ci_coverage90": 0.301,
+      "note": "CI@早停不可信（6 維未問）"
+    },
+    "at_k9": {
+      "top1": 0.69,
+      "top2": 0.932,
+      "spearman": 0.674,
+      "mae": 0.054,
+      "ci_coverage90": 0.869,
+      "note": "完整 9 題 CI 才可信"
+    },
+    "natural_tone_ceiling": {
+      "raw_mu_spearman": "~0.45-0.47",
+      "note": "自由打字 = numeric_free regime，結構性天花板（E5i）"
+    }
+  },
+  "dimension_keys": [
+    "Return_CAGR",
+    "Return_Div",
+    "Risk_Vol",
+    "Risk_MaxDD",
+    "Cost_ExpRatio",
+    "Liq_Volume",
+    "Liq_AUM",
+    "Div_Score",
+    "FinBERT_score"
+  ],
+  "provenance": {
+    "philhead": "phase3_build_interactive_assets.train_and_freeze_philhead (全 400 筆，內部 15% val early-stop)",
+    "philhead_val_l1": 0.5538,
+    "gate": "per_dimension_turn_features 全 3600 turns；c_hi=percentile(clean cos, 1)，c_lo=c_hi-0.04",
+    "question_pool": "generated_questions(overnightV1) + direct_importance，去重，質心對齊評分",
+    "frozen_scalars_source": "#79 e79_tuning.json picked_per_fold 中位數（τ/T/M）",
+    "honest_generalization": "見 cv_performance_79（#79 5-fold CV）",
+    "encode_info_pool": {
+      "model": "BAAI/bge-m3",
+      "max_seq_length": 8192,
+      "max_token_len": 28,
+      "n_over_limit": 0,
+      "truncated_ratio": 0.0,
+      "n": 702,
+      "on_overflow": "raise"
+    }
+  }
+}

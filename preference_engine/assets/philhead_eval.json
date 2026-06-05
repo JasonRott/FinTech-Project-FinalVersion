@@ -1,0 +1,34 @@
+{
+  "n_samples": 400,
+  "uniform_prior_baseline_k0": {
+    "top1": 0.1225,
+    "top2": 0.24,
+    "spearman": 0.0,
+    "l1": 0.8959,
+    "mae": 0.0995
+  },
+  "philhead_5fold_cv_HONEST": {
+    "mean": {
+      "top1": 0.615,
+      "top2": 0.8675,
+      "spearman": 0.6334,
+      "l1": 0.5494,
+      "mae": 0.0611
+    },
+    "std": {
+      "top1": 0.0242,
+      "top2": 0.017,
+      "spearman": 0.0375,
+      "l1": 0.037,
+      "mae": 0.0041
+    }
+  },
+  "frozen_fulldata_selffit_OPTIMISTIC": {
+    "top1": 0.69,
+    "top2": 0.9025,
+    "spearman": 0.6412,
+    "l1": 0.4912,
+    "mae": 0.0546
+  },
+  "note": "CV=誠實泛化；self-fit=在訓練資料上(樂觀)；frozen 全資料版預期泛化≈CV。"
+}

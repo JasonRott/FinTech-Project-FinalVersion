@@ -15,7 +15,7 @@ from typing import Literal
 
 import parameters
 
-PreferenceMode = Literal["static_ahp", "active_bayesian"]
+PreferenceMode = Literal["static_ahp", "active_bayesian", "preference_engine"]
 
 
 STAGE_NAMES = {
@@ -324,14 +324,100 @@ def stage2_1_active_bayesian_preference_elicitation(
     return output
 
 
+_PREF_DIMS = [
+    "Return_CAGR", "Return_Div", "Risk_Vol", "Risk_MaxDD", "Cost_ExpRatio",
+    "Liq_Volume", "Liq_AUM", "Div_Score", "FinBERT_score",
+]
+
+
+def stage2_1_preference_engine_elicitation(
+    output_path: str = "json/stage2_ahp_global_weights.json",
+    philosophy_text: str | None = None,
+    answers: list[str] | None = None,
+    max_questions: int = 9,
+) -> Path:
+    """Stage 2_1-C：用 `preference_engine`（投資理念 + 逐輪自然語言問答 → BNN 偏好誘出）
+    產生 9 維全局權重，並寫成下游認得的 `Global_Weights` JSON（與 AHP 路徑同格式）。
+
+    互動模式（預設）：終端逐題詢問。`philosophy_text` / `answers` 有給時可非互動執行
+    （供測試或外部 UI 串接：把 UI 收到的開場理念與逐題答案傳進來即可）。
+    引擎輸出的 `Ew` 維度鍵與本系統 9 維完全一致，無需映射。
+    """
+    _announce_stage_start(
+        "stage2_1_active",
+        "透過 preference_engine（投資理念 + 逐輪問答）誘出 9 維偏好權重。",
+    )
+    import sys as _sys
+    from functions import log
+
+    _eng_dir = str(Path(__file__).resolve().parent / "preference_engine")
+    if _eng_dir not in _sys.path:
+        _sys.path.insert(0, _eng_dir)
+    try:
+        from integrate_example import extract_preferences  # type: ignore
+    except Exception as exc:  # 套件/相依缺失 → 退回既有 fallback 權重，管線不中斷
+        log.error(f"無法載入 preference_engine（{exc}）；改用 fallback 權重。")
+        output = _export_fallback_active_bayesian_weights(output_path)
+        _announce_stage_end("stage2_1_active", str(output))
+        return output
+
+    # --- 開場投資理念 ---
+    if philosophy_text is None:
+        try:
+            philosophy_text = input("\n請輸入你的投資理念（直接 Enter 用預設範例）：\n> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            philosophy_text = ""
+    if not philosophy_text:
+        philosophy_text = "我希望長期穩健成長，能接受一點波動但很怕大跌，偏好低費用、分散持股的標的。"
+        print(f"(使用預設投資理念) {philosophy_text}")
+
+    # --- 逐題取答：有預先給 answers 就用，否則終端互動 ---
+    _answers_iter = iter(answers) if answers is not None else None
+
+    def _ask(q: dict) -> str:
+        if _answers_iter is not None:
+            return next(_answers_iter, "")
+        print(f"\n[第 {q['step']} 題 · {q['dim_label']}]")
+        try:
+            return input(f"  {q['question']}\n  > ").strip()
+        except (EOFError, KeyboardInterrupt):
+            return ""
+
+    weights, snap = extract_preferences(philosophy_text, _ask, max_questions=max_questions)
+
+    # --- 防呆：確保 9 維齊全、總和正規化為 1 ---
+    w = {d: float(weights.get(d, 0.0)) for d in _PREF_DIMS}
+    total = sum(w.values()) or 1.0
+    w = {d: v / total for d, v in w.items()}
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "CR": 0.0,
+        "Global_Weights": w,
+        "Source": "preference_engine (Phase3 BNN elicitation)",
+        "Sigma_alpha": snap.get("Sigma_alpha"),
+        "ci_note": snap.get("ci_note"),
+    }
+    output.write_text(json.dumps(payload, ensure_ascii=False, indent=4), encoding="utf-8")
+    log.info(f"Stage 2_1-C - preference_engine 偏好誘出完成（9 維權重已寫入 {output}）。")
+    _announce_stage_end("stage2_1_active", str(output))
+    return output
+
+
 def stage2_1_preference_extraction(
     mode: PreferenceMode = "static_ahp",
     output_path: str = "json/stage2_ahp_global_weights.json",
     active_answers: list[str] | None = None,
 ) -> Path:
-    """Stage 2_1 router for both supported preference extraction methods."""
+    """Stage 2_1 router for the supported preference extraction methods."""
     if mode == "static_ahp":
         return stage2_1_static_ahp_preference_extraction(output_path=output_path)
+    if mode == "preference_engine":
+        return stage2_1_preference_engine_elicitation(
+            output_path=output_path,
+            answers=active_answers,
+        )
     if mode == "active_bayesian":
         return stage2_1_active_bayesian_preference_elicitation(
             answers=active_answers,

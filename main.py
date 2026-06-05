@@ -14,7 +14,7 @@ if __name__ == "__main__":
         run_stage2_2_cluster_selection=True,
         run_stage3_optimization=True,
         run_stage3_backtest_prompt=True,  # Stage 3 後詢問是否跑「針對此偏好」的歷史回測
-        # Options: "static_ahp" or "active_bayesian"
+        # Options: "static_ahp" / "preference_engine"（投資理念+問答 BNN 誘出）/ "active_bayesian"
         preference_mode="static_ahp",
         preference_output_path="json/stage2_ahp_global_weights.json",
     )
