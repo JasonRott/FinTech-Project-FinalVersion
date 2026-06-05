@@ -1674,11 +1674,11 @@ def _plot_dea_distribution_backtest(dea_results: pd.DataFrame, output_path: Path
     plt.close()
 
 
-def _plot_backtest_metrics_comparison(summary_df: pd.DataFrame, output_path: Path, title_prefix: str = "") -> None:
-    """把回測 Performance Summary 的關鍵數據畫成「各策略 vs VT」對照長條圖（取代看 CSV）。
-
-    每個指標一個子圖（累積總報酬 / 年化報酬 / 年化波動 / 夏普 / 最大回撤），
-    偏好組合(紅)與 VT(藍)highlight，其餘對照組灰色；長條上標數值。
+def _plot_backtest_metrics_comparison(summary_df: pd.DataFrame, dimension_df: "pd.DataFrame | None",
+                                      output_path: Path, title_prefix: str = "") -> None:
+    """把回測關鍵數據畫成「各策略 vs VT」對照圖（取代看 CSV）：
+    累積總報酬(資本利得+股息堆疊) / 年化報酬(含息) / 平均殖利率 / 年化波動 / 夏普 / 最大回撤。
+    偏好組合(紅)、VT(藍)highlight，其餘對照組(灰)；股息以金色堆疊，讓收入型偏好是否被滿足一眼可見。
     """
     if summary_df is None or summary_df.empty or "Strategy" not in summary_df.columns:
         return
@@ -1686,45 +1686,77 @@ def _plot_backtest_metrics_comparison(summary_df: pd.DataFrame, output_path: Pat
     plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei", "Arial Unicode MS", "Arial"]
     plt.rcParams["axes.unicode_minus"] = False
 
-    df = summary_df.copy()
-    df = df.drop_duplicates(subset="Strategy").set_index("Strategy")
+    df = summary_df.copy().drop_duplicates(subset="Strategy").set_index("Strategy")
     order = [s for s in ["Preference_Driven", "VT", "VOO", "EqualWeight", "MaxSharpe"] if s in df.index]
     if not order:
         return
     label = {"Preference_Driven": "偏好組合", "VT": "VT", "VOO": "VOO",
              "EqualWeight": "等權", "MaxSharpe": "MaxSharpe"}
     color = {"Preference_Driven": "#DC2626", "VT": "#2563EB"}
-    metrics = [
-        ("Cumulative_Return_%", "累積總報酬 %"),
-        ("CAGR_%", "年化報酬率 %"),
-        ("Annualized_Volatility_%", "年化波動率 %"),
-        ("Sharpe", "夏普值 (Sharpe)"),
-        ("Max_Drawdown_%", "最大回撤 %"),
-    ]
-    metrics = [(c, t) for c, t in metrics if c in df.columns]
-    if not metrics:
-        return
+    xs = list(range(len(order)))
+    xt = [label.get(s, s) for s in order]
 
-    ncol = 3
-    nrow = int(np.ceil(len(metrics) / ncol))
-    fig, axes = plt.subplots(nrow, ncol, figsize=(5.2 * ncol, 4.2 * nrow))
-    axes = np.array(axes).reshape(-1)
-    for i, (col, title) in enumerate(metrics):
-        ax = axes[i]
-        vals = [float(pd.to_numeric(df.loc[s, col], errors="coerce")) for s in order]
-        bar_colors = [color.get(s, "#CBD5E1") for s in order]
-        bars = ax.bar(range(len(order)), vals, color=bar_colors, edgecolor="black", linewidth=0.6)
+    # 每期加權「平均殖利率」取自 dimension comparison（收入型招牌指標）
+    ydiv = None
+    if dimension_df is not None and not getattr(dimension_df, "empty", True):
+        dd = dimension_df.copy()
+        if "Strategy" not in dd.columns and dd.index.name == "Strategy":
+            dd = dd.reset_index()
+        if "Strategy" in dd.columns and "Avg_Raw_Dividend_Yield_%" in dd.columns:
+            ydiv = dd.drop_duplicates(subset="Strategy").set_index("Strategy")
+
+    def _num(src, s, col):
+        try:
+            return float(pd.to_numeric(src.loc[s, col], errors="coerce"))
+        except Exception:
+            return float("nan")
+
+    def simple_bar(ax, col, title, src=None):
+        src = df if src is None else src
+        vals = [_num(src, s, col) for s in order]
+        bars = ax.bar(xs, vals, color=[color.get(s, "#CBD5E1") for s in order],
+                      edgecolor="black", linewidth=0.6)
         ax.set_title(title, fontsize=13, fontweight="bold")
-        ax.set_xticks(range(len(order)))
-        ax.set_xticklabels([label.get(s, s) for s in order], rotation=18, fontsize=9)
+        ax.set_xticks(xs); ax.set_xticklabels(xt, rotation=18, fontsize=9)
         ax.axhline(0, color="black", linewidth=0.8)
         for b, v in zip(bars, vals):
-            ax.annotate(f"{v:.2f}", (b.get_x() + b.get_width() / 2, v),
-                        ha="center", va="bottom" if v >= 0 else "top", fontsize=8.5, fontweight="bold")
+            if v == v:
+                ax.annotate(f"{v:.2f}", (b.get_x() + b.get_width() / 2, v),
+                            ha="center", va="bottom" if v >= 0 else "top", fontsize=8.5, fontweight="bold")
         ax.margins(y=0.20)
-    for j in range(len(metrics), len(axes)):
-        axes[j].axis("off")
-    fig.suptitle(f"{title_prefix}回測績效對照（各策略 vs VT，季度再平衡）", fontsize=15, fontweight="bold")
+
+    fig, axes = plt.subplots(2, 3, figsize=(16, 9))
+    axes = np.array(axes).reshape(-1)
+
+    # (1) 累積總報酬 = 資本利得 + 股息（堆疊，金色為股息）
+    ax = axes[0]
+    if {"Capital_Gain_Return_%", "Dividend_Income_Return_%"}.issubset(df.columns):
+        cg = [_num(df, s, "Capital_Gain_Return_%") for s in order]
+        dv = [_num(df, s, "Dividend_Income_Return_%") for s in order]
+        ax.bar(xs, cg, color="#94A3B8", edgecolor="black", linewidth=0.6, label="資本利得")
+        ax.bar(xs, dv, bottom=cg, color="#F59E0B", edgecolor="black", linewidth=0.6, label="股息(現金)")
+        for i in xs:
+            tot = cg[i] + dv[i]
+            ax.annotate(f"{tot:.0f}", (i, tot), ha="center", va="bottom", fontsize=8.5, fontweight="bold")
+            if dv[i] > 4:
+                ax.annotate(f"息{dv[i]:.0f}", (i, cg[i] + dv[i] / 2), ha="center", va="center", fontsize=8)
+        ax.set_title("累積總報酬 %（資本利得＋股息）", fontsize=13, fontweight="bold")
+        ax.set_xticks(xs); ax.set_xticklabels(xt, rotation=18, fontsize=9)
+        ax.legend(fontsize=8, loc="upper right"); ax.margins(y=0.20)
+    else:
+        simple_bar(ax, "Cumulative_Return_%", "累積總報酬 %（含息）")
+
+    simple_bar(axes[1], "CAGR_%", "年化報酬率 %（CAGR，含息）")
+    if ydiv is not None:
+        simple_bar(axes[2], "Avg_Raw_Dividend_Yield_%", "平均殖利率 %（每期加權）", src=ydiv)
+    else:
+        simple_bar(axes[2], "Dividend_Income_Return_%", "累積股息報酬 %")
+    simple_bar(axes[3], "Annualized_Volatility_%", "年化波動率 %")
+    simple_bar(axes[4], "Sharpe", "夏普值 (Sharpe)")
+    simple_bar(axes[5], "Max_Drawdown_%", "最大回撤 %")
+
+    fig.suptitle(f"{title_prefix}回測績效對照（各策略 vs VT，季度再平衡）　紅=偏好組合 藍=VT 灰=對照",
+                 fontsize=14, fontweight="bold")
     plt.tight_layout(rect=(0, 0, 1, 0.95))
     plt.savefig(output_path, dpi=300)
     plt.close()
@@ -2309,7 +2341,7 @@ def _write_unified_backtest_report(
     _plot_backtest_performance_report(nav, png_dir / f"{prefix}_portfolio_performance.png")
     _plot_annual_returns(annual_returns, png_dir / f"{prefix}_annual_returns.png")
     _plot_weight_evolution(weights_df, png_dir / f"{prefix}_weight_evolution.png")
-    _plot_backtest_metrics_comparison(summary_df, png_dir / f"{prefix}_metrics_comparison.png")
+    _plot_backtest_metrics_comparison(summary_df, dimension_comparison_df, png_dir / f"{prefix}_metrics_comparison.png")
     # 雷達圖已停用，待日後以「偏好分數」為核心重新設計後再接回（見 03_planned_upgrade_items.md V-1/V-6）。
     # _plot_backtest_radar 函式保留在檔案中供未來重用，目前不輸出 radar_chart.png。
     _plot_backtest_outputs(nav, prefix, png_dir)
