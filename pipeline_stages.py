@@ -105,7 +105,7 @@ def _stage3_output_hint() -> str:
         f"report/{case_name}_analytics.csv",
         f"png/{case_name}_Mathematical Efficient Frontier.png",
         f"png/{case_name}_radar_chart.png",
-        "（圖表+報表已自動彙整到 user_results/main_<case>_<時間戳>/）",
+        "（圖表+報表已自動彙整到 user_results/new_user_<n>/）",
     ]
     return ", ".join(outputs)
 

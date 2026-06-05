@@ -3404,18 +3404,25 @@ def run_stage3_pipeline():
     comparison_df.to_csv(csv_weights_path, index=False, encoding='utf-8-sig')
     analytics_df.to_csv(csv_analytics_path, index=False, encoding='utf-8-sig')
 
-    # ── 將本次主系統的「全部圖表 + 報表」集中到 user_results/main_{case}_{timestamp}/ ──
-    # 依使用者要求分成兩個子資料夾：
+    # ── 將本次主系統的「全部圖表 + 報表」集中到 user_results/new_user_{n}/ ──
+    # 每次主系統執行 = 一個新的 new_user_{n}：n = 現有 new_user_* 的最大編號 + 1（永不覆寫前一位使用者）。
+    # 固定展示夾（如 showcase_7_profiles/）名稱不符 new_user_\d+，不會被計入或覆寫。
+    # 內部再分兩個子資料夾：
     #   01_screening_eda/ ── DEA 分數分布 + EDA（前處理）圖與 DEA 結果表
-    #   02_portfolio/     ── 投組推薦（雷達圖 + 權重/分析報表）
-    # 註：投組績效圖與效率前緣圖已停用，故 02 只精準收雷達圖（避免把舊殘檔一起複製進來）。
+    #   02_portfolio/     ── 投組推薦（雷達圖 + 數學前緣 + 權重/分析報表）
     try:
         import glob as _glob
         import shutil
-        from datetime import datetime as _dt
-        _stamp = _dt.now().strftime("%Y%m%d_%H%M%S")
+        import re as _re
         _user_root = getattr(parameters, "USER_RESULTS_DIR", "user_results")
-        _dest = os.path.join(_user_root, f"main_{case}_{_stamp}")
+        os.makedirs(_user_root, exist_ok=True)
+        _idx = []
+        for _name in os.listdir(_user_root):
+            _m = _re.fullmatch(r"new_user_(\d+)", _name)
+            if _m and os.path.isdir(os.path.join(_user_root, _name)):
+                _idx.append(int(_m.group(1)))
+        _next_n = (max(_idx) + 1) if _idx else 1
+        _dest = os.path.join(_user_root, f"new_user_{_next_n}")
         # 對外公開本次使用者資料夾路徑，讓接續的 prompt 回測（stage3b）把回測夾巢狀進來。
         globals()["LAST_MAIN_USER_DIR"] = _dest
         _groups = {

@@ -860,6 +860,28 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 多 user 端到端跑（cached stage0）：權重/雷達/輸出夾名隨 profile 改變。
 - 用途：接續的「7 使用者最終呈現」只要對 7 個 profile 各跑一次（設 env 或旋鈕），`user_results/` 即得 7 份各自獨立、權重正確的結果。
 
+## 2026-06-06：七使用者展示固定化 + 主系統輸出改 new_user_{n}（永不覆寫）
+
+狀態：完成。非 optimizer 改動（輸出命名/整理）。
+
+### 改了什麼
+- **七使用者展示固定夾**：`user_results/showcase_7_profiles/`（7 個 `main_<profile>_*`，各含主系統 + 巢狀季度回測四分類）+ `對照分析報告.md`（七份關鍵數字對照表 + 分析）。當成固定展示，主系統不再生成到此。
+- **主系統每次執行改名 `new_user_{n}`**（`functions.py` 收集器）：`n = 現有 user_results/new_user_* 的最大編號 + 1`（用 `re.fullmatch(r"new_user_(\d+)")` 掃描，max+1，**永不覆寫**前一位使用者；刪掉中間編號也安全）。固定展示夾名稱不符 `new_user_\d+` → 不被計入或覆寫。取代原本的 `main_{case}_{timestamp}`。`stage3b` 巢狀回測仍透過 `LAST_MAIN_USER_DIR` 進到 `new_user_{n}/backtest_*/`。
+- `pipeline_stages._stage3_output_hint` 文案同步改 `new_user_<n>`。
+
+### 七使用者 OOS 季度回測對照（2019-06~2026，VT：CAGR 14.32% / Sharpe 0.606）
+| profile | core | CAGR% | Sharpe | 贏VT報酬 | win_VT |
+|---|--|--:|--:|:--:|--:|
+| aggressive_growth | beta | 17.58 | 0.675 | ✅ | 75.0 |
+| return_leaning | beta | 16.40 | 0.668 | ✅ | 25.0 |
+| cost_liquidity | market | 14.12 | 0.630 | ✗ | 92.9 |
+| diversified_quality | market | 12.67 | 0.564 | ✗ | 57.1 |
+| balanced | market | 12.71 | 0.563 | ✗ | 67.9 |
+| income | minvar | 11.94 | 0.545 | ✗ | 100 |
+| conservative | minvar | 9.70 | 0.447 | ✗ | 75.0 |
+- 結論與設計論述一致：**只有 beta 核心贏 VT 絕對報酬**（承擔更高波動）;market/minvar 贏在風險效率與偏好滿足;全員對 EW/MaxSharpe 偏好勝率 93–100%。誠實張力：return_leaning win_VT 低（偏好自我矛盾）、部分防禦型 MaxDD 比 VT 深（壓波動≠控回撤）。
+- 過程備忘：balanced 首跑撞 OneDrive 暫時鎖檔（Permission denied on 價格快取）→ 基準對齊失敗 → market 退回 minvar;重跑後正常。**OneDrive 同步是隨機鎖檔風險，大量連跑前宜暫停同步或移出 OneDrive 夾。**
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項
