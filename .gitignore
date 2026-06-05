@@ -4,8 +4,9 @@ __pycache__/
 .env.local
 active_preference/.env
 
-# 實驗/執行日誌
+# 實驗/執行日誌（集中於 logs/；functions.py 每次執行寫一個時間戳檔）
 *.log
+logs/
 
 # 大型可重生資料快取（價格庫 + 原始新聞快取；跑 Stage 0 可重新擷取）
 sentiment_engine/data/news_events_cache.csv

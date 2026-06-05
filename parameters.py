@@ -169,6 +169,8 @@ USER_PROFILES = {
 CASE_NAME = "Neutral_user" # 預設情境名稱
 # 使用者結果總資料夾：主系統與回測「每次執行」各開一個含全部圖表+報表的時間戳子資料夾。
 USER_RESULTS_DIR = "user_results"
+# 集中式日誌資料夾：每次執行（任何 import functions 的程式）會在此寫一個時間戳 log 檔。
+LOGS_DIR = "logs"
 VERBOSE = True # 是否輸出詳細的運算過程訊息 True (Verbose 模式) -> 顯示普通資訊與除錯訊息，False (Silence 模式) -> 只顯示警告與錯誤
 DETERMINISTIC_AHP_WEIGHTS = True # 這裡可以切換是否使用確定性模擬結果, 若想讓教授體驗互動問卷，可以改成 DETERMINISTIC_AHP_WEIGHTS=False
 

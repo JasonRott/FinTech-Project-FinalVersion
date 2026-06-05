@@ -57,6 +57,23 @@ else:
 # 6. 將 Handler 加入 logger
 log.addHandler(stream_handler)
 
+# 6b. 集中式檔案日誌：每次執行在 logs/ 寫一個時間戳 log 檔（比終端更完整，固定記 INFO 以上）。
+#     best-effort —— 即使建立失敗也不影響主流程；終端的噤聲行為（VERBOSE）不變。
+try:
+    from datetime import datetime as _dt_log
+    _logs_dir = getattr(parameters, "LOGS_DIR", "logs")
+    os.makedirs(_logs_dir, exist_ok=True)
+    _log_file = os.path.join(_logs_dir, f"run_{_dt_log.now().strftime('%Y%m%d_%H%M%S')}.log")
+    _file_handler = logging.FileHandler(_log_file, encoding="utf-8")
+    _file_handler.setLevel(logging.INFO)
+    _file_handler.setFormatter(formatter_debug)
+    log.addHandler(_file_handler)
+    # 放寬 logger 等級到 INFO，讓 INFO 能進到檔案；stream_handler 仍維持 log_level → 終端噤聲不變。
+    if log.level > logging.INFO:
+        log.setLevel(logging.INFO)
+except Exception as _e_log:
+    log.warning(f"⚠️ 無法建立集中式 log 檔（已略過，不影響執行）：{_e_log}")
+
 log.warning("✅ 金融理財引擎日誌系統配置完成。")
 
 # ==========================================
