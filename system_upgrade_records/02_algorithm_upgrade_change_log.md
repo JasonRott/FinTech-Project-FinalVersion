@@ -911,6 +911,14 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - **修法**：adapter 改成**直接驅動 `Phase3Engine`**，預設**答完整 9 題**（loop 到 `next_question()` 回 None，含 T3 重問），不再自動早停；互動模式下引擎首次提議早停時**詢問一次**（直接 Enter = 繼續答完）。payload 增記 `n_covered` / `ci_trustworthy`。
 - **驗證**：答完整 9 題 → `n_covered=9`、`ci_trustworthy=True`、`ci_note=完整9題CI可信`；by-dim 作答得到合理分布（Return_CAGR 0.35 / Div_Score 0.28 / Cost 0.18，貼合「成長+分散+低費用」理念），不再被 prior 壓成單一維獨大。
 
+## 2026-06-06：回測新增「績效對照長條圖」(各策略 vs VT，取代看 CSV)
+
+狀態：完成。非 optimizer 改動（新增一張圖）。
+
+- 新增 `backtest_engine._plot_backtest_metrics_comparison(summary_df, output_path, title_prefix)`：把回測 Performance Summary 的關鍵數據畫成 5 個子圖（累積總報酬 % / 年化報酬率 % / 年化波動率 % / 夏普 / 最大回撤 %），每圖各策略長條，**偏好組合(紅)、VT(藍)highlight、其餘對照組(灰)**，長條上標數值。
+- 接進 `_write_unified_backtest_report`（檔名 `{prefix}_metrics_comparison.png`）→ **未來每次回測自動產生**，並落在 `03_performance_figures/`（分類 by 檔名）。output inventory 同步加列。
+- 已用既有 summary CSV 為 showcase 七位使用者各補生成一張（標題 `{profile}_回測績效對照…`），目視確認正確。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項
