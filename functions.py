@@ -2332,9 +2332,10 @@ def plot_portfolio_analytics_and_mpt(returns_matrix, optimal_weights, max_sharpe
     ax2.set_xlabel('日期', fontsize=12)
     
     plt.tight_layout()
-    plt.savefig(f'png\\{case}_portfolio_performance.png', dpi=300)
+    # [停用] 依使用者要求不再輸出投組績效圖（buy&hold 淨值/回撤，描述性）。
+    # plt.savefig(f'png\\{case}_portfolio_performance.png', dpi=300)
     plt.close()
-    log.info(f"✅ 產出圖表：png\\{case}_portfolio_performance.png")
+    # log.info(f"✅ 產出圖表：png\\{case}_portfolio_performance.png")
 
     # --- 圖表 2：蒙地卡羅模擬 MPT 效率前緣 ---
     # 視覺化報酬軸改用算術平均年化（資本利得），與 Sharpe 口徑一致。
@@ -3210,11 +3211,10 @@ def run_stage3_pipeline():
         hhi_str_ms = "N/A (API Limit)"
 
     # 呼叫視覺化函式
-    # [停用] 依使用者要求，不再輸出這兩類圖：
-    #   - {case}_portfolio_performance.png（buy&hold 淨值/回撤，描述性）
-    #   - {case}_Mathematical Efficient Frontier.png（μ-σ 前緣；本投組由 C2/BL 求解，
-    #     並非在此前緣上最佳化，保留易誤導）。雷達圖才是主要決策視覺，保留。
-    # plot_portfolio_analytics_and_mpt(returns_matrix, optimal_weights, max_sharpe_weights, valid_tickers)
+    # 依使用者要求：**保留「數學解效率前緣圖」(Mathematical Efficient Frontier)**；
+    # 但函式內停用「投組績效圖」(portfolio_performance) 與「蒙地卡羅前緣圖」(mpt_efficient_frontier)。
+    # （績效圖描述性、蒙地卡羅圖早已停用；數學前緣保留作 μ-σ 參考，標題已註明非 C2/BL 最佳化所在。）
+    plot_portfolio_analytics_and_mpt(returns_matrix, optimal_weights, max_sharpe_weights, valid_tickers)
 
     # 🚨 新增：整理向量字典，呼叫視覺化函式 2: 雷達圖
     vectors_dict = {
@@ -3396,6 +3396,8 @@ def run_stage3_pipeline():
         _stamp = _dt.now().strftime("%Y%m%d_%H%M%S")
         _user_root = getattr(parameters, "USER_RESULTS_DIR", "user_results")
         _dest = os.path.join(_user_root, f"main_{case}_{_stamp}")
+        # 對外公開本次使用者資料夾路徑，讓接續的 prompt 回測（stage3b）把回測夾巢狀進來。
+        globals()["LAST_MAIN_USER_DIR"] = _dest
         _groups = {
             "01_screening_eda": [
                 "png\\eda_*.png", "png\\*dea*.png", "png\\*DEA*.png",
@@ -3403,6 +3405,7 @@ def run_stage3_pipeline():
             ],
             "02_portfolio": [
                 f"png\\{case}_radar_chart.png",
+                f"png\\{case}_Mathematical Efficient Frontier.png",
                 f"report\\{file_prefix}_*.txt", f"report\\{file_prefix}_*.csv",
             ],
         }

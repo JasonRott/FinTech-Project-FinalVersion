@@ -392,6 +392,13 @@ def stage3b_optional_preference_backtest(
     from datetime import datetime
     from backtest_engine import run_rolling_backtest, BacktestConfig
 
+    # 取剛剛主系統建立的 user_results/main_*/ 路徑，讓本次回測夾巢狀進同一個使用者資料夾。
+    try:
+        import functions as _functions
+        _user_parent = getattr(_functions, "LAST_MAIN_USER_DIR", None)
+    except Exception:
+        _user_parent = None
+
     # 資料/視窗固定在 10 年內：OOS 視窗從「7 年前」開始、lookback 3 年 → 7+3=10。
     # 起點動態（今天往前推 N 年、取當月 1 號），隨時間滑動但跨度恆 ≤ 10 年。
     # 與既有 ~2016 起的回測快取相符，通常不需補抓；fetch 僅作為「缺資料」時的安全網
@@ -409,6 +416,7 @@ def stage3b_optional_preference_backtest(
         preference_file=preference_file,                 # ★用剛產生的使用者偏好★
         fetch_missing_data=True,                         # 僅補「缺資料」的標的（快取夠就不抓）
         fetch_period="max",                              # 安全網：無快取時才會真的補抓
+        user_results_parent=_user_parent,                # 巢狀於主系統本次使用者資料夾內
     )
     _primary_start = _years_ago(PROMPT_BACKTEST_WINDOW_YEARS)            # 7 年前
     _candidate_starts = [_primary_start, _years_ago(5), _years_ago(3)]  # 退而求其次：仍 ≤10 年

@@ -107,6 +107,9 @@ class BacktestConfig:
     risk_free_rate: float = 0.04
     fetch_missing_data: bool = DEFAULT_FETCH_MISSING_DATA
     fetch_period: str = DEFAULT_FETCH_PERIOD
+    # 若有給（主系統 prompt 回測會帶入剛產生的 user_results/main_*/ 路徑），
+    # 本次回測的彙整資料夾會「巢狀」在該使用者資料夾內；None=獨立執行→自成一夾。
+    user_results_parent: str | None = None
 
 
 def _ensure_output_dirs(config: BacktestConfig) -> None:
@@ -2018,26 +2021,52 @@ def _plot_preference_score_timeseries(
     plt.close()
 
 
-def _mirror_run_figures_to_upgrade(png_dir: Path, prefix: str, run_id: str) -> Path:
-    """把本次回測的「全部圖片 + 報表」集中到 user_results/<run_id>_arm<X>_<timestamp>/。
+def _mirror_run_figures_to_upgrade(
+    png_dir: Path, prefix: str, run_id: str, parent_dir: str | Path | None = None
+) -> Path:
+    """把本次回測的「全部圖片 + 報表」集中到使用者結果資料夾，並**分四個子夾**：
+        01_text_reports/        文字結果（*.txt / *.md，含 summary 與 output_inventory）
+        02_eda_dea_figures/     EDA 與 DEA 圖片（檔名含 eda/dea 的 *.png）
+        03_performance_figures/ 表現圖片（nav / drawdown / 績效 / 雷達 / 年報酬 / 權重演化）
+        04_data_csv/            過程中的 .csv 檔
 
-    每次執行各自一個自包含資料夾（所有 png + report/csv），方便使用者一次取走、逐次比較。
+    parent_dir 有給（主系統 prompt 回測會帶入 user_results/main_*/ 路徑）
+      → 本次回測夾「巢狀」在該次使用者資料夾內；
+    parent_dir=None（獨立執行回測）→ 自成一夾於 user_results/ 下。
     """
     stamp = time.strftime("%Y%m%d_%H%M%S")
     arm = str(getattr(parameters, "OPTIMIZATION_ARM", "A")).upper()
-    user_root = Path(getattr(parameters, "USER_RESULTS_DIR", "user_results"))
-    dest = user_root / f"backtest_{run_id}_arm{arm}_{stamp}"
-    dest.mkdir(parents=True, exist_ok=True)
+    if parent_dir is not None:
+        dest = Path(parent_dir) / f"backtest_{run_id}_arm{arm}_{stamp}"
+    else:
+        user_root = Path(getattr(parameters, "USER_RESULTS_DIR", "user_results"))
+        dest = user_root / f"backtest_{run_id}_arm{arm}_{stamp}"
+
+    def _bucket(name: str) -> str:
+        low = name.lower()
+        if low.endswith((".txt", ".md")):
+            return "01_text_reports"
+        if low.endswith(".png"):
+            if "eda" in low or "dea" in low:
+                return "02_eda_dea_figures"
+            return "03_performance_figures"
+        if low.endswith(".csv"):
+            return "04_data_csv"
+        return "04_data_csv"
+
     png_dir = Path(png_dir)
     # png_dir = backtest_report/png/<run_id>;report/csv 為其同層 sibling。
     report_dir = png_dir.parent.parent / "report" / run_id
     csv_dir = png_dir.parent.parent / "csv" / run_id
+    dest.mkdir(parents=True, exist_ok=True)
     copied = 0
     for src_dir in (png_dir, report_dir, csv_dir):
         if src_dir.exists():
             for f in src_dir.iterdir():
                 if f.is_file():
-                    shutil.copy2(f, dest / f.name)
+                    sub = dest / _bucket(f.name)
+                    sub.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(f, sub / f.name)
                     copied += 1
     return dest
 
@@ -2280,8 +2309,11 @@ def _write_unified_backtest_report(
         _plot_dea_distribution_backtest(final_dea_results_df, png_dir / f"{prefix}_dea_score_distribution.png")
     _write_output_inventory(config, prefix, run_id)
     # 把本次所有圖片（含 V-1/V-6 與 portfolio_performance 等）集中複製到 upgrade_figures/ 的本次專屬資料夾。
-    mirrored_dir = _mirror_run_figures_to_upgrade(png_dir, prefix, run_id)
-    print(f"[user_results] 本次回測全部圖表+報表已集中到 {mirrored_dir}")
+    mirrored_dir = _mirror_run_figures_to_upgrade(
+        png_dir, prefix, run_id, parent_dir=config.user_results_parent
+    )
+    print(f"[user_results] 本次回測全部圖表+報表已分四夾集中到 {mirrored_dir} "
+          f"（01_text_reports / 02_eda_dea_figures / 03_performance_figures / 04_data_csv）")
 
 
 def run_rolling_backtest(config: BacktestConfig | None = None) -> dict[str, pd.DataFrame]:
