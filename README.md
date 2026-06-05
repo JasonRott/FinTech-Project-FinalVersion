@@ -52,6 +52,7 @@ Stage 3 已從早期「線性加權偏好分數 / Markowitz」演進為 **U-C2 �
 - **Stage 1**：以 Data Envelopment Analysis (DEA) 做多輸入輸出相對效率篩選，剔除 Pareto 劣勢標的。
 - **Stage 2_1-A**：Analytic Hierarchy Process (AHP) 靜態問卷，轉換多準則偏好為可計算權重（baseline）。
 - **Stage 2_1-B**：Gemini LLM 主動訪談 + 結構化萃取，將自然語言偏好對應至九個財務維度（研究主線）。
+- **Stage 2_1-C**：`preference_engine`（Phase 3 BNN 偏好誘出）——輸入「投資理念 + 逐輪自然語言問答」，以 BGE-M3 編碼 + 9 個 1D 貝氏神經網路，直接誘出九維偏好權重（與下游維度完全一致）。
 - **Stage 3**：U-C2 三核心 + BL 理論地基的偏好驅動最佳化（SLSQP），輸出偏好組合 vs. Max Sharpe / VT / 等權 的完整比較；跑完可選擇「針對你的偏好」做歷史回測。
 
 ---
@@ -217,12 +218,22 @@ python main.py
 在 `main.py` 中設定 `preference_mode`：
 
 ```python
-# 靜態 AHP 問卷（傳統方法）
+# 靜態 AHP 問卷（傳統方法 / baseline）
 preference_mode="static_ahp"
+
+# preference_engine：投資理念 + 逐輪問答 → BNN 偏好誘出（純終端互動）
+preference_mode="preference_engine"
 
 # Active LLM 訪談（Gemini 主線）
 preference_mode="active_bayesian"
 ```
+
+> **`preference_engine` 用法**：跑 `python main.py` 後，終端會請你輸入一段「投資理念」，
+> 再逐題以自然語言回答。引擎**預設會問完整 9 題**（每維一題）讓信賴區間可信；當它已大致掌握
+> 你的前幾名偏好時會詢問一次是否提早結束（直接 Enter 即繼續答完）。完成後輸出九維權重，
+> 與 AHP 路徑寫入同一個 `json/stage2_ahp_global_weights.json` 介面，後段 Stage 2_2/3 與回測無需改寫。
+> 首次執行會自動下載文字編碼器 BGE-M3（約 2.2 GB，需聯網一次；之後可離線）。
+> 相關設定見 `preference_engine/README.md`。靜態原型旋鈕 `parameters.ACTIVE_USER_PROFILE` 僅作用於 `static_ahp`，與本模式獨立。
 
 ### 執行部分 Stage
 
@@ -273,7 +284,7 @@ python backtest_engine.py --freq Q --start-date 2021-01-01 --lookback 3
 專案入口，設定 `PipelineConfig` 並呼叫 `run_full_pipeline()`。
 
 ### `pipeline_stages.py`
-統一管理 Stage 0 ~ Stage 3 的函式入口。每個 stage 開始與結束時輸出進度提示。兩條偏好路線（AHP / Active Bayesian）都輸出至同一個 `json/stage2_ahp_global_weights.json` 介面，確保 Stage 3 無需改寫。
+統一管理 Stage 0 ~ Stage 3 的函式入口。每個 stage 開始與結束時輸出進度提示。三條偏好路線（AHP / preference_engine / Active Bayesian）都輸出至同一個 `json/stage2_ahp_global_weights.json` 介面，確保 Stage 3 無需改寫。
 
 ### `functions.py`
 所有核心計算函式的彙整：
@@ -368,6 +379,12 @@ Fintech project/
 │   ├── prompts/                     # Gemini 提示詞模板
 │   └── results/                    # 訪談記錄與萃取結果
 │
+├── preference_engine/               # Stage 2_1-C：投資理念+問答 → 9 維權重（Phase 3 BNN）
+│   ├── phase3_system/               # 引擎（engine / core / encoder / cli）
+│   ├── assets/                      # 模型與設定（9 個 1D BNN、PhilHead、gate、題庫、校準）
+│   ├── integrate_example.py         # 整合範例
+│   └── README.md                    # 用法（BGE-M3 線上/離線、輸出 Ew 格式）
+│
 ├── sentiment_engine/                # FinBERT 情緒分析子系統
 │   ├── finnhub_fetcher.py
 │   ├── finbert_scoring.py
@@ -413,7 +430,7 @@ Fintech project/
 | 決策 | 說明 |
 |------|------|
 | AHP 保留為 baseline | 作為傳統方法對照組，可在沒有 API Key 的環境下執行完整流程 |
-| 兩條偏好路線共用介面 | `json/stage2_ahp_global_weights.json` 為唯一輸出點，Stage 3 無需知道上游路線 |
+| 三條偏好路線共用介面 | `json/stage2_ahp_global_weights.json` 為唯一輸出點，Stage 3 無需知道上游路線（AHP / preference_engine / Gemini）|
 | FinBERT 本地部署 | 避免每次呼叫外部 API，降低延遲與成本；情緒分數計算可離線執行 |
 | DEA 交互效率 | 相較單純的 Super-Efficiency DEA，交互效率可避免自評偏誤，排名更具客觀性 |
 | Stage 3 不直接依賴偏好來源 | 確保求解器介面穩定，未來可插拔更多偏好方法 |
