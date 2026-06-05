@@ -2648,12 +2648,13 @@ def plot_preference_radar_chart(optimal_weights, max_sharpe_weights, vectors_dic
             ms_scores.append(m_score)
 
         elif cat == "Return_Div" and "Div_Yield" in pref_metrics:
-            # 殖利率軸使用「真實投資組合殖利率」做相對映射。
-            p_score, m_score = relative_pair_score(
-                pref_metrics["Div_Yield"],
-                ms_metrics["Div_Yield"],
-                higher_is_better=True,
-            )
+            # 殖利率軸改用「固定尺度映射」(0%~5%)，取代原本的相對勝負映射。
+            # 原相對映射不論差距大小，贏家固定 0.9、輸家固定 0.4，會把「1.76% vs 1.77%」
+            # 這種 0.01% 的微小差距畫成雷達圖上的巨大落差（純視覺假象）。改固定尺度後，
+            # 兩者皆 ≈0.35，幾乎重疊，忠實反映真實差距；高殖利率才會明顯往外擴。
+            DIV_SCORE_FLOOR, DIV_SCORE_CAP = 0.0, 5.0
+            p_score = bounded_score(pref_metrics["Div_Yield"], DIV_SCORE_FLOOR, DIV_SCORE_CAP)
+            m_score = bounded_score(ms_metrics["Div_Yield"], DIV_SCORE_FLOOR, DIV_SCORE_CAP)
             pref_scores.append(p_score)
             ms_scores.append(m_score)
 
@@ -2727,7 +2728,9 @@ def plot_preference_radar_chart(optimal_weights, max_sharpe_weights, vectors_dic
     top_3_cats = sorted(categories, key=lambda c: blended_weights[c], reverse=True)[:3]
     
     metric_map = {
-        "Return_CAGR": ("Arithmetic_Ret", "{:.2f}%"), "Return_Div": ("Div_Yield", "{:.2f}%"),
+        # 報酬軸以「對 VT 的 beta（系統性風險曝險）」評分（見上方 beta 評分），
+        # 因此這裡顯示的原始代理值也改成 beta，避免雷達位置(以 beta)與標註數字(報酬率)互相矛盾。
+        "Return_CAGR": ("Beta_vs_VT", "β={:.2f}"), "Return_Div": ("Div_Yield", "{:.2f}%"),
         "Risk_Vol": ("Volatility", "{:.2f}%"), "Risk_MaxDD": ("MaxDD", "{:.2f}%"),
         "Cost_ExpRatio": ("Cost", "{:.3f}%"), "Div_Score": ("Proxy_Div", "{:.4f}"),
         "FinBERT_score": ("Sentiment", "{:.4f}"), "Liq_Volume": ("Volume", "{:,.1f}M"),
@@ -2735,7 +2738,7 @@ def plot_preference_radar_chart(optimal_weights, max_sharpe_weights, vectors_dic
     }
     
     label_map = {
-        "Return_CAGR": "歷史報酬", "Return_Div": "殖利率", "Risk_Vol": "抗波動", 
+        "Return_CAGR": "報酬（以β對VT評分）", "Return_Div": "殖利率", "Risk_Vol": "抗波動",
         "Risk_MaxDD": "抗回撤", "Cost_ExpRatio": "低成本", "Liq_Volume": "交易量",
         "Liq_AUM": "資產規模", "Div_Score": "產業分散", "FinBERT_score": "市場情緒"
     }
@@ -2748,7 +2751,8 @@ def plot_preference_radar_chart(optimal_weights, max_sharpe_weights, vectors_dic
         prefix = "* " if cat in top_3_cats else ""
         title = f"{prefix}{label_map.get(cat, cat)} ({weight_pct:.1f}%)"
         
-        if metric_key and metric_key in pref_metrics:
+        if (metric_key and metric_key in pref_metrics and metric_key in ms_metrics
+                and pd.notna(pref_metrics[metric_key]) and pd.notna(ms_metrics[metric_key])):
             pref_val = fmt.format(pref_metrics[metric_key])
             ms_val = fmt.format(ms_metrics[metric_key])
             data_text = f"偏好解: {pref_val}\n夏普解: {ms_val}"
@@ -3206,7 +3210,11 @@ def run_stage3_pipeline():
         hhi_str_ms = "N/A (API Limit)"
 
     # 呼叫視覺化函式
-    plot_portfolio_analytics_and_mpt(returns_matrix, optimal_weights, max_sharpe_weights, valid_tickers)
+    # [停用] 依使用者要求，不再輸出這兩類圖：
+    #   - {case}_portfolio_performance.png（buy&hold 淨值/回撤，描述性）
+    #   - {case}_Mathematical Efficient Frontier.png（μ-σ 前緣；本投組由 C2/BL 求解，
+    #     並非在此前緣上最佳化，保留易誤導）。雷達圖才是主要決策視覺，保留。
+    # plot_portfolio_analytics_and_mpt(returns_matrix, optimal_weights, max_sharpe_weights, valid_tickers)
 
     # 🚨 新增：整理向量字典，呼叫視覺化函式 2: 雷達圖
     vectors_dict = {
@@ -3377,6 +3385,10 @@ def run_stage3_pipeline():
     analytics_df.to_csv(csv_analytics_path, index=False, encoding='utf-8-sig')
 
     # ── 將本次主系統的「全部圖表 + 報表」集中到 user_results/main_{case}_{timestamp}/ ──
+    # 依使用者要求分成兩個子資料夾：
+    #   01_screening_eda/ ── DEA 分數分布 + EDA（前處理）圖與 DEA 結果表
+    #   02_portfolio/     ── 投組推薦（雷達圖 + 權重/分析報表）
+    # 註：投組績效圖與效率前緣圖已停用，故 02 只精準收雷達圖（避免把舊殘檔一起複製進來）。
     try:
         import glob as _glob
         import shutil
@@ -3384,14 +3396,25 @@ def run_stage3_pipeline():
         _stamp = _dt.now().strftime("%Y%m%d_%H%M%S")
         _user_root = getattr(parameters, "USER_RESULTS_DIR", "user_results")
         _dest = os.path.join(_user_root, f"main_{case}_{_stamp}")
-        os.makedirs(_dest, exist_ok=True)
-        _patterns = [f"png\\{case}_*.png", "png\\eda_*.png", "png\\*dea*.png", "png\\*DEA*.png",
-                     f"report\\{file_prefix}_*.txt", f"report\\{file_prefix}_*.csv"]
+        _groups = {
+            "01_screening_eda": [
+                "png\\eda_*.png", "png\\*dea*.png", "png\\*DEA*.png",
+                "csv\\stage1_dea_results.csv",
+            ],
+            "02_portfolio": [
+                f"png\\{case}_radar_chart.png",
+                f"report\\{file_prefix}_*.txt", f"report\\{file_prefix}_*.csv",
+            ],
+        }
         _n = 0
-        for _pat in _patterns:
-            for _f in _glob.glob(_pat):
-                shutil.copy2(_f, os.path.join(_dest, os.path.basename(_f)))
-                _n += 1
-        log.info(f"[user_results] 本次推薦全部圖表+報表（{_n} 檔）已集中到 {_dest}")
+        for _sub, _patterns in _groups.items():
+            _subdir = os.path.join(_dest, _sub)
+            os.makedirs(_subdir, exist_ok=True)
+            for _pat in _patterns:
+                for _f in _glob.glob(_pat):
+                    shutil.copy2(_f, os.path.join(_subdir, os.path.basename(_f)))
+                    _n += 1
+        log.info(f"[user_results] 本次推薦圖表+報表（{_n} 檔）已分兩夾集中到 {_dest} "
+                 f"（01_screening_eda / 02_portfolio）")
     except Exception as _exc:
         log.warning(f"[user_results] 集中輸出失敗：{_exc}")

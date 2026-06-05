@@ -386,20 +386,47 @@ def stage3b_optional_preference_backtest(
 
     from backtest_engine import run_rolling_backtest, BacktestConfig
 
-    cfg = BacktestConfig(
-        start_date=DEFAULT_PROMPT_BACKTEST_START,
+    # 偏好回測需要「起點再往前 lookback 年」的歷史。若回測價格快取不夠長，
+    # filter_min_history 會擲出 "No ETF passes the minimum history filter"。
+    # 為了讓使用者「直接跑就有結果」，這裡做兩件事：
+    #   1. 開啟 fetch_missing_data + fetch_period="max"：第一次執行會自動補抓
+    #      完整歷史價格並寫入回測快取（之後快取夠長就不會重抓，後續執行很快）。
+    #   2. 若指定的「近 ~8 年」窗仍湊不到足夠標的（離線／標的太年輕），自動退而
+    #      改用較近的起點重試，確保一定能產出回測，並告知實際採用的窗。
+    _common = dict(
         end_date=None,                       # 用到資料最新日
         rebalance_freq=freq,                 # 使用者選
         preference_file=preference_file,     # ★用剛產生的使用者偏好★
+        fetch_missing_data=True,             # 缺歷史就自動補抓
+        fetch_period="max",                  # 補抓全歷史（涵蓋 8 年窗 + lookback）
     )
+    _candidate_starts = [DEFAULT_PROMPT_BACKTEST_START, "2020-06-01", "2022-01-01"]
+    _probe = BacktestConfig(start_date=DEFAULT_PROMPT_BACKTEST_START, **_common)
     print(f"\n啟動偏好回測：演算法={parameters.OPTIMIZATION_ARM}、再平衡={freq_map[freq]}、"
-          f"窗={DEFAULT_PROMPT_BACKTEST_START}~最新、lookback={cfg.lookback_years}年、基準={cfg.benchmark_ticker}")
-    print("（這會跑歷史滾動回測並輸出圖表/報告，可能需要數分鐘…）")
-    try:
-        run_rolling_backtest(cfg)
-        print("\n✅ 偏好回測完成。輸出在 backtest_report/ 與 upgrade_figures/。")
-    except Exception as exc:
-        print(f"⚠️ 偏好回測失敗：{exc}")
+          f"目標窗={DEFAULT_PROMPT_BACKTEST_START}~最新、lookback={_probe.lookback_years}年、"
+          f"基準={_probe.benchmark_ticker}")
+    print("（首次執行會自動補抓完整歷史價格，可能需要數分鐘；之後用快取加速…）")
+    _done = False
+    for _i, _sd in enumerate(_candidate_starts):
+        cfg = BacktestConfig(start_date=_sd, **_common)
+        try:
+            run_rolling_backtest(cfg)
+            _done = True
+            if _i > 0:
+                print(f"（提示：價格快取歷史不足以支撐 {DEFAULT_PROMPT_BACKTEST_START} 起點，"
+                      f"已自動改用較近起點 {_sd} 完成回測。）")
+            print(f"\n✅ 偏好回測完成（起點 {_sd}）。輸出在 user_results/（backtest_* 夾）"
+                  f"與 backtest_report/。")
+            break
+        except ValueError as exc:
+            if "minimum history filter" in str(exc).lower() and _i < len(_candidate_starts) - 1:
+                print(f"⚠️ 起點 {_sd} 無足夠歷史標的，改用較近起點重試…")
+                continue
+            print(f"⚠️ 偏好回測失敗：{exc}")
+            break
+        except Exception as exc:
+            print(f"⚠️ 偏好回測失敗：{exc}")
+            break
 
 
 def run_full_pipeline(config: PipelineConfig | None = None) -> None:

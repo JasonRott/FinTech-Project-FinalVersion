@@ -793,6 +793,30 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 量測限制：6 個不同窗混了「進場時機 + 市場規制」;更乾淨測法=固定未來、平移起始點小步長（未來精修）。
 - **結論**：DCA vs 單筆 ≈ 路徑依賴平手;DCA 可當使用者選項但不宣稱系統性幫高成長。`OPTIMIZATION_ARM` 還原 "A"。
 
+## 2026-06-06：產品化修正 — 偏好回測可用性 + 雷達圖口徑 + 輸出整理（純展示/UX，未動最佳化器）
+
+狀態：完成 + `py_compile` 通過。**最佳化器邏輯完全未動**（兩檔 optimizer 仍逐項相同）；本批僅改使用者體驗：回測前置、雷達圖展示口徑、圖表輸出整理。
+
+### 問題（使用者直接跑 main + 選回測時回報）
+1. **偏好回測跑不出來**：`run_rolling_backtest` 擲 `No ETF passes the minimum history filter`。根因＝回測價格快取只有約 3 年，但 prompt 回測窗 `2018-06-01`（近 8 年）＋ lookback 3 年需要 2015-06 起的歷史，`filter_min_history` 全數淘汰。
+2. **雷達圖報酬軸口徑矛盾**：報酬軸已改用 beta 評分（與偏好分數一致），但軸上標註仍印「算術年化報酬率 %」→ 出現「偏好解報酬 23.92% < 夏普解 29.57% 但紅線反而更外擴」的矛盾（因為偏好解 beta 較高）。
+3. **殖利率軸放大假象**：殖利率用「相對勝負映射」(贏家固定 0.9、輸家固定 0.4)，把「1.76% vs 1.77%」這種 0.01% 微差畫成巨大落差。
+4. **要移除兩類圖**：`{case}_portfolio_performance.png`、`{case}_*efficient_frontier*.png`（效率前緣非 C2/BL 實際最佳化所在，描述性、易誤導）。
+5. **輸出未分類**：希望 DEA 分布＋EDA 一夾、投組/報表一夾。
+
+### 改了什麼
+- **`pipeline_stages.py / stage3b_optional_preference_backtest`**：prompt 回測改 `fetch_missing_data=True, fetch_period="max"`（首次自動補抓全歷史並寫快取，之後用快取加速）；並加「起點漸進回退」：`[2018-06-01 → 2020-06-01 → 2022-01-01]`，遇 minimum-history 錯誤自動換較近起點重試，確保一定有結果並告知實際採用窗。
+- **`functions.py / plot_preference_radar_chart`**：
+  - 報酬軸標籤改「報酬（以β對VT評分）」；`metric_map["Return_CAGR"]` 原始代理值由 `Arithmetic_Ret %` 改 `Beta_vs_VT`（`β=…`），讓標註數字與雷達位置（皆 beta）一致。
+  - 殖利率軸改「固定尺度映射」`bounded_score(Div_Yield, 0%, 5%)`（取代相對勝負映射）→ 微差忠實重疊、高殖利率才外擴。
+  - axis label 取值加 `ms_metrics` 在場 + `notna` 防呆（beta 缺值時優雅退回「無單一原始代理值」）。
+- **`functions.py / run_stage3_pipeline`**：停用 `plot_portfolio_analytics_and_mpt(...)` 呼叫（不再輸出績效圖與效率前緣圖；雷達圖保留）。
+- **`functions.py` user_results 收集器**：每次主系統推薦輸出改分兩個子夾 `01_screening_eda/`（eda_*、*dea* 圖＋`stage1_dea_results.csv`）與 `02_portfolio/`（`{case}_radar_chart.png`＋推薦報表）；02 改精準收雷達圖，避免把舊殘檔（已停用的績效/前緣圖）一起複製進來。
+
+### 驗證
+- `py_compile`：functions.py、pipeline_stages.py 皆 COMPILE_OK。
+- 安全性：未觸碰任何 optimizer 分支、傾斜 s、約束、g(w)；`Beta_vs_VT` 已由 `get_portfolio_metrics` 對 pref/ms 兩組計算（functions.py L3185），標籤可用。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項
