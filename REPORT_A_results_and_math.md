@@ -29,17 +29,14 @@
 
 ### 2.1 Stage 0 — 特徵與正規化
 9 維特徵:`Return_CAGR, Return_Div, Risk_Vol, Risk_MaxDD, Cost_ExpRatio, Liq_Volume, Liq_AUM, Div_Score, FinBERT_score`。
-正規化 `robust_scale`（縮尾 min-max）：先夾到 [p_low, p_high] 分位,再線性壓到 [0,1]:
-```
-clipped = clip(x, quantile(x,p_low), quantile(x,p_high))
-norm    = (clipped − min) / (max − min)     （風險/成本維度取 1−norm,越低越好）
-```
+正規化 `robust_scale`（縮尾 min-max）：先夾到 $[p_{\text{low}}, p_{\text{high}}]$ 分位,再線性壓到 $[0,1]$（風險/成本維度取 $1-\text{norm}$,越低越好）:
+
+$$\text{clipped} = \mathrm{clip}\big(x,\ Q_{p_{\text{low}}}(x),\ Q_{p_{\text{high}}}(x)\big), \qquad \text{norm} = \frac{\text{clipped} - \min}{\max - \min}$$
 
 ### 2.2 Stage 1 — DEA 效率篩選
-CCR 投入導向（scipy `linprog`）：每檔 ETF 解
-```
-max  Σ uᵣ yᵣₒ   s.t.  Σ vᵢ xᵢₒ = 1,  Σ uᵣ yᵣⱼ − Σ vᵢ xᵢⱼ ≤ 0 ∀j,  u,v ≥ 0
-```
+CCR 投入導向（scipy `linprog`）：每檔 ETF $o$ 解
+
+$$\max_{u,v}\ \sum_r u_r y_{ro} \quad \text{s.t.}\quad \sum_i v_i x_{io}=1,\quad \sum_r u_r y_{rj}-\sum_i v_i x_{ij}\le 0\ \ \forall j,\quad u,v\ge 0$$
 投入 = {風險, 成本};產出 = **{Out_CAGR, Out_Div, Out_Liquidity, Out_Diversity}**（資本利得與股息**分開**,成長股不被股息平均稀釋）。
 候選池門檻 = **取 DEA 分數前 25% 百分位**（取代固定 0.80）。另算超效率、交叉效率。
 
@@ -51,38 +48,43 @@ max  Σ uᵣ yᵣₒ   s.t.  Σ vᵢ xᵢₒ = 1,  Σ uᵣ yᵣⱼ − Σ vᵢ x
 
 ### 2.5 Stage 3 — 偏好驅動最佳化（系統核心）
 
-**(a) 偏好 → 參數映射 g(w)**（連續函數,非查表）：
-```
-T_growth   = w[CAGR] / (w[CAGR] + w[Risk_Vol] + w[Risk_MaxDD])      # 資本利得渴望
-core_mode  = minvar (T_growth<0.40) / market (0.40–0.65) / beta (≥0.65)
-risk_fraction = clip(T_growth, 0.05, 0.95)                          # 風險水準(0..1)
-τ          = 0.30·(1−T_growth)·R̂   (R̂=clip(w[CAGR]+w[Div],0,1))    # 偏好傾斜強度
-```
+**(a) 偏好 → 參數映射 $g(\mathbf{w})$**（連續函數,非查表）。$T_{\text{growth}}$ 即「資本利得渴望」:
 
-**(b) U-C2 三核心**（只需每日報酬;Σ=Ledoit-Wolf 收縮共變異;c_i=Cov(r_i, r_VT)）：
-```
-保守 minvar :  min  ½wᵀΣw                − τ·wᵀs
-平衡 market :  min  ½wᵀΣw − wᵀc           − τ·wᵀs     （= 對 VT 報酬流最小化追蹤誤差）
-報酬 beta   :  max  wᵀβ                   + τ·wᵀs ,  β=c/Var(r_VT)
-共同約束    :  Σw=1, 0≤wᵢ≤cap(0.40), √(wᵀΣw) ≤ vol_budget
-```
+$$T_{\text{growth}} = \frac{w_{\text{CAGR}}}{w_{\text{CAGR}}+w_{\text{Vol}}+w_{\text{MaxDD}}}$$
 
-**(c) 風險預算 = 相對候選池可行範圍**（恆可行）：
-```
-v_min = 最小變異組合波動,  v_max = 最大變異組合波動
-vol_budget = v_min + risk_fraction·(v_max − v_min)
-```
+$$\text{core} = \begin{cases} \text{minvar}, & T_{\text{growth}} < 0.40\\[2pt] \text{market}, & 0.40 \le T_{\text{growth}} < 0.65\\[2pt] \text{beta}, & T_{\text{growth}} \ge 0.65 \end{cases}$$
 
-**(d) 偏好分數的報酬維度 = beta（系統性風險曝險）**：取代「過去 CAGR 排名」(不預測未來);
-```
-報酬分數 = 0.5 + 0.5·clip((β − 1)/(REF − 1), 0, 1)      # 市場 β=1→0.5;β=REF(2)→1;低於市場 floor 0.5
-```
-其餘 8 維仍為偏好分數構面。**僅影響評估/展示分數,不進求解器目標。**
+$$\text{risk\_fraction} = \mathrm{clip}(T_{\text{growth}},\,0.05,\,0.95), \qquad \tau = 0.30\,(1-T_{\text{growth}})\,\hat{R}, \quad \hat{R}=\mathrm{clip}(w_{\text{CAGR}}+w_{\text{Div}},\,0,\,1)$$
 
-**(e) Black-Litterman 理論地基**：市場均衡隱含報酬 `Π = λΣw_mkt`,而 `Π_i = λ·Cov(r_i,市場) = λ·β_i·Var(市場)` —— **Π ∝ β（即 CAPM）**。可證:
-- market 核心 `min ½wᵀΣw − wᵀc` ≡ BL 均值-變異 `max wᵀΠ − (λ/2)wᵀΣw`（代入 Π=λc）。
-- beta 核心 `max wᵀβ` ≡ BL 約束式。  minvar = BL 高風險趨避極限。
-→ **三核心 = BL 效率前緣上不同風險趨避的點**;Π 用 c（對 VT 共變異,不需成分權重）計算。
+**(b) U-C2 三核心**（只需每日報酬;$\Sigma=$ Ledoit-Wolf 收縮共變異;$c_i=\mathrm{Cov}(r_i, r_{VT})$）：
+
+- **保守 minvar**：$\displaystyle \min_{\mathbf{w}}\ \tfrac{1}{2}\mathbf{w}^{\top}\Sigma\mathbf{w} - \tau\,\mathbf{w}^{\top}\mathbf{s}$
+- **平衡 market**：$\displaystyle \min_{\mathbf{w}}\ \tfrac{1}{2}\mathbf{w}^{\top}\Sigma\mathbf{w} - \mathbf{w}^{\top}\mathbf{c} - \tau\,\mathbf{w}^{\top}\mathbf{s}$ （= 對 VT 報酬流最小化追蹤誤差）
+- **報酬 beta**：$\displaystyle \max_{\mathbf{w}}\ \mathbf{w}^{\top}\boldsymbol{\beta} + \tau\,\mathbf{w}^{\top}\mathbf{s}$,其中 $\boldsymbol{\beta} = \mathbf{c}/\mathrm{Var}(r_{VT})$
+
+共同約束:
+
+$$\sum_i w_i = 1, \quad 0\le w_i \le \text{cap}=0.40, \quad \sqrt{\mathbf{w}^{\top}\Sigma\mathbf{w}}\ \le\ \text{vol\_budget}$$
+
+**(c) 風險預算 = 相對候選池可行範圍**（恆可行）：$v_{\min}=$ 最小變異組合波動,$v_{\max}=$ 最大變異組合波動。
+
+$$\text{vol\_budget} = v_{\min} + \text{risk\_fraction}\cdot(v_{\max} - v_{\min})$$
+
+**(d) 偏好分數的報酬維度 = beta（系統性風險曝險）**：取代「過去 CAGR 排名」(不預測未來)。
+
+$$\text{score}_{\text{return}} = 0.5 + 0.5\,\mathrm{clip}\!\left(\frac{\beta - 1}{\text{REF} - 1},\ 0,\ 1\right)$$
+
+市場 $\beta=1\to 0.5$;$\beta=\text{REF}=2\to 1$;低於市場 floor $0.5$（不懲罰保守型）。其餘 8 維仍為偏好分數構面。**僅影響評估/展示分數,不進求解器目標。**（雷達圖另以 $\text{REF}=1.2$ 顯示,僅視覺鑑別度,不影響 win_VT。）
+
+**(e) Black-Litterman 理論地基**：市場均衡隱含報酬 $\Pi = \lambda\Sigma\mathbf{w}_{\text{mkt}}$,而
+
+$$\Pi_i = \lambda\,\mathrm{Cov}(r_i,\,m) = \lambda\,\beta_i\,\mathrm{Var}(m) \quad\Longrightarrow\quad \Pi \propto \beta$$
+
+即 **CAPM**（$m$ = 市場/VT）。可證 market 核心等價於 BL 均值-變異（代入 $\Pi=\lambda\mathbf{c}$）：
+
+$$\min_{\mathbf{w}}\ \tfrac{1}{2}\mathbf{w}^{\top}\Sigma\mathbf{w} - \mathbf{w}^{\top}\mathbf{c} \quad\equiv\quad \max_{\mathbf{w}}\ \mathbf{w}^{\top}\Pi - \tfrac{\lambda}{2}\mathbf{w}^{\top}\Sigma\mathbf{w}$$
+
+而 beta 核心 $\max_{\mathbf{w}}\mathbf{w}^{\top}\boldsymbol{\beta}$ ≡ BL 約束式;minvar = BL 高風險趨避極限。→ **三核心 = BL 效率前緣上不同風險趨避的點**;$\Pi$ 用 $\mathbf{c}$（對 VT 共變異,不需成分權重）計算。
 
 ---
 
@@ -137,5 +139,21 @@ vol_budget = v_min + risk_fraction·(v_max − v_min)
 
 ---
 
-## 5. 結論
+## 5. 未來展望
+
+已完成範圍與刻意延後的工作如下,作為後續研究的明確路線:
+
+1. **Black-Litterman 路 (b) — 因子觀點**：目前僅用路 (a)（市場隱含報酬 $\Pi=$ CAPM 作為穩定 $\mu$）。未來可加入因子觀點（價值/動能/品質/低波）的 BL 主觀觀點 + 信心矩陣;惟因子溢酬非每個市場/期間皆成立,須市場別校準。
+2. **歷史逐期產業快照**：消除目前 HHI/分散維度的 look-ahead（現用「當前產業分布」回溯套用）。改抓各再平衡日的歷史產業歸屬,使分散度在回測中完全 point-in-time。
+3. **回撤控制改用 MaxDD 約束**：rf 封頂實驗證實「壓 vol 預算 $\neq$ 控回撤」。正解是直接對投組 MaxDD（或 CVaR）加約束,作為報酬導向使用者真正的回撤旋鈕。
+4. **真實除息與股息再投入（DRIP）**：以逐次 ex-dividend 事件取代平均殖利率估計,並支援股息再投入,使總報酬與稅務更貼近真實。
+5. **跨市場 / 跨期間驗證**：現以美國掛牌 ETF、2016–2026 為主。擴及他國市場與更長/不同期間,檢驗 $g(\mathbf{w})$、三核心與 beta 評分的外推性。
+6. **更穩健的情緒資料**：FinBERT 情緒覆蓋與穩定性有限,目前不倚賴。未來可換更廣、更穩的新聞/情緒來源,並重評其邊際價值。
+7. **交易成本 / 周轉感知再平衡**：將周轉與交易成本納入再平衡目標（如周轉懲罰），降低實務摩擦。
+8. **主動式偏好探測產品化**：把 Gemini 自然語言訪談（Stage 2_1 主動模式）做成穩定的對話式偏好提取流程。
+9. **更乾淨的 DCA 測試**：以固定未來期間 + 細粒度起始點位移,分離「進場時機」與「市場規制」,精確量測定期定額效果。
+
+---
+
+## 6. 結論
 本系統的價值在於:**理論地基紮實(BL/CAPM)、偏好驅動、profile-dependent、跨規制驗證、且對限制誠實**。它能讓報酬導向使用者穩健取得 >VT 的絕對報酬,並讓各類使用者的偏好在樣本外可被驗證地滿足;但不應宣稱為穩定 alpha。作為決策支援框架與研究成果,結論站得住腳。

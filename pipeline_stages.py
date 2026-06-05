@@ -98,14 +98,14 @@ def _announce_stage_end(stage_key: str, output_hint: str = "") -> None:
 
 def _stage3_output_hint() -> str:
     case_name = parameters.CASE_NAME
+    # 註：投組績效圖與蒙地卡羅前緣圖已停用,不再輸出（見 functions.py）。
     outputs = [
         f"report/{case_name}_summary.txt",
         f"report/{case_name}_weights.csv",
         f"report/{case_name}_analytics.csv",
-        f"png/{case_name}_portfolio_performance.png",
-        f"png/{case_name}_mpt_efficient_frontier.png",
         f"png/{case_name}_Mathematical Efficient Frontier.png",
         f"png/{case_name}_radar_chart.png",
+        "（圖表+報表已自動彙整到 user_results/main_<case>_<時間戳>/）",
     ]
     return ", ".join(outputs)
 
