@@ -2297,7 +2297,9 @@ def build_sector_matrix(etf_list, db_file):
             fallback_bucket = f"ASSET_CLASS::{asset_class_lookup.get(ticker, 'Unclassified')}"
             S_matrix[i, sector_index[fallback_bucket]] = 1.0
 
-    log.info(f"📊 成功建立真實產業矩陣 (維度: {N} 檔 ETF x {K} 個產業)")
+    # 降為 DEBUG：此函式每期/每次評分都會呼叫（含單檔基準評分），於 INFO 過於吵雜；
+    # 有意義的數量（特徵宇宙/DEA 池/候選數/選入數/持股數）已記於 backtest diagnostics 表。
+    log.debug(f"📊 成功建立真實產業矩陣 (維度: {N} 檔 ETF x {K} 個產業)")
     return S_matrix, sector_list
 
 def plot_portfolio_analytics_and_mpt(returns_matrix, optimal_weights, max_sharpe_weights, tickers):
