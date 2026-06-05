@@ -1,0 +1,34 @@
+=================================================================
+ 🎯 專題最終產出：持股權重對比
+=================================================================
+ ETF  偏好組合 Weight (%)  最大夏普 Weight (%)
+JEPI            40.00             0.00
+SCHY            37.53             0.00
+SCHD            22.47             0.00
+ HDV             0.00             9.77
+EMLP             0.00            40.00
+SPMO             0.00            40.00
+ ITA             0.00            10.23
+
+=================================================================
+ 📊 投資組合深度健檢報告 (Portfolio Analytics Comparison)
+=================================================================
+                                     Metric Preference-Driven Max Sharpe
+               Arithmetic Annual Return (%)              9.70      29.16
+                      Capital Gain CAGR (%)              9.57      32.53
+                         Dividend Yield (%)              5.46       1.80
+Estimated Total Return, No Reinvestment (%)             15.03      34.33
+                          Expense Ratio (%)             0.184      0.479
+                  Annualized Volatility (%)             10.58      13.96
+                       Maximum Drawdown (%)            -12.91     -14.33
+                Liquidity Volume (Millions)              4.85       0.57
+                   Liquidity AUM (Billions)             40.02      12.32
+                  True Portfolio HHI (Real)            0.1130     0.1704
+                   Weighted Sentiment Score            0.0519     0.0146
+                               Sharpe Ratio             0.539      1.802
+Note: Capital Gain CAGR uses the buy-and-hold portfolio NAV path over the Stage 3 lookback period; Estimated Total Return adds weighted dividend yield without dividend reinvestment.
+-----------------------------------------------------------------
+
+   偏好驅動組合【偏好效用分數】: 0.8177
+   傳統最大夏普【偏好效用分數】: 0.5347
+=================================================================

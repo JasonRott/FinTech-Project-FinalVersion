@@ -1,0 +1,59 @@
+# Output Inventory
+
+## Original Main System Outputs
+- csv/stage0_yq_features.csv
+- csv/stage0_final_matrix.csv
+- csv/stage0_dea_ready_matrix.csv
+- csv/stage1_dea_results.csv
+- csv/stage1_super_efficiency_results.csv
+- csv/stage1_final_candidates.csv
+- csv/stage2_final_user_universe.csv
+- csv/stage2_normalized_features.csv
+- json/stage2_ahp_global_weights.json
+- report/{CASE_NAME}_summary.txt
+- report/{CASE_NAME}_weights.csv
+- report/{CASE_NAME}_analytics.csv
+- png/eda_histograms_beforeDEA.png
+- png/eda_boxplots_beforeDEA.png
+- png/eda_normalized_histograms.png
+- png/eda_normalized_boxplots.png
+- png/dea_score_distribution.png
+- png/{CASE_NAME}_portfolio_performance.png
+- png/{CASE_NAME}_mpt_efficient_frontier.png
+- png/{CASE_NAME}_Mathematical Efficient Frontier.png
+- png/{CASE_NAME}_radar_chart.png
+
+## Backtest System Unified Outputs
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_weights.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_diagnostics.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_nav.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_price_nav.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_dividend_cash.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_price_returns.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_returns.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_cashflows.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_summary.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_preference_scores.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_period_dimension_comparison.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_dimension_comparison.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_annual_returns.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_turnover.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_final_feature_matrix.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_final_dea_ready_matrix.csv
+- backtest_report/csv/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_final_dea_results.csv
+- backtest_report/report/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_summary.txt
+- backtest_report/report/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_analytics.csv
+- backtest_report/report/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_dimension_comparison.csv
+- backtest_report/report/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_final_weights.csv
+- backtest_report/report/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_output_inventory.md
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_nav.png
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_drawdown.png
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_final_eda_histograms_beforeDEA.png
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_final_eda_boxplots_beforeDEA.png
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_final_eda_normalized_histograms.png
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_final_eda_normalized_boxplots.png
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_dea_score_distribution.png
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_portfolio_performance.png
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_radar_chart.png
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_annual_returns.png
+- backtest_report/png/backtest_q_lookback-3y_minhist-8y_dca-0/backtest_q_weight_evolution.png

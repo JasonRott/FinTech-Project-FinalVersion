@@ -1,0 +1,10 @@
+profile,tau,Sharpe,Vol,MaxDD,CAGR,beats_VT_CAGR,win_VT
+aggressive_growth,0.0,0.658,10.48,-15.5,10.88,False,17.2
+aggressive_growth,0.1,0.373,15.1,-26.3,8.85,False,89.1
+aggressive_growth,0.3,0.371,16.92,-30.14,9.23,False,93.8
+balanced,0.0,0.665,10.64,-15.81,11.06,False,34.4
+balanced,0.1,0.69,11.98,-14.38,12.23,False,48.4
+balanced,0.3,0.711,12.63,-15.73,12.93,False,62.5
+conservative,0.0,0.664,10.64,-15.87,11.05,False,57.8
+conservative,0.1,0.56,10.98,-15.25,10.0,False,34.4
+conservative,0.3,0.601,11.61,-15.2,10.83,False,45.3

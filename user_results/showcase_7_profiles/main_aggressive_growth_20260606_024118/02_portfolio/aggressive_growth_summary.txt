@@ -1,0 +1,36 @@
+=================================================================
+ 🎯 專題最終產出：持股權重對比
+=================================================================
+ ETF  偏好組合 Weight (%)  最大夏普 Weight (%)
+ VXF            38.72             0.00
+IUSG            16.89             0.00
+SCHG            16.53             0.00
+SPMO            16.37            40.00
+SCHF             6.12             0.00
+SCHA             5.37             0.00
+ ITA             0.00            10.36
+EMLP             0.00            40.00
+ HDV             0.00             9.64
+
+=================================================================
+ 📊 投資組合深度健檢報告 (Portfolio Analytics Comparison)
+=================================================================
+                                     Metric Preference-Driven Max Sharpe
+               Arithmetic Annual Return (%)             26.00      29.24
+                      Capital Gain CAGR (%)             27.43      32.65
+                         Dividend Yield (%)              1.05       1.80
+Estimated Total Return, No Reinvestment (%)             28.47      34.45
+                          Expense Ratio (%)             0.058      0.479
+                  Annualized Volatility (%)             18.74      13.96
+                       Maximum Drawdown (%)            -22.26     -14.33
+                Liquidity Volume (Millions)              2.41       0.57
+                   Liquidity AUM (Billions)             35.88      12.32
+                  True Portfolio HHI (Real)            0.1760     0.1706
+                   Weighted Sentiment Score            0.0685     0.0144
+                               Sharpe Ratio             1.174      1.809
+Note: Capital Gain CAGR uses the buy-and-hold portfolio NAV path over the Stage 3 lookback period; Estimated Total Return adds weighted dividend yield without dividend reinvestment.
+-----------------------------------------------------------------
+
+   偏好驅動組合【偏好效用分數】: 0.6024
+   傳統最大夏普【偏好效用分數】: 0.5457
+=================================================================

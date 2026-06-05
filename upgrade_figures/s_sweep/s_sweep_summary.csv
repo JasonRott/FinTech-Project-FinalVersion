@@ -1,0 +1,13 @@
+profile,tau,s,Sharpe,Vol,MaxDD,CAGR,VT_CAGR,beats_VT_CAGR,win_VT
+conservative,0.1,full,0.5603,10.98,-15.25,10.0,13.51,False,34.4
+conservative,0.1,noCAGR,0.6236,11.23,-16.75,10.91,13.51,False,25.0
+conservative,0.3,full,0.601,11.61,-15.2,10.83,13.51,False,45.3
+conservative,0.3,noCAGR,0.6701,11.75,-17.37,11.81,13.51,False,54.7
+balanced,0.1,full,0.6905,11.98,-14.38,12.23,13.51,False,48.4
+balanced,0.1,noCAGR,0.7556,11.86,-16.97,13.02,13.51,False,56.2
+balanced,0.3,full,0.711,12.63,-15.73,12.93,13.51,False,62.5
+balanced,0.3,noCAGR,0.7815,12.5,-17.83,13.84,13.51,True,70.3
+return_leaning,0.1,full,0.6662,12.26,-14.21,12.07,13.51,False,89.1
+return_leaning,0.1,noCAGR,0.6854,11.53,-16.44,11.87,13.51,False,68.8
+return_leaning,0.3,full,0.5579,13.85,-19.22,11.35,13.51,False,92.2
+return_leaning,0.3,noCAGR,0.8408,12.28,-17.03,14.5,13.51,True,93.8

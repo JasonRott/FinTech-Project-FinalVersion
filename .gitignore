@@ -18,7 +18,7 @@ csv/backtest_volume_db.csv
 
 # 生成輸出（可由管線/回測重新產生）
 backtest_report/
-upgrade_figures/
+# 註：upgrade_figures/（關鍵實驗的數據 CSV + 圖）改為「追蹤」，供組員簡報引用，不再 ignore。
 
 # 大型合成訓練結果（~1.1GB，主動偏好模組）
 active_preference/results/
@@ -64,8 +64,10 @@ active_preference/synthetic_feature_records_debug.jsonl
 active_preference/bnn_preference_model_debug.npz
 active_preference/bnn_training_summary_debug.json
 
-# 使用者結果（每次執行的圖表+報表;可重新產生）
-user_results/
+# 使用者結果：每次主系統執行的 new_user_{n} 不入庫（可重新產生）；
+# 但「七使用者固定展示」showcase_7_profiles/ 要進 repo（供組員簡報，含全部圖表/報表/CSV）。
+user_results/*
+!user_results/showcase_7_profiles/
 
 # ==========================================
 # 最終系統整理（2026-06-06）：排除生成輸出與非生產檔，只保留「最終系統」

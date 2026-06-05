@@ -1217,14 +1217,19 @@ def append_sentiment_to_csv_legacy_live(csv_filepath=parameters.YQ_OUTPUT_FILE, 
         df['FinBERT_score'] = np.nan # 初始化空欄位
     
     log.info("⏳ 載入本地 FinBERT 模型中...")
-    if not Path("local_finbert").is_dir():
-        # 1. 首次聯網下載模型與 Tokenizer
-        log.info("⏳ 首次使用，正在下載 FinBERT 模型...")
+    # 偵測「權重檔」是否存在（而非只看資料夾）：repo 隨附 config/tokenizer，但權重(model.safetensors,
+    # ~419MB)是 gitignore 不入庫，故 fresh clone 後資料夾存在但缺權重 → 須自動下載。
+    _finbert_dir = Path("local_finbert")
+    _has_weights = (_finbert_dir / "model.safetensors").exists() or (_finbert_dir / "pytorch_model.bin").exists()
+    if not _has_weights:
+        # 1. 首次/缺權重時聯網下載模型與 Tokenizer（之後存到本地，不再重抓）
+        log.info("⏳ 首次使用或缺少權重，正在下載 FinBERT 模型（ProsusAI/finbert）...")
         model_name = "ProsusAI/finbert"
         model = AutoModelForSequenceClassification.from_pretrained(model_name)
         tokenizer = AutoTokenizer.from_pretrained(model_name)
 
         # 2. 儲存到本地端資料夾 (例如命名為 local_finbert)
+        _finbert_dir.mkdir(parents=True, exist_ok=True)
         model.save_pretrained("./local_finbert")
         tokenizer.save_pretrained("./local_finbert")
         log.info("✅ FinBERT 模型下載並儲存完成！")

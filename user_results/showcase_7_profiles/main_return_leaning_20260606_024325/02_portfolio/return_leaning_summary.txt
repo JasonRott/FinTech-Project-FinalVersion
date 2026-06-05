@@ -1,0 +1,39 @@
+=================================================================
+ 🎯 專題最終產出：持股權重對比
+=================================================================
+ ETF  偏好組合 Weight (%)  最大夏普 Weight (%)
+SCHF            29.53             0.00
+SCHG            15.42             0.00
+  VT            14.01             0.00
+SPYG            13.71             0.00
+ VXF            10.99             0.00
+SCHA             5.73             0.00
+SPMO             4.53            40.00
+  VB             4.26             0.00
+SCHC             1.81             0.00
+ HDV             0.00             9.79
+EMLP             0.00            40.00
+ ITA             0.00            10.21
+
+=================================================================
+ 📊 投資組合深度健檢報告 (Portfolio Analytics Comparison)
+=================================================================
+                                     Metric Preference-Driven Max Sharpe
+               Arithmetic Annual Return (%)             23.65      29.22
+                      Capital Gain CAGR (%)             24.95      32.62
+                         Dividend Yield (%)              1.77       1.80
+Estimated Total Return, No Reinvestment (%)             26.72      34.42
+                          Expense Ratio (%)             0.045      0.479
+                  Annualized Volatility (%)             16.54      13.95
+                       Maximum Drawdown (%)            -18.82     -14.33
+                Liquidity Volume (Millions)              4.74       0.57
+                   Liquidity AUM (Billions)             56.11      12.32
+                  True Portfolio HHI (Real)            0.1501     0.1704
+                   Weighted Sentiment Score            0.0549     0.0147
+                               Sharpe Ratio             1.188      1.809
+Note: Capital Gain CAGR uses the buy-and-hold portfolio NAV path over the Stage 3 lookback period; Estimated Total Return adds weighted dividend yield without dividend reinvestment.
+-----------------------------------------------------------------
+
+   偏好驅動組合【偏好效用分數】: 0.6154
+   傳統最大夏普【偏好效用分數】: 0.5545
+=================================================================

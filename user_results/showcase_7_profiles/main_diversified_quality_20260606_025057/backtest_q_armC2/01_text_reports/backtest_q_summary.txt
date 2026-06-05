@@ -1,0 +1,63 @@
+========================================================================
+Backtest Portfolio Report
+========================================================================
+Start Date: 2019-06-01
+End Date: 2026-06-05
+Rebalance Frequency: Q
+Lookback Years: 3
+Minimum History Years: 8
+Initial Capital: 1,000,000.00
+Periodic Contribution: 0.00
+Benchmark: VT
+
+Comparison Benchmarks: VOO, VT
+
+Performance Summary
+         Strategy  Cumulative_Return_%    CAGR_%  Arithmetic_Annual_Return_%  Annualized_Volatility_%   Sharpe  Max_Drawdown_%  Total_Contributed  Ending_Value   Net_Profit  Profit_on_Contributed_%  Capital_Gain_Ending_Value  Dividend_Cash  Total_Wealth  Capital_Gain_Return_%  Dividend_Income_Return_%  Total_Wealth_Return_%
+Preference_Driven           128.480194 12.669431                   13.333489                16.552949 0.563857      -33.970723          1000000.0  2.284802e+06 1.284802e+06               128.480194               1.995299e+06  289503.013446  2.284802e+06              99.529893                 28.950301             128.480194
+      EqualWeight           128.805334 12.692564                   13.505211                17.429331 0.545357      -35.851227          1000000.0  2.288053e+06 1.288053e+06               128.805334               2.068651e+06  219402.373746  2.288053e+06             106.865096                 21.940237             128.805334
+        MaxSharpe           114.725122 11.663986                   13.063964                20.001494 0.453164      -32.698003          1000000.0  2.147251e+06 1.147251e+06               114.725122               1.992910e+06  154341.326949  2.147251e+06              99.290989                 15.434133             114.725122
+               VT           152.626226 14.315427                   15.094562                18.303181 0.606155      -33.716298          1000000.0  2.526262e+06 1.526262e+06               152.626226               2.342871e+06  183391.405708  2.526262e+06             134.287085                 18.339141             152.626226
+              VOO           192.644267 16.768146                   17.442917                19.486420 0.689861      -33.670747          1000000.0  2.926443e+06 1.926443e+06               192.644267               2.789915e+06  136527.660269  2.926443e+06             178.991501                 13.652766             192.644267
+
+Forward Preference Score Summary
+       Portfolio_Forward_Preference_Score  Benchmark_Forward_Preference_Score  EqualWeight_Forward_Preference_Score  MaxSharpe_Forward_Preference_Score  Forward_Score_vs_Benchmark  Forward_Score_vs_EqualWeight  Forward_Score_vs_MaxSharpe
+count                           28.000000                           28.000000                             28.000000                           28.000000                   28.000000                     28.000000                   28.000000
+mean                             0.613577                            0.608760                              0.560076                            0.511520                    0.004817                      0.053500                    0.102056
+std                              0.058934                            0.046081                              0.051565                            0.055285                    0.027376                      0.017303                    0.035260
+min                              0.534046                            0.564819                              0.506767                            0.406840                   -0.038681                      0.021510                    0.017054
+25%                              0.562168                            0.576659                              0.510234                            0.465431                   -0.017746                      0.041542                    0.084987
+50%                              0.621536                            0.602839                              0.567436                            0.526493                    0.011070                      0.051598                    0.103361
+75%                              0.639001                            0.607154                              0.582897                            0.551080                    0.022406                      0.062679                    0.130077
+max                              0.748020                            0.747379                              0.664240                            0.613895                    0.062275                      0.093077                    0.169508
+
+Aggregate Dimension Comparison
+         Strategy  Avg_Period_Return  Avg_Preference_Score  Avg_Score_Return_CAGR  Avg_Score_Return_Div  Avg_Score_Risk_Vol  Avg_Score_Risk_MaxDD  Avg_Score_Cost  Avg_Score_Liq_Volume  Avg_Score_Liq_AUM  Avg_Score_Div_Score  Avg_Score_FinBERT  Avg_Utility_Portfolio_Volatility  Avg_Raw_Return_CAGR_%  Avg_Raw_Dividend_Yield_%  Avg_Raw_Expense_Ratio_%  Avg_Raw_Liquidity_Volume_M  Avg_Raw_Liquidity_AUM_B  Avg_Raw_FinBERT_Score  Avg_Raw_Portfolio_Volatility_%  Avg_Raw_Portfolio_MaxDD_%  Avg_Raw_Sector_HHI  Cumulative_Return_%    CAGR_%  Arithmetic_Annual_Return_%  Annualized_Volatility_%   Sharpe  Max_Drawdown_%  Total_Contributed  Ending_Value   Net_Profit  Profit_on_Contributed_%  Capital_Gain_Ending_Value  Dividend_Cash  Total_Wealth  Capital_Gain_Return_%  Dividend_Income_Return_%  Total_Wealth_Return_%  Return_Uses_Adjusted_Close                                                                                                                             Dividend_Included_In_Total_Return_Note  Periodic_Contribution
+Preference_Driven           0.036508              0.595785               0.382014              0.688214            0.603568              0.512786        0.966002              0.663667           0.898831             0.875710           0.087038                          0.167215               9.787886                  3.153903                 0.056773                    6.269121                94.620150               0.016637                       16.721495                 -24.733241            0.124290           128.480194 12.669431                   13.333489                16.552949 0.563857      -33.970723          1000000.0  2.284802e+06 1.284802e+06               128.480194               1.995299e+06  289503.013446  2.284802e+06              99.529893                 28.950301             128.480194                       False Total performance separates capital gains and estimated cash dividends. If close-price cache is missing, capital gains may still fall back to adjusted-price data.                    0.0
+               VT           0.039448              0.592440               0.391203              0.411858            0.531684              1.000000        0.961905              0.419968           0.918484             0.833430           0.088173                          0.183029              10.779679                  1.820000                 0.060000                    2.105554                76.010000               0.022158                       18.302947                 -27.383028            0.166570           152.626226 14.315427                   15.094562                18.303181 0.606155      -33.716298          1000000.0  2.526262e+06 1.526262e+06               152.626226               2.342871e+06  183391.405708  2.526262e+06             134.287085                 18.339141             152.626226                       False Total performance separates capital gains and estimated cash dividends. If close-price cache is missing, capital gains may still fall back to adjusted-price data.                    0.0
+              VOO           0.044193              0.586170               0.442070              0.269292            0.484911              1.000000        1.000000              0.627253           1.000000             0.826513           0.028991                          0.193320              14.457254                  1.190000                 0.030000                    4.459275               994.360000              -0.015964                       19.331968                 -27.063582            0.173487           192.644267 16.768146                   17.442917                19.486420 0.689861      -33.670747          1000000.0  2.926443e+06 1.926443e+06               192.644267               2.789915e+06  136527.660269  2.926443e+06             178.991501                 13.652766             192.644267                       False Total performance separates capital gains and estimated cash dividends. If close-price cache is missing, capital gains may still fall back to adjusted-price data.                    0.0
+      EqualWeight           0.035299              0.543207               0.406394              0.454589            0.585126              0.615209        0.844953              0.372450           0.604304             0.877776           0.071636                          0.171272              11.527809                  2.240340                 0.153804                    3.392139                65.914842               0.006931                       17.127235                 -24.149395            0.122224           128.805334 12.692564                   13.505211                17.429331 0.545357      -35.851227          1000000.0  2.288053e+06 1.288053e+06               128.805334               2.068651e+06  219402.373746  2.288053e+06             106.865096                 21.940237             128.805334                       False Total performance separates capital gains and estimated cash dividends. If close-price cache is missing, capital gains may still fall back to adjusted-price data.                    0.0
+        MaxSharpe           0.031949              0.509110               0.513197              0.330172            0.542906              0.749508        0.709435              0.444345           0.525065             0.706426           0.077972                          0.180561              19.585031                  1.498061                 0.274945                    9.042562                59.081420               0.011504                       18.056079                 -20.625870            0.293574           114.725122 11.663986                   13.063964                20.001494 0.453164      -32.698003          1000000.0  2.147251e+06 1.147251e+06               114.725122               1.992910e+06  154341.326949  2.147251e+06              99.290989                 15.434133             114.725122                       False Total performance separates capital gains and estimated cash dividends. If close-price cache is missing, capital gains may still fall back to adjusted-price data.                    0.0
+
+Return Basis Note: total wealth equals capital-gain price NAV plus estimated dividend cash. If close-price cache is missing, capital gains may still fall back to adjusted-price data.
+
+Diagnostics Summary
+       Rebalance_Date Next_Rebalance_Date  Feature_Universe  DEA_Universe  Candidate_Universe  Selected_Universe  Optimized_Holdings
+count              28                  28              28.0          28.0                28.0          28.000000           28.000000
+unique             28                  28               NaN           NaN                 NaN                NaN                 NaN
+top        2019-07-01          2019-09-30               NaN           NaN                 NaN                NaN                 NaN
+freq                1                   1               NaN           NaN                 NaN                NaN                 NaN
+mean              NaN                 NaN             342.0         224.0                56.0          32.107143           32.107143
+std               NaN                 NaN               0.0           0.0                 0.0           3.325984            3.325984
+min               NaN                 NaN             342.0         224.0                56.0          27.000000           27.000000
+25%               NaN                 NaN             342.0         224.0                56.0          29.000000           29.000000
+50%               NaN                 NaN             342.0         224.0                56.0          33.000000           33.000000
+75%               NaN                 NaN             342.0         224.0                56.0          34.000000           34.000000
+max               NaN                 NaN             342.0         224.0                56.0          39.000000           39.000000
+
+Final Rebalance Weights (2026-03-31)
+ ETF   Weight
+SCHF 0.400000
+IUSV 0.259047
+ VTV 0.217876
+USMV 0.123077

@@ -1,0 +1,17 @@
+anchor,profile,core,window,Sharpe,Vol,MaxDD,CAGR,VT_CAGR,beats_VT,win_VT
+VT,aggressive_growth,beta,2021-06_2026-05,0.554,19.06,-23.34,13.55,12.174,True,13.6
+VT,aggressive_growth,beta,2020-06_2023-06,0.862,18.24,-22.52,19.75,16.811,True,5.6
+VT,return_leaning,beta,2021-06_2026-05,0.541,17.69,-24.7,12.73,12.174,True,11.9
+VT,return_leaning,beta,2020-06_2023-06,0.835,16.57,-24.51,17.84,16.811,True,5.6
+VT,balanced,market,2021-06_2026-05,0.574,13.32,-20.72,11.33,12.174,False,72.9
+VT,balanced,market,2020-06_2023-06,0.929,13.11,-20.25,16.52,16.811,False,44.4
+VT,conservative,minvar,2021-06_2026-05,0.607,11.19,-15.84,10.66,12.174,False,57.6
+VT,conservative,minvar,2020-06_2023-06,0.91,10.83,-15.71,14.15,16.811,False,36.1
+VTI,aggressive_growth,beta,2021-06_2026-05,0.571,19.2,-24.5,13.98,12.174,True,20.3
+VTI,aggressive_growth,beta,2020-06_2023-06,0.811,18.26,-24.25,18.66,16.811,True,16.7
+VTI,return_leaning,beta,2021-06_2026-05,0.517,17.88,-25.44,12.32,12.174,True,0.0
+VTI,return_leaning,beta,2020-06_2023-06,0.798,16.56,-25.27,17.12,16.811,True,0.0
+VTI,balanced,market,2021-06_2026-05,0.547,13.5,-20.46,11.0,12.174,False,81.4
+VTI,balanced,market,2020-06_2023-06,0.892,13.14,-19.81,15.97,16.811,False,44.4
+VTI,conservative,minvar,2021-06_2026-05,0.607,11.19,-15.84,10.66,12.174,False,57.6
+VTI,conservative,minvar,2020-06_2023-06,0.91,10.83,-15.71,14.15,16.811,False,36.1
