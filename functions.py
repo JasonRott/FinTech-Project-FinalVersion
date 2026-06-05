@@ -2633,7 +2633,10 @@ def plot_preference_radar_chart(optimal_weights, max_sharpe_weights, vectors_dic
         if cat == "Return_CAGR" and "Beta_vs_VT" in pref_metrics and not np.isnan(pref_metrics["Beta_vs_VT"]):
             # ★報酬軸改用「系統性風險曝險(對 VT 的 beta)」評分,與新偏好評分一致(見 beta 評分)。
             # 市場 beta=1→0.5;beta=PREF_BETA_REF→1.0;低於市場 floor 0.5(不懲罰)。
-            _ref = float(getattr(parameters, "PREF_BETA_REF", 2.0))
+            # 雷達圖專用 beta 滿分參考（RADAR_BETA_REF，預設 1.2）；與偏好分數 PREF_BETA_REF 解耦，
+            # 不影響已驗證的 win_VT。本系統 beta 天花板約 1.1~1.2，故用 1.2 讓報酬軸有鑑別度。
+            _ref = float(getattr(parameters, "RADAR_BETA_REF",
+                                 getattr(parameters, "PREF_BETA_REF", 2.0)))
             _bscore = lambda b: 0.5 + 0.5 * float(np.clip((b - 1.0) / max(_ref - 1.0, 1e-9), 0.0, 1.0))
             p_score = _bscore(pref_metrics["Beta_vs_VT"])
             m_score = _bscore(ms_metrics.get("Beta_vs_VT", 1.0))
