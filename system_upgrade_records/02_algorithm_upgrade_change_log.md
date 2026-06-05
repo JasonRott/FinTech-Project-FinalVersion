@@ -906,6 +906,11 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 驗證：`import phase3_system` / `integrate_example.extract_preferences` OK；router 路由正確；24 檔將被追蹤（不含 encoder/pycache）。**未實跑完整誘出（需 2.2GB BGE-M3 下載）**——引擎本身使用者已在他處測過，adapter 僅照 README 介面呼叫。
 - 用法：`preference_mode="preference_engine"` 跑 `main.py` → 終端輸入投資理念 + 逐題回答 → 9 維權重進入既有 stage2_2/stage3/回測。與 `ACTIVE_USER_PROFILE`（靜態原型）獨立。
 
+### ★修正：不要早停（使用者指出）★
+- **問題**：初版 adapter 用引擎附的 `extract_preferences`，它**一遇 `should_stop` 就 break**。實測引擎在第 **3 題**（Σα≥τ、約掌握 top-1/2）就提議停 → 只覆蓋 3 維、其餘 6 維留在**先驗** → 結果被開場理念/prior 主導（出現 Return_CAGR 0.87 之類的偏頗）。引擎 `snapshot()` 自身的 `ci_note` 也警告「早停 CI 不可信（未問維仍為先驗；需完整 9 題）」。
+- **修法**：adapter 改成**直接驅動 `Phase3Engine`**，預設**答完整 9 題**（loop 到 `next_question()` 回 None，含 T3 重問），不再自動早停；互動模式下引擎首次提議早停時**詢問一次**（直接 Enter = 繼續答完）。payload 增記 `n_covered` / `ci_trustworthy`。
+- **驗證**：答完整 9 題 → `n_covered=9`、`ci_trustworthy=True`、`ci_note=完整9題CI可信`；by-dim 作答得到合理分布（Return_CAGR 0.35 / Div_Score 0.28 / Cost 0.18，貼合「成長+分散+低費用」理念），不再被 prior 壓成單一維獨大。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

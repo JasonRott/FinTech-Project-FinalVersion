@@ -339,9 +339,10 @@ def stage2_1_preference_engine_elicitation(
     """Stage 2_1-C：用 `preference_engine`（投資理念 + 逐輪自然語言問答 → BNN 偏好誘出）
     產生 9 維全局權重，並寫成下游認得的 `Global_Weights` JSON（與 AHP 路徑同格式）。
 
-    互動模式（預設）：終端逐題詢問。`philosophy_text` / `answers` 有給時可非互動執行
-    （供測試或外部 UI 串接：把 UI 收到的開場理念與逐題答案傳進來即可）。
-    引擎輸出的 `Ew` 維度鍵與本系統 9 維完全一致，無需映射。
+    互動模式（預設）：終端逐題詢問，**預設答完整 9 題**（引擎在 Σα≥τ 會提議早停，但未答完 9 題
+    時 CI 不可信，故預設續答；首次提議早停時詢問一次，直接 Enter 繼續）。
+    `philosophy_text` / `answers` 有給時可非互動執行（供測試或外部 UI 串接：把 UI 收到的開場理念
+    與逐題答案傳進來即可；非互動會自動答到完整 9 題）。引擎輸出的 `Ew` 維度鍵與本系統 9 維一致，無需映射。
     """
     _announce_stage_start(
         "stage2_1_active",
@@ -354,12 +355,14 @@ def stage2_1_preference_engine_elicitation(
     if _eng_dir not in _sys.path:
         _sys.path.insert(0, _eng_dir)
     try:
-        from integrate_example import extract_preferences  # type: ignore
+        from phase3_system import Phase3Engine  # type: ignore
     except Exception as exc:  # 套件/相依缺失 → 退回既有 fallback 權重，管線不中斷
         log.error(f"無法載入 preference_engine（{exc}）；改用 fallback 權重。")
         output = _export_fallback_active_bayesian_weights(output_path)
         _announce_stage_end("stage2_1_active", str(output))
         return output
+
+    interactive = answers is None  # 沒給預錄答案 → 終端互動
 
     # --- 開場投資理念 ---
     if philosophy_text is None:
@@ -371,19 +374,46 @@ def stage2_1_preference_engine_elicitation(
         philosophy_text = "我希望長期穩健成長，能接受一點波動但很怕大跌，偏好低費用、分散持股的標的。"
         print(f"(使用預設投資理念) {philosophy_text}")
 
-    # --- 逐題取答：有預先給 answers 就用，否則終端互動 ---
+    # ★預設「答完整 9 題」，不在 should_stop 自動早停★：
+    # 引擎在 Σα≥τ（約掌握 top-1/2）就會提議停，但未答完 9 題時未問維仍留在先驗、CI 不可信
+    # （引擎自身 ci_note 也會警告）。故預設續答到 next_question() 回 None（含 T3 重問）。
+    # 互動模式下，當引擎「首次」提議早停時詢問一次是否要現在停（直接 Enter = 繼續答完更準）。
+    engine = Phase3Engine()
+    engine.start_session(philosophy_text)
     _answers_iter = iter(answers) if answers is not None else None
 
-    def _ask(q: dict) -> str:
+    snap = engine.snapshot()
+    prompted_stop = False
+    _safety = 0
+    while _safety < 50:  # 安全上限（引擎本身會在覆蓋+重問封頂後回 None 自然結束）
+        _safety += 1
+        q = engine.next_question()
+        if q is None:
+            break
         if _answers_iter is not None:
-            return next(_answers_iter, "")
-        print(f"\n[第 {q['step']} 題 · {q['dim_label']}]")
-        try:
-            return input(f"  {q['question']}\n  > ").strip()
-        except (EOFError, KeyboardInterrupt):
-            return ""
+            ans = next(_answers_iter, "普通，沒有特別偏好。")
+        else:
+            _tag = "（重問釐清）" if q.get("is_reask") else ""
+            print(f"\n[第 {q['step']} 題 · {q['dim_label']}]{_tag}")
+            try:
+                ans = input(f"  {q['question']}\n  > ").strip()
+            except (EOFError, KeyboardInterrupt):
+                ans = ""
+        snap = engine.submit_answer(ans)
+        if interactive and snap.get("should_stop") and snap.get("n_covered", 0) < 9 and not prompted_stop:
+            prompted_stop = True
+            try:
+                _r = input(
+                    "\n（引擎已大致掌握你的前幾名偏好，但尚未答完 9 題，信賴區間還不可信）\n"
+                    "  要現在就停嗎？輸入 y 停止，直接 Enter 繼續答完更準： "
+                ).strip().lower()
+            except (EOFError, KeyboardInterrupt):
+                _r = ""
+            if _r in ("y", "yes", "是"):
+                break
 
-    weights, snap = extract_preferences(philosophy_text, _ask, max_questions=max_questions)
+    snap = engine.snapshot()
+    weights = snap.get("Ew", {})
 
     # --- 防呆：確保 9 維齊全、總和正規化為 1 ---
     w = {d: float(weights.get(d, 0.0)) for d in _PREF_DIMS}
@@ -397,6 +427,8 @@ def stage2_1_preference_engine_elicitation(
         "Global_Weights": w,
         "Source": "preference_engine (Phase3 BNN elicitation)",
         "Sigma_alpha": snap.get("Sigma_alpha"),
+        "n_covered": snap.get("n_covered"),
+        "ci_trustworthy": snap.get("ci_trustworthy"),
         "ci_note": snap.get("ci_note"),
     }
     output.write_text(json.dumps(payload, ensure_ascii=False, indent=4), encoding="utf-8")
