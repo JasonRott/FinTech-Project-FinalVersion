@@ -31,13 +31,17 @@
 9 維特徵:`Return_CAGR, Return_Div, Risk_Vol, Risk_MaxDD, Cost_ExpRatio, Liq_Volume, Liq_AUM, Div_Score, FinBERT_score`。
 正規化 `robust_scale`（縮尾 min-max）：先夾到 $[p_{\text{low}}, p_{\text{high}}]$ 分位,再線性壓到 $[0,1]$（風險/成本維度取 $1-\text{norm}$,越低越好）:
 
-$$\text{clipped} = \mathrm{clip}\big(x,\ Q_{p_{\text{low}}}(x),\ Q_{p_{\text{high}}}(x)\big), \qquad \text{norm} = \frac{\text{clipped} - \min}{\max - \min}$$
+```math
+\text{clipped} = \mathrm{clip}\big(x,\ Q_{p_{\text{low}}}(x),\ Q_{p_{\text{high}}}(x)\big), \qquad \text{norm} = \frac{\text{clipped} - \min}{\max - \min}
+```
 
 ### 2.2 Stage 1 — DEA 效率篩選
 CCR 投入導向（scipy `linprog`）：每檔 ETF $o$ 解
 
-$$\max_{u,v}\ \sum_r u_r y_{ro} \quad \text{s.t.}\quad \sum_i v_i x_{io}=1,\quad \sum_r u_r y_{rj}-\sum_i v_i x_{ij}\le 0\ \ \forall j,\quad u,v\ge 0$$
-投入 = {風險, 成本};產出 = **{Out_CAGR, Out_Div, Out_Liquidity, Out_Diversity}**（資本利得與股息**分開**,成長股不被股息平均稀釋）。
+```math
+\max_{u,v}\ \sum_r u_r y_{ro} \quad \text{s.t.}\quad \sum_i v_i x_{io}=1,\quad \sum_r u_r y_{rj}-\sum_i v_i x_{ij}\le 0\ \ \forall j,\quad u,v\ge 0
+```
+投入 = {風險, 成本};產出 = `{Out_CAGR, Out_Div, Out_Liquidity, Out_Diversity}`（資本利得與股息**分開**,成長股不被股息平均稀釋）。
 候選池門檻 = **取 DEA 分數前 25% 百分位**（取代固定 0.80）。另算超效率、交叉效率。
 
 ### 2.3 Stage 2_1 — 兩層 AHP
@@ -50,39 +54,61 @@ $$\max_{u,v}\ \sum_r u_r y_{ro} \quad \text{s.t.}\quad \sum_i v_i x_{io}=1,\quad
 
 **(a) 偏好 → 參數映射 $g(\mathbf{w})$**（連續函數,非查表）。$T_{\text{growth}}$ 即「資本利得渴望」:
 
-$$T_{\text{growth}} = \frac{w_{\text{CAGR}}}{w_{\text{CAGR}}+w_{\text{Vol}}+w_{\text{MaxDD}}}$$
+```math
+T_{\text{growth}} = \frac{w_{\text{CAGR}}}{w_{\text{CAGR}}+w_{\text{Vol}}+w_{\text{MaxDD}}}
+```
 
-$$\text{core} = \begin{cases} \text{minvar}, & T_{\text{growth}} < 0.40\\[2pt] \text{market}, & 0.40 \le T_{\text{growth}} < 0.65\\[2pt] \text{beta}, & T_{\text{growth}} \ge 0.65 \end{cases}$$
+```math
+\text{core} = \begin{cases} \text{minvar}, & T_{\text{growth}} < 0.40\\ \text{market}, & 0.40 \le T_{\text{growth}} < 0.65\\ \text{beta}, & T_{\text{growth}} \ge 0.65 \end{cases}
+```
 
-$$\text{risk\_fraction} = \mathrm{clip}(T_{\text{growth}},\,0.05,\,0.95), \qquad \tau = 0.30\,(1-T_{\text{growth}})\,\hat{R}, \quad \hat{R}=\mathrm{clip}(w_{\text{CAGR}}+w_{\text{Div}},\,0,\,1)$$
+```math
+\text{risk}_{\text{fraction}} = \mathrm{clip}(T_{\text{growth}},\,0.05,\,0.95), \qquad \tau = 0.30\,(1-T_{\text{growth}})\,\hat{R}, \quad \hat{R}=\mathrm{clip}(w_{\text{CAGR}}+w_{\text{Div}},\,0,\,1)
+```
 
 **(b) U-C2 三核心**（只需每日報酬;$\Sigma=$ Ledoit-Wolf 收縮共變異;$c_i=\mathrm{Cov}(r_i, r_{VT})$）：
 
-- **保守 minvar**：$\displaystyle \min_{\mathbf{w}}\ \tfrac{1}{2}\mathbf{w}^{\top}\Sigma\mathbf{w} - \tau\,\mathbf{w}^{\top}\mathbf{s}$
-- **平衡 market**：$\displaystyle \min_{\mathbf{w}}\ \tfrac{1}{2}\mathbf{w}^{\top}\Sigma\mathbf{w} - \mathbf{w}^{\top}\mathbf{c} - \tau\,\mathbf{w}^{\top}\mathbf{s}$ （= 對 VT 報酬流最小化追蹤誤差）
-- **報酬 beta**：$\displaystyle \max_{\mathbf{w}}\ \mathbf{w}^{\top}\boldsymbol{\beta} + \tau\,\mathbf{w}^{\top}\mathbf{s}$,其中 $\boldsymbol{\beta} = \mathbf{c}/\mathrm{Var}(r_{VT})$
+**保守 minvar**、**平衡 market**（= 對 VT 報酬流最小化追蹤誤差）、**報酬 beta** 三核心目標（$\boldsymbol{\beta} = \mathbf{c}/\mathrm{Var}(r_{VT})$）：
 
-共同約束:
+```math
+\begin{aligned}
+\text{minvar:}\quad & \min_{\mathbf{w}}\ \tfrac{1}{2}\,\mathbf{w}^{\top}\Sigma\mathbf{w} - \tau\,\mathbf{w}^{\top}\mathbf{s}\\
+\text{market:}\quad & \min_{\mathbf{w}}\ \tfrac{1}{2}\,\mathbf{w}^{\top}\Sigma\mathbf{w} - \mathbf{w}^{\top}\mathbf{c} - \tau\,\mathbf{w}^{\top}\mathbf{s}\\
+\text{beta:}\quad & \max_{\mathbf{w}}\ \mathbf{w}^{\top}\boldsymbol{\beta} + \tau\,\mathbf{w}^{\top}\mathbf{s}
+\end{aligned}
+```
 
-$$\sum_i w_i = 1, \quad 0\le w_i \le \text{cap}=0.40, \quad \sqrt{\mathbf{w}^{\top}\Sigma\mathbf{w}}\ \le\ \text{vol\_budget}$$
+共同約束：
+
+```math
+\sum_i w_i = 1, \quad 0\le w_i \le \text{cap}=0.40, \quad \sqrt{\mathbf{w}^{\top}\Sigma\mathbf{w}}\ \le\ \text{vol}_{\text{budget}}
+```
 
 **(c) 風險預算 = 相對候選池可行範圍**（恆可行）：$v_{\min}=$ 最小變異組合波動,$v_{\max}=$ 最大變異組合波動。
 
-$$\text{vol\_budget} = v_{\min} + \text{risk\_fraction}\cdot(v_{\max} - v_{\min})$$
+```math
+\text{vol}_{\text{budget}} = v_{\min} + \text{risk}_{\text{fraction}}\cdot(v_{\max} - v_{\min})
+```
 
 **(d) 偏好分數的報酬維度 = beta（系統性風險曝險）**：取代「過去 CAGR 排名」(不預測未來)。
 
-$$\text{score}_{\text{return}} = 0.5 + 0.5\,\mathrm{clip}\!\left(\frac{\beta - 1}{\text{REF} - 1},\ 0,\ 1\right)$$
+```math
+\text{score}_{\text{return}} = 0.5 + 0.5\,\mathrm{clip}\!\left(\frac{\beta - 1}{\text{REF} - 1},\ 0,\ 1\right)
+```
 
 市場 $\beta=1\to 0.5$;$\beta=\text{REF}=2\to 1$;低於市場 floor $0.5$（不懲罰保守型）。其餘 8 維仍為偏好分數構面。**僅影響評估/展示分數,不進求解器目標。**（雷達圖另以 $\text{REF}=1.2$ 顯示,僅視覺鑑別度,不影響 win_VT。）
 
 **(e) Black-Litterman 理論地基**：市場均衡隱含報酬 $\Pi = \lambda\Sigma\mathbf{w}_{\text{mkt}}$,而
 
-$$\Pi_i = \lambda\,\mathrm{Cov}(r_i,\,m) = \lambda\,\beta_i\,\mathrm{Var}(m) \quad\Longrightarrow\quad \Pi \propto \beta$$
+```math
+\Pi_i = \lambda\,\mathrm{Cov}(r_i,\,m) = \lambda\,\beta_i\,\mathrm{Var}(m) \quad\Longrightarrow\quad \Pi \propto \beta
+```
 
 即 **CAPM**（$m$ = 市場/VT）。可證 market 核心等價於 BL 均值-變異（代入 $\Pi=\lambda\mathbf{c}$）：
 
-$$\min_{\mathbf{w}}\ \tfrac{1}{2}\mathbf{w}^{\top}\Sigma\mathbf{w} - \mathbf{w}^{\top}\mathbf{c} \quad\equiv\quad \max_{\mathbf{w}}\ \mathbf{w}^{\top}\Pi - \tfrac{\lambda}{2}\mathbf{w}^{\top}\Sigma\mathbf{w}$$
+```math
+\min_{\mathbf{w}}\ \tfrac{1}{2}\mathbf{w}^{\top}\Sigma\mathbf{w} - \mathbf{w}^{\top}\mathbf{c} \quad\equiv\quad \max_{\mathbf{w}}\ \mathbf{w}^{\top}\Pi - \tfrac{\lambda}{2}\mathbf{w}^{\top}\Sigma\mathbf{w}
+```
 
 而 beta 核心 $\max_{\mathbf{w}}\mathbf{w}^{\top}\boldsymbol{\beta}$ ≡ BL 約束式;minvar = BL 高風險趨避極限。→ **三核心 = BL 效率前緣上不同風險趨避的點**;$\Pi$ 用 $\mathbf{c}$（對 VT 共變異,不需成分權重）計算。
 
