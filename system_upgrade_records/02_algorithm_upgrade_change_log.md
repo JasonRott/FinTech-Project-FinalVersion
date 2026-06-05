@@ -818,6 +818,31 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - `py_compile`：functions.py、pipeline_stages.py 皆 COMPILE_OK。
 - 安全性：未觸碰任何 optimizer 分支、傾斜 s、約束、g(w)；`Beta_vs_VT` 已由 `get_portfolio_metrics` 對 pref/ms 兩組計算（functions.py L3185），標籤可用。
 
+## 2026-06-06：輸出整理 / 雷達β尺度 / 集中式 log / 最終系統瘦身（均非 optimizer 改動）
+
+狀態：完成 + 核心模組 import 驗證通過。**optimizer 仍逐項相同、未動。** 本批屬 UX / 輸出 / 打包。
+
+### (1) 回測夾巢狀 + 四分類 + 還原數學前緣（使用者要求）
+- `BacktestConfig.user_results_parent`（新欄位）：主系統 prompt 回測會帶入剛建立的 `user_results/main_*/` 路徑 → 回測夾巢狀其中；獨立執行時 None=自成一夾。functions.py 在收集器設模組全域 `LAST_MAIN_USER_DIR`，stage3b 讀取後傳入。
+- `_mirror_run_figures_to_upgrade` 改**四子夾**：`01_text_reports`(.txt/.md) / `02_eda_dea_figures`(含 eda/dea 的 png) / `03_performance_figures`(nav/drawdown/績效/雷達/年報酬/權重演化) / `04_data_csv`(.csv)，依副檔名+檔名分類。
+- 主系統**還原輸出「數學解效率前緣圖」**（使用者要求保留 Mathematical Efficient Frontier）：重新啟用 `plot_portfolio_analytics_and_mpt` 呼叫；函式內仍停用 `portfolio_performance.png` 與蒙地卡羅前緣；`02_portfolio` 收集器加入該前緣圖。
+
+### (2) 雷達報酬軸 beta 尺度重校（使用者拍板 β=1.2）
+- 新增 `parameters.RADAR_BETA_REF = 1.2`，**與 `PREF_BETA_REF`(=2.0) 解耦**：雷達報酬軸 `0.5+0.5·clip((β−1)/(REF−1))` 改用 RADAR_BETA_REF → β=1.11→0.78（本系統 β 天花板約 1.1~1.2，原 REF=2.0 把軸壓在 0.5~0.56）。
+- **只動雷達顯示，win_VT 偏好分數完全不變**（仍 REF=2.0）。使用者問同步改 scoring 的成本評估：correctness 0 支實驗需重跑（REF 不進 optimizer，CAGR/Sharpe/所有結論不動），只 win_VT 數字會上移→只需重跑 `_beta_score_test.py`+更新 REPORT_A/02。**決議：暫不同步、維持解耦**（雷達要鑑別度、scoring 保守不灌水）。
+
+### (3) 集中式 log（使用者要求 log 集中、未來 log 也進去）
+- `parameters.LOGS_DIR="logs"`；functions.py logging 設定加 UTF-8 `FileHandler` → 每次執行寫 `logs/run_<時間戳>.log`（固定 INFO 以上、比終端完整；終端 VERBOSE 噤聲行為不變）。best-effort try/except。
+- 既有 13 個根目錄 `*.log` 移入 `logs/`；`.gitignore` 加 `logs/`。
+
+### (4) 最終系統瘦身（原地整理；GitHub 只推「最終系統」）
+- 依相依性稽核（Explore 全圖）：`git rm --cached` 移除追蹤但保留磁碟檔——生成輸出 `backtest/ png/ report/ sentiment_engine/reports/(1046檔) sentiment_engine/plots/ sentiment_engine/news_sentiment_report.md`、非生產 `version_0/ test_LLM/ demo/ .vscode/`、殘留測試 JSON 3 支。`.gitignore` 同步加入。
+- **追蹤檔 1287→94、25MB→8MB**。保留集合 = 核心 .py + `active_preference/` + `sentiment_engine/`(.py+daily cache) + `experiments/` + `system_upgrade_records/` + `literature/` + `json/csv` 設定 + `local_finbert` tokenizer/config + 文件 + requirements + `.env.example`（使用者選擇保留三個佐證夾）。
+- 驗證：`import parameters, functions, backtest_engine, pipeline_stages` 全 OK（程式層獨立可跑；資料/.env/FinBERT 權重照常首次擷取/下載）。
+
+### Commits
+`5a5403a`(產品化UX) → `900b9b3`(回測10年窗) → `10edd1e`(回測巢狀+四分類+還原前緣) → `3e70178`(雷達β=1.2) → `ac3f1e6`(集中式log) → `293084b`(最終系統瘦身)。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

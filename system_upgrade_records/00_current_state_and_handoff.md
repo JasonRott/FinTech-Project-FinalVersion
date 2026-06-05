@@ -13,7 +13,13 @@
 - **兩份報告**：`REPORT_A_results_and_math.md`、`REPORT_B_design_story.md`（含假設）。
 - **GitHub 整理完成（本地）**：無硬編金鑰（.env + os.getenv）;`.env.example` 已建;`.gitignore` 擴充（排除 .env/FinBERT 模型/1.1GB active_preference results/價格庫/50MB新聞快取/生成輸出/日誌）;實驗腳本移到 `experiments/`;README 加最新演算法 banner + 報告連結。已 `git init` + 初始 commit（master,1289 檔/25MB,無敏感檔）。**push 待使用者提供 repo 網址/授權。**
 - **輸出重整（2026-06-06）**：新增單一父資料夾 `user_results/`（`parameters.USER_RESULTS_DIR`,已 gitignore）。**主系統每次執行** → `user_results/main_{case}_{時間戳}/`，**分兩子夾**：`01_screening_eda/`（eda_*、*dea* 圖 + `stage1_dea_results.csv`）與 `02_portfolio/`（`{case}_radar_chart.png` + 推薦報表;績效/前緣圖已停用故不收）;在 `run_stage3_pipeline` 末段收集。**回測每次執行** → `user_results/backtest_{run_id}_arm{X}_{時間戳}/`（收齊該次 png_dir+report_dir+csv_dir 全部;改寫自 `_mirror_run_figures_to_upgrade`）。原 `png/`、`report/`、`backtest_report/`、`upgrade_figures/` 仍是工作輸出,user_results 是自包含彙整。
-- **待辦**：(1) 前緣深度重繪（VT+三核心,需目視 QA）;(2) push 到 GitHub（需 repo 網址）;(3) 報告請使用者審。
+- **最終系統瘦身 + 集中式 log（2026-06-06）**：
+  - **集中式 log**：`parameters.LOGS_DIR="logs"`;functions.py 每次執行寫 `logs/run_<ts>.log`（UTF-8 FileHandler,INFO+,終端噤聲不變）;舊根目錄 *.log 已移入;`.gitignore` 加 `logs/`。
+  - **回測夾巢狀進主系統夾**：prompt 回測經 `BacktestConfig.user_results_parent`（functions 全域 `LAST_MAIN_USER_DIR`）→ `user_results/main_*/backtest_*/`;回測夾再分 `01_text_reports/02_eda_dea_figures/03_performance_figures/04_data_csv`。主系統**還原輸出數學前緣圖**（績效圖/蒙地卡羅前緣仍停用）。
+  - **雷達 β 尺度** `RADAR_BETA_REF=1.2`（與 PREF_BETA_REF=2.0 解耦,只動顯示,win_VT 不變;詳見 02 與 project memory）。
+  - **repo 瘦身（原地）**：`git rm --cached` 生成輸出（backtest/png/report/sentiment_engine reports+plots）與非生產（version_0/test_LLM/demo/.vscode/殘留JSON）;**追蹤 1287→94、25MB→8MB**。保留 = 核心 .py + active_preference/ + sentiment_engine/ + experiments/ + system_upgrade_records/ + literature/ + json/csv 設定 + local_finbert tokenizer/config + 文件。核心模組 import 驗證 OK（程式層獨立可跑）。
+- **待辦**：(1) 跑 7 個 USER_PROFILES（最終版、印出所有真實流程圖表）→ user_results 得 7 份乾淨結果;(2) push 到 GitHub（需 repo 網址;repo 現為乾淨最終系統包）;(3) 報告請使用者審。
+  - 備忘：雷達 β scale 維持解耦,**先不同步 PREF_BETA_REF**（要同步才需重跑 `_beta_score_test` + 更新報告數字）。
 
 ## 0. 一句話現況
 偏好驅動 ETF 投組最佳化專案。已從 Arm A（線性加權）→ Arm C（最小變異+傾斜）→ **Arm C2（profile-dependent 三核心，已實作並驗證成功，2026-06-05）**。C2 讓報酬導向使用者用 beta 核心換到**超過 VT 的絕對報酬**（aggressive 8.85%→13.80% CAGR）；且發現**拿掉傾斜中的資本利得排名（noCAGR）**就讓多個 profile 贏過 VT。**下一步 = walk-forward 多視窗驗證**（確認非單期運氣）。完整成果見 `06_overnight_experiment_report_2026-06-05.md`。
