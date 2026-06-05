@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+XLI,565,565,3,Benzinga,220,170,131,264,-0.238894,0.065101,-0.405094,0.098462,-0.220554,253,206,181,177,81.4229,97.7901,2025-09-12,2026-05-22

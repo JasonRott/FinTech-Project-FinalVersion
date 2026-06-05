@@ -1,0 +1,93 @@
+{
+    "CR": null,
+    "Global_Weights": {
+        "Return_CAGR": 0.09217478598050559,
+        "Return_Div": 0.08156374993297517,
+        "Risk_Vol": 0.08559888835859805,
+        "Risk_MaxDD": 0.101684203464504,
+        "Cost_ExpRatio": 0.272495517879998,
+        "Liq_Volume": 0.024269171494001745,
+        "Liq_AUM": 0.024269171494001745,
+        "Div_Score": 0.2694061684074122,
+        "FinBERT_score": 0.04853834298800349
+    },
+    "Source": "active_preference_system",
+    "Hierarchy": {
+        "Main_Weights": {
+            "Return": 0.17373853591348076,
+            "Risk": 0.18728309182310204,
+            "Cost": 0.272495517879998,
+            "Liquidity": 0.04853834298800349,
+            "Diversification": 0.2694061684074122,
+            "Sentiment": 0.04853834298800349
+        },
+        "Sub_Weights": {
+            "Return": {
+                "Return_CAGR": 0.5305373703989729,
+                "Return_Div": 0.4694626296010272
+            },
+            "Risk": {
+                "Risk_Vol": 0.4570561470623859,
+                "Risk_MaxDD": 0.5429438529376142
+            },
+            "Cost": {
+                "Cost_ExpRatio": 1.0
+            },
+            "Liquidity": {
+                "Liq_Volume": 0.5,
+                "Liq_AUM": 0.5
+            },
+            "Diversification": {
+                "Div_Score": 1.0
+            },
+            "Sentiment": {
+                "FinBERT_score": 1.0
+            }
+        }
+    },
+    "Uncertainty": {
+        "Main_Sigma": {
+            "Return": 0.8473362599604496,
+            "Risk": 0.8062134366610583,
+            "Cost": 0.7699258211783869,
+            "Liquidity": 1.0,
+            "Diversification": 0.7871479722703126,
+            "Sentiment": 1.0
+        },
+        "Sub_Sigma": {
+            "Return": {
+                "Return_CAGR": 0.92844775,
+                "Return_Div": 1.0
+            },
+            "Risk": {
+                "Risk_Vol": 1.0,
+                "Risk_MaxDD": 0.8966467499999999
+            },
+            "Cost": {
+                "Cost_ExpRatio": 0.92290375
+            },
+            "Liquidity": {
+                "Liq_Volume": 1.0,
+                "Liq_AUM": 1.0
+            },
+            "Diversification": {
+                "Div_Score": 0.88863875
+            },
+            "Sentiment": {
+                "FinBERT_score": 1.0
+            }
+        },
+        "Solver_Sigma": {
+            "Return_CAGR": 0.92844775,
+            "Return_Div": 1.0,
+            "Risk_Vol": 1.0,
+            "Risk_MaxDD": 0.8966467499999999,
+            "Cost_ExpRatio": 0.92290375,
+            "Liq_Volume": 1.0,
+            "Liq_AUM": 1.0,
+            "Div_Score": 0.88863875,
+            "FinBERT_score": 1.0
+        }
+    },
+    "Turns": 3
+}

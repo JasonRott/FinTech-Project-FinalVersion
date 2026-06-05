@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+PTLC,18,18,1,SeekingAlpha,18,5,9,4,0.08376,0.199084,-0.473149,0.381982,-0.002709,253,16,181,12,6.3241,6.6298,2025-09-16,2026-04-13

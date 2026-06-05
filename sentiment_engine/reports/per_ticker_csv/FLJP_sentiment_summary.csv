@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+FLJP,252,252,2,SeekingAlpha,250,79,98,75,-0.032122,0.144647,-0.858706,0.087806,-0.085129,253,151,181,116,59.6838,64.0884,2025-09-13,2026-05-22

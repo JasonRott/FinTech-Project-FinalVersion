@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+ICF,204,204,2,SeekingAlpha,202,62,66,76,-0.101343,0.092347,-0.563634,0.030771,-0.029916,253,140,181,93,55.336,51.3812,2025-09-14,2026-05-21

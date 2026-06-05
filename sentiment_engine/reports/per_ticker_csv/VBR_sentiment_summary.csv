@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+VBR,106,106,3,SeekingAlpha,86,45,48,13,0.303004,0.120628,0.184146,0.950688,0.258277,253,83,181,74,32.8063,40.884,2025-09-12,2026-05-19

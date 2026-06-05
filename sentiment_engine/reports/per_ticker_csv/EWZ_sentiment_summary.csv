@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+EWZ,126,126,3,SeekingAlpha,66,41,61,24,0.045202,0.158342,-0.966511,0.165685,0.028267,253,85,181,78,33.5968,43.0939,2025-09-13,2026-05-22

@@ -1,0 +1,59 @@
+__pycache__/
+*.py[cod]
+.env
+.env.local
+active_preference/.env
+
+# 實驗/執行日誌
+*.log
+
+# 大型可重生資料快取（價格庫 + 原始新聞快取；跑 Stage 0 可重新擷取）
+sentiment_engine/data/news_events_cache.csv
+csv/historical_close_price_db.csv
+csv/historical_price_db.csv
+csv/backtest_price_db.csv
+csv/backtest_close_price_db.csv
+csv/backtest_volume_db.csv
+
+# 生成輸出（可由管線/回測重新產生）
+backtest_report/
+upgrade_figures/
+
+# 大型合成訓練結果（~1.1GB，主動偏好模組）
+active_preference/results/
+
+# ==========================================
+# Large model files (use download script instead)
+# ==========================================
+local_finbert/model.safetensors
+local_finbert/pytorch_model.bin
+
+# ==========================================
+# Active preference demo outputs
+# ==========================================
+active_preference/results/interviews/
+active_preference/results/training_data/
+active_preference/results/models/
+active_preference/results/archive/
+json/active_preference_state_example.json
+json/active_preference_weights_example.json
+json/synthetic_preference_training.jsonl
+json/stage2_1_active_bayesian_state.json
+json/active_bayesian_pipeline_test_weights.json
+active_preference/active_preference_test_weights.json
+active_preference/active_preference_synthetic_test.jsonl
+active_preference/gemini_chat_transcript.json
+active_preference/gemini_turn_records.jsonl
+active_preference/gemini_real_interview_transcript.json
+active_preference/gemini_evidence_records.jsonl
+active_preference/synthetic_training_records.jsonl
+active_preference/synthetic_feature_records.jsonl
+active_preference/bnn_preference_model.npz
+active_preference/bnn_training_summary.json
+active_preference/bnn_torch_model.pt
+active_preference/bnn_torch_training_summary.json
+active_preference/bnn_torch_tuning_results.json
+active_preference/synthetic_training_records_debug.jsonl
+active_preference/synthetic_feature_records_debug.jsonl
+active_preference/bnn_preference_model_debug.npz
+active_preference/bnn_training_summary_debug.json

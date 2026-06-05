@@ -1,0 +1,25 @@
+# ==========================================
+# Main pipeline dependencies
+# Stage 0 ~ Stage 3 主架構完整執行所需套件
+# ==========================================
+
+# Core numerical stack
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Market data / web data access
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+yahooquery>=2.3.0
+
+# FinBERT sentiment scoring used in Stage 0
+transformers>=4.30.0
+torch>=2.0.0
+
+# Visualization and reporting charts
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Environment variable loading
+python-dotenv>=1.0.0

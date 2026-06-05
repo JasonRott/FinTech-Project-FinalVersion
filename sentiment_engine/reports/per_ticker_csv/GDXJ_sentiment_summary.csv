@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+GDXJ,169,169,3,SeekingAlpha,108,68,70,31,0.207721,0.105883,0.0,0.562505,0.105523,253,112,181,99,44.2688,54.6961,2025-09-14,2026-05-20

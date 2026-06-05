@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+SUSA,7,7,1,SeekingAlpha,7,4,3,0,0.529989,0.269167,0.0,0.871921,0.376262,253,7,181,5,2.7668,2.7624,2025-10-03,2026-04-04

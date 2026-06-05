@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+SCHB,18,18,3,SeekingAlpha,15,7,7,4,0.096633,0.311058,-0.946298,0.432703,0.110778,253,18,181,16,7.1146,8.8398,2025-09-16,2026-05-07

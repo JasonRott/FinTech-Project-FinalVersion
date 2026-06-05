@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+HACK,169,169,3,SeekingAlpha,115,49,82,38,0.134968,0.133725,-0.048661,0.475501,0.068061,253,112,181,99,44.2688,54.6961,2025-09-12,2026-05-22

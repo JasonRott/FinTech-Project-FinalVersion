@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+DSI,20,20,1,SeekingAlpha,20,8,6,6,0.02752,0.268332,-0.946298,0.484879,0.072797,253,20,181,15,7.9051,8.2873,2025-09-16,2026-04-13

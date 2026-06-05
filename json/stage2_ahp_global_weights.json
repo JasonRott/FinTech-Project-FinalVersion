@@ -1,0 +1,15 @@
+{
+    "CR": 3.733412000018201e-11,
+    "Global_Weights": {
+        "Return_CAGR": 0.39999978192540325,
+        "Return_Div": 0.09999992048137069,
+        "Risk_Vol": 0.1399988558351936,
+        "Risk_MaxDD": 0.06000034107695218,
+        "Cost_ExpRatio": 0.10000026127460332,
+        "Liq_Volume": 0.04000020515772361,
+        "Liq_AUM": 0.04000016515755844,
+        "Div_Score": 0.06999935282424398,
+        "FinBERT_score": 0.049999934894836257
+    },
+    "Source": "stage2_1_static_ahp_preference_extraction"
+}

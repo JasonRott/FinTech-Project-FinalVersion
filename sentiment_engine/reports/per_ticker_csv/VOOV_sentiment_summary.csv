@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+VOOV,89,89,2,SeekingAlpha,86,34,32,23,0.050469,0.162895,-0.256637,0.790258,0.249073,253,67,181,60,26.4822,33.1492,2025-09-15,2026-05-19

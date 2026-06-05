@@ -1,0 +1,37 @@
+=================================================================
+ 🎯 專題最終產出：持股權重對比
+=================================================================
+ ETF  偏好組合 Weight (%)  最大夏普 Weight (%)
+SCHF            37.25             0.00
+SCHG            26.22            19.68
+ VOO            15.60            14.35
+  VB            14.03             0.00
+ IJH             3.66             0.00
+SCHC             2.63             0.00
+ XLF             0.38             0.00
+  VO             0.24             0.00
+ HDV             0.00            40.00
+DIVO             0.00            25.97
+
+=================================================================
+ 📊 投資組合深度健檢報告 (Portfolio Analytics Comparison)
+=================================================================
+                                     Metric Preference-Driven Max Sharpe
+               Arithmetic Annual Return (%)             12.13      12.31
+                      Capital Gain CAGR (%)             11.21      12.13
+                         Dividend Yield (%)              1.91       2.75
+Estimated Total Return, No Reinvestment (%)             13.11      14.88
+                          Expense Ratio (%)             0.035      0.190
+                  Annualized Volatility (%)             17.39      13.12
+                       Maximum Drawdown (%)            -28.68     -17.35
+                Liquidity Volume (Millions)              6.91       2.85
+                   Liquidity AUM (Billions)            211.97     162.00
+                  True Portfolio HHI (Real)            0.1421     0.1271
+                   Weighted Sentiment Score            0.0766     0.1157
+                               Sharpe Ratio             0.468      0.634
+Note: Capital Gain CAGR uses the buy-and-hold portfolio NAV path over the Stage 3 lookback period; Estimated Total Return adds weighted dividend yield without dividend reinvestment.
+-----------------------------------------------------------------
+
+   偏好驅動組合【偏好效用分數】: 0.6030
+   傳統最大夏普【偏好效用分數】: 0.6168
+=================================================================

@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+VYMI,78,78,2,SeekingAlpha,59,20,48,10,0.096955,0.072279,-0.075801,0.492511,0.106356,253,60,181,52,23.7154,28.7293,2025-09-14,2026-05-22

@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+BAI,32,32,3,SeekingAlpha,19,9,19,4,0.182114,0.099892,-0.019804,0.419158,0.061018,253,30,181,28,11.8577,15.4696,2025-09-12,2026-05-13

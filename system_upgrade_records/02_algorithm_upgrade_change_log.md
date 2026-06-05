@@ -1,0 +1,927 @@
+# 演算法升級改動紀錄
+
+建立日期：2026-05-25  
+狀態：尚未開始演算法升級  
+目前批准狀態：尚未批准任何演算法改動
+
+## 1. 文件目的
+
+本文件用來記錄接下來針對演算法本身的所有升級。  
+目前只建立紀錄模板，不寫入具體實作方案，因為使用者尚未 approve 任何演算法改動。
+
+## 2. 使用規則
+
+每次演算法改動開始前，先在此文件新增一節，記錄：
+
+1. 改動日期。
+2. 改動目標。
+3. 改動前觀察到的問題。
+4. 核准的設計方向。
+5. 實際修改的檔案。
+6. 修改後的驗證方式。
+7. 修改後的結果。
+8. 是否影響主程式與回測系統的一致性。
+
+## 3. 待討論但尚未批准的方向
+
+以下只列問題方向，不代表已批准實作：
+
+1. DEA 後加入 preference-aware rescue list。
+2. 將風險從效用加分項改為風險預算或風險約束。
+3. 讓單檔 ETF 權重上限依使用者風格調整。
+4. 延後 correlation clustering，或改為相關性懲罰。
+5. 區分主要目標與輔助品質分數。
+6. 對報酬導向使用者重新設計效用函數。
+
+## 4. 預期可升級項目
+
+### 4.1 波動率風險設計升級
+
+目前舊演算法使用固定尺度將投組年化波動率轉成風險分數：
+
+```text
+VOL_SCORE_FLOOR = 8%
+VOL_SCORE_CAP   = 30%
+```
+
+目前邏輯：
+
+```text
+年化波動率 <= 8%  -> volatility score = 1
+年化波動率 >= 30% -> volatility score = 0
+8% 到 30% 之間線性扣分
+```
+
+這個設計的優點是所有使用者、所有 run 都使用同一把尺，因此結果可比較。缺點是風險偏好表達不夠細：報酬導向使用者可能願意承擔較高波動，卻仍被同一套低波動加分機制懲罰。
+
+預期升級方向：
+
+1. 保留固定尺度概念，但依使用者風格分層。
+2. 範例設定：
+
+```text
+保守型：floor 5%,  cap 18%
+平衡型：floor 8%,  cap 30%
+成長型：floor 12%, cap 45%
+```
+
+3. 更進一步的版本：對報酬導向使用者，不再把低波動當作效用加分項，而是改成風險預算。
+
+```text
+maximize return / preference utility
+subject to portfolio volatility <= user risk budget
+```
+
+這樣可以讓報酬導向使用者「允許高風險換高報酬」，而不是被低波動分數拉回保守投組。
+
+狀態：尚未批准實作。
+
+## 5. 已批准並開始實作的改動
+
+### 2026-05-25：效用函數改用真實投組 MaxDD
+
+狀態：已實作，待持續測速觀察  
+是否已批准：已批准  
+
+#### 目標
+
+將舊版 `Risk_MaxDD` 的線性加權 proxy，升級為使用投組實際 buy-and-hold NAV 路徑計算的 true portfolio MaxDD score。
+
+#### 改動前問題
+
+舊版效用函數中的 `Risk_MaxDD` 是：
+
+```text
+portfolio_maxdd_score = sum(weight_i * normalized_single_etf_maxdd_score_i)
+```
+
+這不是投組真實最大回撤，因為最大回撤應該由整個投組路徑決定，會受到 ETF 報酬相關性與權重互動影響。
+
+#### 核准設計
+
+1. 主程式與回測引擎都改用 true portfolio MaxDD score。
+2. 分數尺度使用同一 lookback 期間內各 ETF 自身真實 MaxDD 的分布建立上下界。
+3. 舊版線性加權 MaxDD proxy 保留為 fallback。
+4. 若最佳化耗時超過 30 秒，系統輸出警告；之後若測試發現太慢，可切回舊 proxy。
+
+#### 修改檔案
+
+1. `functions.py`
+2. `backtest_engine.py`
+3. `system_upgrade_records/02_algorithm_upgrade_change_log.md`
+
+#### 驗證方式
+
+1. `functions.py` 與 `backtest_engine.py` 已通過 `py_compile`。
+2. 已執行主程式 Stage 3，確認 true MaxDD 效用函數可正常最佳化並輸出報表與圖表。
+3. 已匯入 `backtest_engine.py`，確認回測引擎在同步引用 true MaxDD helper 後可正常載入。
+
+#### 結果
+
+Stage 3 正常完成，未觸發 30 秒最佳化警告。  
+本次結果中，偏好組合由舊版的 `SCHF 40% / SCHG 40% / VOO 20%`，調整為 `VOO 40% / SCHG 34.31% / SCHF 25.69%`。  
+偏好組合最大回撤由前次約 `-29.63%` 改善為約 `-28.56%`，CAGR 約 `13.16%`，Sharpe 約 `0.560`。
+
+#### 對主程式與回測一致性的影響
+
+主程式與回測引擎已同步改成同一種 true portfolio MaxDD scoring 邏輯，避免主程式和回測最佳化目標分歧。
+
+## 2026-06-04：最佳化核心程式碼稽核（分析，未改動程式碼）
+
+狀態：已完成稽核，未動任何程式碼  
+是否已批准：N/A（純分析）
+
+### 目標
+在動手升級前，完整閱讀 `functions.py` 與 `backtest_engine.py` 的最佳化核心，確認架構正確、找出瑕疵、確認主系統與回測是否同邏輯。
+
+### 結論
+1. **主系統與回測目前完全同邏輯（已逐行確認）。** 偏好最佳化與 Max Sharpe 對照組的融合權重、正規化、`√(wᵀΣw)` 波動、true MaxDD、`1−ΣHHI²`、SLSQP 設定、DEA 0.80 / corr 0.99 / rf 0.04 / cap 0.40 全部一致，且常數由 `functions.py` import 共用。
+2. **認知更正**：風險量測本來就是真實投組層級（正確，不需改）；真正的根因是報酬項用排名分數 proxy（F1）。
+3. 完成 10 項瑕疵稽核（F1–F10），詳見 `04_literature_review_and_code_audit.md`。
+4. 升級目標重新定義為「樣本外回測成績」，不是樣本內偏好分數。
+
+### 後續
+升級項目已在 `03_planned_upgrade_items.md` 重寫為 U-1 ~ U-7（演算法）與 V-1 ~ V-5（視覺化），建議從 U-1（報酬真實化）+ U-2（風險預算）+ V-1（偏好分數 vs 未來報酬散佈圖）啟動。
+
+### 對主程式與回測一致性的影響
+本次未改程式碼，一致性維持。重申鐵律：U 項目每次改動必須同步改兩個檔案並各自驗證。
+
+## 2026-06-04：移除回測雷達圖 + 新增 V-1/V-6 偏好分數圖（視覺化，不碰最佳化）
+
+狀態：已實作並通過 py_compile + 合成資料煙霧測試  
+是否已批准：已批准（使用者指示）
+
+### 改動內容
+1. **移除雷達圖**：`backtest_engine.py` 的 `_write_unified_backtest_report` 不再呼叫 `_plot_backtest_radar`，不再輸出 `radar_chart.png`。函式保留並標 `[DORMANT]`，待日後以偏好分數為核心重新設計重用。
+2. **V-1 `_plot_preference_predictive_scatter`**：偏好分數樣本外預測力散佈圖。經使用者決議做兩個 Y 軸——左圖 Y=事後偏好分數（profile-adaptive，自動適應保守/報酬型）、右圖 Y=未來實現報酬（僅對報酬導向 profile 有效，已標註）。X 軸=事前偏好分數，附回歸線與 Pearson r。輸出 `{prefix}_preference_predictive_scatter.png`。
+3. **V-6 `_plot_preference_score_timeseries`**：隨時間變化的偏好分數。上=各策略事後偏好分數時間序列 + OOS 勝率（標題）；下=本系統事前 vs 事後偏好分數，差距即樣本外衰減。輸出 `{prefix}_preference_score_timeseries.png`。
+
+### 資料來源
+全部取自既有的 `preference_scores_df`（`backtest_engine.py:2206`），純畫圖，**未動任何最佳化邏輯**。
+
+### 設計決議（使用者確認）
+- V-1 的 Y 軸不可寫死成報酬（會偏袒報酬導向）。主用 forward 偏好分數（已內含使用者權重，profile-adaptive），報酬版僅作報酬導向視角補充。
+- 演算法升級採**兩臂賽馬**：Arm A=現有線性加權偏好分數（baseline）、Arm B=受約束均值-變異數+風險預算（U-1+U-2），用回測 OOS 當裁判。
+
+### 驗證
+1. `py_compile backtest_engine.py` 通過。
+2. 合成 `preference_scores_df` 煙霧測試：V-1、V-6 正常產圖，空資料/缺欄位防護正確跳過。
+
+### 對主程式與回測一致性的影響
+無。本次只動回測視覺化，不涉及最佳化函式，主系統不受影響。
+
+## 2026-06-04：Arm A（現況 baseline）真實回測基準數據
+
+狀態：已用真實快取資料跑完 rolling backtest（月再平衡，lookback 3y，2021→2026，64 期）  
+用途：作為兩臂賽馬中 Arm A 的 OOS 基準，Arm B（U-1+U-2）改完後與此對照  
+使用者情境：`CASE_NAME = Neutral_user`（中性預設，非報酬導向）
+
+### OOS 績效（總財富口徑）
+
+| 策略 | CAGR % | 年化波動 % | Sharpe | MaxDD % |
+|---|---:|---:|---:|---:|
+| **Preference_Driven（本系統）** | **10.02** | **14.13** | **0.464** | **-24.47** |
+| EqualWeight | 12.54 | 13.16 | 0.661 | -18.67 |
+| MaxSharpe | 10.01 | 13.02 | 0.492 | -21.98 |
+| VOO | 16.29 | 16.24 | 0.766 | -23.49 |
+| VT | 13.51 | 15.30 | 0.645 | -24.57 |
+
+**關鍵發現：本系統的偏好投組被 EqualWeight 完全宰制**（報酬更低、波動更高、回撤更深、Sharpe 更低），CAGR 是所有策略最差。這在真實數據上確認了 F1/F2，是 U-1/U-2 的最強動機。
+
+### V-1 散佈圖（偏好分數的樣本外意義）
+
+- 左圖（偏好滿足度）：Pearson **r = +0.60** → 事前偏好分數**能**預測事後偏好分數，偏好效用**確實能樣本外推廣**。
+- 右圖（報酬）：Pearson **r = −0.00** → 偏好分數與未來報酬**完全無關**（因為目標函數裡沒有真實報酬，F1）。
+
+→ 印證了「Y 軸不能用報酬」的決議：用報酬當 Y 會讓特色看起來無用（r=0），用 forward 偏好分數才看出它其實很強（r=0.60）。
+
+### V-6 時間序列
+
+- V-6a OOS 勝率：本系統事後偏好分數贏 **VOO 83% / EqualWeight 100% / MaxSharpe 88%** 的期間。
+- V-6b：事前（lookback）偏好分數系統性高於事後（forward），紅色陰影即樣本外衰減，印證使用者直覺「下一段不一定真的比較高」。但即使衰減後，系統相對其他策略仍勝。
+
+### 結論（升級論述定調）
+
+1. **偏好分數這個特色「成立」**：r=0.60 樣本外推廣 + 83~100% OOS 勝率，是誠實且有力的結果，保留為招牌。
+2. **但財務報酬「不成立」**：偏好投組 OOS 報酬最差、被等權宰制，因為偏好分數 ≠ 報酬（r=0）。
+3. **升級方向確認**：偏好分數留在「提取 + 評估」層（強），最佳化器換成真實報酬 + 風險預算（U-1/U-2），目標是 Arm B 在 OOS 財務指標贏過 Arm A，同時維持偏好滿足度勝率。
+
+### 已知小問題（非致命）
+- Windows cp950 主控台無法顯示 log 裡的 emoji（如 `functions.py:1927` 的 📊），跑回測時會噴 `UnicodeEncodeError` 紀錄錯誤，但被 logging 攔截、不影響計算與輸出。建議日後把 log 訊息的 emoji 移除，或將 stream handler 設為 UTF-8。
+
+## 2026-06-04：實作 U-1 + U-2（Arm B）+ 兩臂賽馬首次對照
+
+狀態：已實作（toggle 預設仍為 Arm A）+ 已跑 Arm B 真實回測對照  
+是否已批准：已批准（使用者指示「可以改 U-1, U-2」）
+
+### 改動內容
+1. `parameters.py` 新增開關：`OPTIMIZATION_ARM`（"A"/"B"）、`RISK_AVERSION_LAMBDA`、`RISK_BUDGET_VOL`。
+2. `functions.py` Stage 3 與 `backtest_engine.py` `optimize_preference_portfolio` **同步**新增 Arm B 分支（一致性鐵律遵守）。
+3. Arm B 目標：`max w·μ_total − (λ/2)·wᵀΣw  s.t. √(wᵀΣw) ≤ 風險預算`。
+   - μ_total = 資本利得算術年化（`returns.mean()×252`，呼應 Max Sharpe 偏低的幾何/算術討論）+ 殖利率。
+   - 品質維度偏好留在 Stage 2_2 篩選層（兩層式）。
+   - 偏好分數不動，仍作 V-1/V-6 評估指標。
+4. `upgrade_figures/` 改為每次執行一個專屬子資料夾 `{run_id}_arm{X}_{timestamp}/`，並複製該次所有圖（含 portfolio_performance 等）。
+
+### Arm A vs Arm B 對照（Neutral_user, 月再平衡, λ=2.0, 波動預算 30%）
+
+| 指標 | Arm A | Arm B | 變化 |
+|---|---:|---:|---|
+| CAGR % | 10.02 | 10.15 | +0.13 |
+| 年化波動 % | 14.13 | 12.76 | −1.37（更好）|
+| Sharpe | 0.464 | 0.510 | +0.046（更好）|
+| MaxDD % | −24.47 | −20.40 | +4.07（更好）|
+| 資本利得 % | 53.10 | 43.08 | −10.0 |
+| 股息 % | 12.73 | 23.84 | +11.1（重壓高股息）|
+| 偏好勝率 vs VOO | 83% | 23% | −60pp（變差）|
+| 偏好勝率 vs EqualWeight | 100% | 91% | −9pp |
+| 偏好勝率 vs MaxSharpe | 88% | 42% | −46pp（變差）|
+| V-1 偏好預測力 r | +0.60 | +0.71 | 更強 |
+| V-1 報酬預測力 r | −0.00 | +0.06 | 仍≈0 |
+
+### 解讀（重要）
+1. **Arm B 在風險調整上勝過 Arm A**：Sharpe、波動、回撤、CAGR 全部小幅改善。mean-variance 目標確實比線性加權分數更有效率。
+2. **但 Arm B 犧牲了偏好滿足度優勢**：對 VOO/MaxSharpe 的偏好勝率大跌（因為 Arm B 不再最大化偏好分數）。這是專案核心張力的量化：**最大化「偏好滿足」vs 最大化「財務效率」是有取捨的**。
+3. **λ=2 讓 Arm B 偏保守**：重壓高股息低波動 ETF（股息占比翻倍、波動降到 12.76%），30% 波動預算從未綁定。要真正衝報酬（逼近 VOO 16%）需調低 λ。
+4. **兩臂都還沒在純報酬上贏過 EqualWeight/VOO。**
+
+### 下一步候選實驗
+- 調低 λ（如 0.5~1.0）讓 Arm B 真正衝報酬，看 CAGR 能否逼近 VOO、波動預算是否開始綁定。
+- 檢視殖利率進入 μ 的方式（1:1 加總可能造成過強股息傾斜）。
+- 考慮**混合臂**（mean-variance + 小幅偏好分數項），在保住部分偏好優勢的同時取得效率。
+
+### 對主程式與回測一致性的影響
+Arm B 已同步寫入 `functions.py` 與 `backtest_engine.py`，讀同一個 `OPTIMIZATION_ARM` 開關，邏輯一致。預設維持 Arm A。
+
+## 2026-06-04：視覺化與 Max Sharpe 求解器統一改算術平均；upgrade_figures 精簡
+
+狀態：已實作，主系統 Stage 3 已跑通驗證（雷達/MPT 正常產圖）  
+是否已批准：已批准（使用者指示）
+
+### 改動內容
+1. **視覺化報酬軸改算術平均**（資本利得 = `returns.mean()×252`，與 Sharpe 口徑一致）：
+   - `functions.py` MPT 圖（`plot_portfolio_analytics_and_mpt`）的 `annual_returns`。
+   - `functions.py` 雷達圖「歷史報酬」軸改用 `Arithmetic_Ret`（含分數映射、label、`run_stage3_pipeline` 的雷達尺度 bound）。
+2. **Max Sharpe 求解器改算術平均**（Sharpe 定義所需，避免幾何低估分子）：`functions.py:run_stage3_pipeline` 與 `backtest_engine.py:optimize_max_sharpe_portfolio`。
+3. **報表同時保留兩個口徑**：`backtest_engine.py:_performance_summary` 新增 `Arithmetic_Annual_Return_%`，與既有 `CAGR_%`（幾何）並存。主系統 analytics 本來就同時有 Arithmetic 與 CAGR。
+4. **upgrade_figures 精簡**：每次只複製 6 張圖（weight_evolution、portfolio_performance、dea_score_distribution、annual_returns、preference_predictive_scatter(V-1)、preference_score_timeseries(V-6)）。
+
+### 設計決議（回答使用者 #2）
+求解器期望報酬一律用**算術平均**：
+- Sharpe 比率定義就是用算術平均 → Max Sharpe 必須算術。
+- Arm B mean-variance：算術 μ 為單期期望，且 `−(λ/2)σ²` 已近似幾何修正（幾何≈算術−σ²/2）；用 CAGR 會雙重扣風險、過度保守。
+
+### 驗證
+主系統 Stage 3 跑通：Arithmetic Annual Return 14.11%（偏好）/12.44%（MaxSharpe），Sharpe 0.569/0.640（皆算術）。
+
+### 對主程式與回測一致性的影響
+Max Sharpe 求解器兩邊同步改算術；偏好最佳化（Arm B）本就用算術。一致性維持。
+
+## 2026-06-04：Arm B 殖利率改偏好比例加權（#2）
+
+狀態：已實作，編譯通過（預設仍 Arm A）  
+是否已批准：已批准（使用者指示）
+
+### 改動內容
+Arm B 的 `μ_total` 由「資本利得 + 殖利率(1:1)」改為「資本利得 + (Return_Div/Return_CAGR)·殖利率」。
+- `div_pref_ratio = global_weights["Return_Div"] / max(global_weights["Return_CAGR"], 1e-6)`
+- 預設 Neutral_user：0.10/0.40 = 0.25，即 1% 股息在此使用者眼中值 0.25% 資本利得。
+- `functions.py` Stage 3 與 `backtest_engine.py optimize_preference_portfolio` 同步。
+
+### 理由
+使用者偏好的報酬子維度比例（CAGR:Div）應反映在期望報酬上，比 1:1 更「偏好驅動」，且對 CAGR 導向使用者會降低過強的股息傾斜。
+
+### 對主程式與回測一致性的影響
+兩邊同步，邏輯一致；只影響 Arm B。
+
+## 2026-06-04：DEA 取前25% + Ledoit-Wolf 共變異數收縮 + Arm B v2 回測（重要負面結果）
+
+狀態：已實作，已跑完整回測（預設已改回 Arm A）  
+是否已批准：已批准（使用者指示）
+
+### 改動內容
+1. **DEA 候選池改「取前 25%」百分位門檻**（`parameters.DEA_TOP_FRACTION=0.25`），取代絕對 0.80。`functions.py` 與 `backtest_engine.py` 同步。
+2. **Ledoit-Wolf 共變異數收縮**（`parameters.USE_LEDOIT_WOLF_COV=True`，新 helper `functions.compute_cov_annual`），套用於兩個求解器（Arm B + Max Sharpe）；評估用偏好分數 vol 仍用樣本共變異數。
+
+### Arm B 三版對照（Preference_Driven，Neutral_user，月再平衡）
+
+| 指標 | Arm A 基準 | Arm B v1（λ2,股息1:1,樣本cov,幾何MS） | Arm B v2（λ2,股息0.25,LedoitWolf,算術,DEA前25%） |
+|---|---:|---:|---:|
+| CAGR % | 10.02 | 10.15 | **9.18** |
+| 年化波動 % | 14.13 | 12.76 | **17.10** |
+| Sharpe | 0.464 | 0.510 | **0.366** |
+| MaxDD % | -24.47 | -20.40 | **-29.82** |
+| 偏好勝率 vs VOO | 83% | 23% | 30% |
+| 偏好勝率 vs EqualWeight | 100% | 91% | 78% |
+| V-1 偏好預測力 r | +0.60 | +0.71 | +0.16 |
+
+對照：EqualWeight CAGR 12.15%/Sharpe 0.622；VOO 16.29%/0.766。
+
+### 關鍵診斷（為何 v2 反而更差）
+1. **算術 μ 讓求解器更激進**：算術 > 幾何約 σ²/2，Max Sharpe 與 Arm B 改算術後都去追高均值（高波動）標的（Arm B 波動 12.76→17.10、Max Sharpe 13.02→15.89）。先前的幾何均值其實在當隱性正則化（壓低高波動資產）。
+2. **股息降權（0.25）移除了防禦性傾斜**：v1 重壓的高股息低波動 ETF 意外有防禦效果；降權後轉向高波動資本利得標的。
+3. **Ledoit-Wolf 只收縮共變異數、沒收縮均值**：而**均值才是大問題**。樣本算術均值是極差的 OOS 預測子，收縮 cov 救不了。
+4. **波動預算 30% 從未綁定**（波動 17.10% < 30%），λ=2 不足以壓制算術 μ 的激進。
+5. **EqualWeight 持續贏過所有最佳化組合** → 經典的「1/N 之謎」（DeMiguel et al. 2009）：樣本估計下的 mean-variance 因估計誤差常輸給等權。本結果重現此現象。
+
+### 結論與下一步
+- **μ 估計是真正的瓶頸**，已被本實驗清楚暴露。共變異數收縮是必要但不充分。
+- **下一步優先：均值收縮 / Black-Litterman**（產生有理的後驗 μ），這是現在最有實證依據的方向。
+- 待議：求解器算術 μ 是否該配合均值收縮才用（單用原始樣本算術均值太激進）。
+
+### 對主程式與回測一致性的影響
+所有改動兩邊同步。預設已改回 Arm A。
+
+## 2026-06-04：均值收縮（Arm B v3）+ 撞上 1/N 之謎
+
+狀態：已實作並回測（預設已改回 Arm A）  
+是否已批准：已批准
+
+### 改動內容
+- 新 helper `functions.shrink_mean_returns`（μ_shrunk=(1-δ)μ_sample+δ·grand_mean），參數 `USE_MEAN_SHRINKAGE`、`MEAN_SHRINKAGE_INTENSITY=0.5`。套用於 Arm B 的資本利得樣本平均（殖利率不收縮）。兩邊同步。
+- DEA 分布圖改畫「取前 25% 門檻線」（取代寫死的 0.80），主系統與回測同步。
+
+### 完整對照（Preference_Driven，Neutral_user）
+
+| 指標 | Arm A | B v1 | B v2 | **B v3(+均值收縮δ0.5)** | EqualWeight | VOO |
+|---|---:|---:|---:|---:|---:|---:|
+| CAGR % | 10.02 | 10.15 | 9.18 | **8.32** | 12.15 | 16.29 |
+| 波動 % | 14.13 | 12.76 | 17.10 | **14.87** | 13.49 | 16.24 |
+| Sharpe | 0.464 | 0.510 | 0.366 | **0.344** | 0.622 | 0.766 |
+| MaxDD % | -24.47 | -20.40 | -29.82 | **-27.64** | -20.16 | -23.49 |
+| 偏好勝率 vs EqualWeight | 100% | 91% | 78% | 72% | — | — |
+
+### 關鍵結論
+1. **均值收縮（δ=0.5）沒幫上忙**：波動降了（17.10→14.87），但報酬也降（9.18→8.32），Sharpe 微降（0.366→0.344）。
+2. **EqualWeight（Sharpe 0.622）打敗所有最佳化臂**（Arm A/B 各版、Max Sharpe）→ **1/N 之謎完整重現**（DeMiguel 2009）。在這個 universe + 期間，任何用 μ 的最佳化都因估計誤差而輸給天真等權。
+3. **診斷升級**：問題不只是「μ 估計差」，而是「在這個候選池，最優權重本來就≈1/N」——最佳化的編輯空間有限。
+
+### 策略性下一步（待使用者選擇）
+- **Arm C：μ-free 穩健加權（最小變異 / 風險平價）+ 偏好當約束/傾斜**。只用 Σ（已用 Ledoit-Wolf 收縮好），不碰不可估的 μ。最快測試：把 `MEAN_SHRINKAGE_INTENSITY` 設 1.0（μ 全部相等 ≈ 最小變異）跑一次。
+- **重新定義價值主張**：財務上接近 1/N 已是天花板；系統差異化在「偏好滿足度（V-1/V-6 OOS 驗證）」。
+- Black-Litterman（較完整但工程量大，且 1/N 結果顯示即使好的 μ 估計效益也有限）。
+
+### 對主程式與回測一致性的影響
+所有改動兩邊同步。預設已改回 Arm A。
+
+## 2026-06-04：μ-free 實驗（Arm B δ=1.0 = 最小變異 + 股息傾斜）— ⚠️ 結論已更正
+
+狀態：實驗完成（參數已還原 ARM=A, δ=0.5）  
+是否已批准：實驗
+
+> ⚠️ **更正（2026-06-05 τ sweep 後）**：本節原把 Sharpe 1.07 當成「純最小變異的勝利」、稱「明確證實 μ 是毒藥、OOS 一流」，這個結論**過度樂觀、已更正**。1.07 其實是「最小變異 **+ 強股息傾斜**（0.25·股息）」，且押中 2021–2026『防禦/高股息』贏家因子（期間運氣）。**純最小變異（Arm C τ=0）只有 Sharpe 0.655。** 下表「δ=1.0」欄請理解為「最小變異+股息傾斜」，非純最小變異。可保留的穩健結論僅為：用噪音樣本 μ（v2/v3）表現最差，少用/不用 μ 較穩。
+
+### 設定
+`OPTIMIZATION_ARM=B`、`MEAN_SHRINKAGE_INTENSITY=1.0`（資本利得樣本平均完全收縮 → μ 只剩穩定的股息傾斜，等於「最小變異 + 小幅收益傾斜」，完全不靠不可估的資本利得 μ）。共變異數用 Ledoit-Wolf 收縮。
+
+### 完整對照（Preference_Driven，Neutral_user）
+
+| 指標 | Arm A | B v1 | B v2 | B v3(δ0.5) | **B δ1.0(最小變異+股息傾斜)** | EqualWeight | VOO |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| CAGR % | 10.02 | 10.15 | 9.18 | 8.32 | **14.74** | 12.15 | 16.29 |
+| 波動 % | 14.13 | 12.76 | 17.10 | 14.87 | **9.56** | 13.49 | 16.24 |
+| Sharpe | 0.464 | 0.510 | 0.366 | 0.344 | **1.070** | 0.622 | 0.766 |
+| MaxDD % | -24.47 | -20.40 | -29.82 | -27.64 | **-10.59** | -20.16 | -23.49 |
+| 偏好勝率 vs VOO | 83% | 23% | 30% | 30% | **0%** | — | — |
+| 偏好勝率 vs EqualWeight | 100% | 91% | 78% | 72% | **6%** | — | — |
+| 偏好勝率 vs MaxSharpe | 88% | 42% | 47% | 47% | **12%** | — | — |
+
+### 兩個重大發現
+1. **財務上：此配置 Sharpe 1.070、波動 9.56%、MaxDD -10.59%、CAGR 14.74%。** ⚠️ 但這是「最小變異 + 強股息傾斜」，**股息傾斜做了大部分的工並押中期間因子**，非純最小變異（純最小變異 = Arm C τ=0 = 0.655）。可保留的穩健結論僅為：**用噪音樣本 μ（v2/v3）表現最差，少用 μ 較穩**；「1.07」不可當成穩健的純最小變異成績。
+2. **偏好上：最小變異幾乎全輸。** 偏好勝率 VOO 0% / EqualWeight 6% / MaxSharpe 12%。因為它為了最小化波動，**完全忽略使用者的報酬偏好**（Neutral_user 報酬權重 50%）。
+
+### 核心張力被清楚定位（兩個極端）
+- **Arm A**：偏好勝率 83~100%，Sharpe 0.464（財務最差）→ 純偏好滿足。
+- **最小變異+股息傾斜（B δ1.0）**：偏好勝率 0~12%，Sharpe 1.070（含期間因子運氣）→ 偏財務效率端。（純最小變異 Arm C τ=0 為 Sharpe 0.655）
+- 真正的解在中間：**以最小變異為穩健核心，再把偏好以「傾斜 + 約束」層疊上去**，用「偏好強度」當旋鈕在「財務效率 ↔ 偏好滿足」之間取點（Pareto 前緣）。
+
+### 誠實的但書
+- 最小變異組合高度偏防禦/高股息（股息占比 43%），在含 2022 空頭的 2021–2026 特別吃香；單一歷史路徑，需注意期間依賴（但已是 64 期 rolling OOS）。
+- 「偏好勝率 0%」是相對於「報酬導向的 Neutral_user」；對保守型使用者，最小變異反而會是高偏好分數。即偏好分數正確反映了「最小變異 ≠ 報酬導向使用者要的」。
+
+### 下一步：建立 Arm C
+**Arm C = 最小變異核心（μ-free, Ledoit-Wolf Σ）+ 偏好傾斜/約束 + 偏好強度旋鈕。** 目標：在穩健核心上把偏好勝率拉回。（後續 τ sweep 顯示 Arm C 實際 Sharpe 區間約 0.65–0.69，非 1.07。）
+
+### 對主程式與回測一致性的影響
+本次只調參數實驗，程式邏輯兩邊已同步（δ 收縮、Ledoit-Wolf 皆在兩檔）。預設已還原 ARM=A, δ=0.5。
+
+## 2026-06-05：★Arm C v1 成功★ 最小變異核心 + 偏好傾斜 = 綜合解
+
+狀態：已實作並回測（預設已還原 ARM=A，Arm C 參數保留）  
+是否已批准：已批准（使用者指示）
+
+### 實作
+- 新 `OPTIMIZATION_ARM="C"` 分支（functions.py Stage 3 + backtest 同步）。
+- 目標：`min ½wᵀΣw − τ·(wᵀs)`，Σ=Ledoit-Wolf，s=User_Pref_Score（排名式）。
+- 參數：`TILT_STRENGTH=0.1`、`TILT_INCLUDE_CAGR=True`、品質約束（`COST_BUDGET_QUANTILE=0.75` + `HHI_CEILING=0.50`）、`RISK_BUDGET_VOL=0.30`、cap 0.40。無解 fallback：丟品質約束→丟波動預算。
+
+### Pareto 對照（Preference_Driven，Neutral_user）
+
+| 配置 | Sharpe | 波動% | MaxDD% | CAGR% | 偏好勝率 VOO/EqW/MaxSharpe |
+|---|---:|---:|---:|---:|---|
+| Arm A（純偏好） | 0.464 | 14.13 | -24.47 | 10.02 | 83 / 100 / 88 |
+| B δ1.0(最小變異+股息,期間運氣) | 1.070 | 9.56 | -10.59 | 14.74 | 0 / 6 / 12 |
+| 純最小變異(Arm C τ=0) | 0.655 | 10.61 | -15.8 | 10.93 | 1.6 / 84 / 42 |
+| **Arm C（τ=0.1）** | **0.666** | 12.26 | -14.21 | 12.07 | **72 / 100 / 91** |
+| EqualWeight | 0.622 | 13.49 | -20.16 | 12.15 | — |
+| VOO | 0.766 | 16.24 | -23.49 | 16.29 | — |
+
+### 關鍵結論：Arm C 是綜合解
+1. **Arm C 在財務上全面優於 Arm A**：Sharpe 0.666 vs 0.464、MaxDD -14.21 vs -24.47、CAGR 12.07 vs 10.02、波動更低。
+2. **偏好滿足度幾乎追平 Arm A**：勝率 72/100/91% vs 83/100/88%。
+3. **同時打敗天真等權**：Sharpe 0.666 > 0.622、MaxDD -14.21 > -20.16，且額外滿足使用者偏好（等權沒有）。
+4. → τ 旋鈕設計成立：τ=0（最小變異，財務最佳、偏好 0%）→ τ=0.1（甜蜜點）→ τ↑ 趨近 Arm A。**核心張力被解決。**
+
+### 下一步
+- τ sweep（{0.01, 0.05, 0.1, 0.5}）建完整 Pareto 前緣，找最佳操作點（τ=0.1 已很好，或可略降 τ 換更高 Sharpe）。
+- s_full vs s_noCAGR sweep。
+- 逐一加入其餘品質約束（流動性、情緒…）並記錄 OOS。
+- 之後設計「偏好 → τ / 預算 / 門檻」映射。
+
+### 對主程式與回測一致性的影響
+Arm C 兩檔同步。預設已還原 ARM=A。
+
+## 2026-06-05：Arm C τ sweep — Pareto 前緣 + 對「1.07」的誠實更正
+
+狀態：sweep 完成（只掃 τ，其餘固定；單參數方法論決議見 05）  
+輸出：`upgrade_figures/tau_sweep/tau_sweep_summary.csv`、`tau_pareto_frontier.png`
+
+### τ sweep（Arm C，Preference_Driven，Neutral_user）
+
+| τ | Sharpe | 波動% | MaxDD% | CAGR% | 偏好勝率 VOO/等權/MaxSharpe |
+|---:|---:|---:|---:|---:|---|
+| 0.0（純最小變異） | 0.655 | 10.61 | -15.8 | 10.93 | 1.6 / 84 / 42 |
+| 0.05 | **0.691** | 11.28 | -13.82 | 11.78 | 47 / 100 / 66 |
+| 0.1 | 0.666 | 12.26 | -14.21 | 12.07 | 72 / 100 / 91 |
+| 0.2 | 0.569 | 13.12 | -17.54 | 11.17 | 75 / 100 / 91 |
+| 0.5 | 0.477 | 14.61 | -22.17 | 10.39 | 78 / 100 / 92 |
+
+（對照：等權 0.622、VOO 0.766）
+
+### 重要更正：先前的「Sharpe 1.07」不是純最小變異
+- 純最小變異 = Arm C τ=0 = **Sharpe 0.655**。
+- 先前 1.07 是 **Arm B δ=1.0**＝「最小變異 + 強的純股息傾斜（0.25·股息）」，**股息傾斜做了大部分的工，且押中 2021–2026『防禦/高股息』贏家因子**。→ 1.07 相當程度是期間因子運氣，非穩健結果。Arm C 的 0.65–0.69 是更誠實/穩健的範圍（傾斜分散在完整偏好剖面，而非集中單一因子）。
+
+### Pareto 前緣與最佳操作區
+- 形狀：拱形 + 右側陡降。τ=0.05 為財務峰值（Sharpe 0.691，甚至高於 τ=0；小傾斜同時改善財務與偏好）；τ=0.1 偏好最佳；τ≥0.2 報酬遞減（Sharpe 陡降、偏好只微增）。
+- **建議操作區：τ ∈ [0.05, 0.1]**。重財務→0.05；重偏好→0.1。所有 τ 對等權偏好勝率皆 100%。
+
+### 下一步
+- s_full vs s_noCAGR sweep（驗證資本利得排名幫不幫忙）。
+- 逐一加品質約束（OAT）。
+- 設計「偏好 → τ / 預算 / 門檻（百分位）」映射。
+- 注意：股息似乎是穩定且有價值的傾斜，但勿過度依賴（期間相關）。
+
+## 2026-06-05：VT 設為主基準 + VT 錨定 τ sweep
+
+狀態：已實作（DEFAULT_BENCHMARK_TICKER=VT，欄位改 benchmark-generic 命名）+ 已跑 VT 錨定 τ sweep  
+輸出：`upgrade_figures/tau_sweep_vt/{tau_sweep_vt_summary.csv, tau_pareto_vt.png}`
+
+### 改動
+- `DEFAULT_BENCHMARK_TICKER` VOO→VT（全球市值加權≈市場組合，更適合當無偏好錨；VOO 留 comparison 當 aspirational 目標）。
+- 偏好分數欄位 `VOO_Forward*`→`Benchmark_Forward*`、`Forward_Score_vs_VOO`→`Forward_Score_vs_Benchmark`（避免改基準後標籤錯置）。兩檔同步。
+- 新增 `parameters.USER_PROFILES`（7 個原型）供多 profile 驗證。
+
+### VT 錨定 τ sweep（Arm C，return_leaning 使用者）
+VT 參考：Sharpe 0.645、波動 15.30%、MaxDD -24.57%、CAGR 13.51%。
+
+| τ | Sharpe | 波動% | MaxDD% | CAGR% | 偏好勝率 vs VT |
+|---:|---:|---:|---:|---:|---:|
+| 0.0 | 0.655 | 10.61 | -15.8 | 10.93 | 35.9 |
+| 0.05 | 0.691 | 11.28 | -13.82 | 11.78 | 65.6 |
+| 0.1 | 0.666 | 12.26 | -14.21 | 12.07 | 89.1 |
+| 0.2 | 0.569 | 13.12 | -17.54 | 11.17 | 93.8 |
+| 0.5 | 0.477 | 14.61 | -22.17 | 10.39 | 98.4 |
+
+（財務數字與 VOO 錨定 sweep 完全相同 → 確認財務與基準選擇無關。）
+
+### 關鍵發現（誠實對照使用者目標「風險≈VT、報酬>VT」）
+- **Arm C 在風險調整與安全性上勝過 VT**：Sharpe（甜蜜區 0.66–0.69）> VT 0.645；波動（11–12%）遠低於 VT 15.30%；MaxDD（-14%）遠優於 VT -24.57%。
+- **但 Arm C 報酬低於 VT**：CAGR 10.9–12.1% < VT 13.51%（所有 τ 皆然）。
+- → **「風險≈VT、報酬>VT」未達成，且以目前誠實（μ-free）工具難以達成**：要打敗 VT 的報酬需要可靠的報酬預測，而 1/N 之謎已證明做不到。提高 τ 把波動推到接近 VT（τ=0.5 波動 14.6%）也不會換到更高報酬（CAGR 反降至 10.39%），因為傾斜是往偏好排名、非預測性報酬。
+- **誠實的價值主張改寫**：不是「打敗市場報酬」（沒人能可靠做到），而是「**比 VT 更安全、風險調整更好（更高 Sharpe、更低回撤），同時貼合使用者偏好**」。τ=0.1 時對 VT 偏好勝率 89%。
+- 旁註：VT 偏好勝率（89%）> VOO 偏好勝率（72%），因為對 return-leaning 使用者，VOO（高 CAGR）偏好分數較高、較難打敗 → 確認「VOO=難打敗的目標、VT=合理基準」的定位。
+
+### 待辦
+- 多 profile τ sweep（USER_PROFILES）→ 驗證 trade-off 的 profile 依賴性。
+- 偏好→參數映射用「權重向量的函數」（見 05 §4.57）。
+
+## 2026-06-05：多 profile τ sweep（完成）
+
+狀態：完成（3 profile × 3 τ，Arm C，VT 基準）。輸出：`upgrade_figures/profile_sweep/profile_sweep_summary.csv`  
+VT 參考：Sharpe 0.645、波動 15.30%、CAGR 13.51%、MaxDD -24.57%。
+
+### 結果
+
+| profile | τ | Sharpe | 波動% | MaxDD% | CAGR% | 贏VT報酬? | 對VT偏好勝率 |
+|---|---:|---:|---:|---:|---:|:--:|---:|
+| aggressive_growth | 0.0 | 0.658 | 10.48 | -15.5 | 10.88 | ✗ | 17.2 |
+| aggressive_growth | 0.1 | **0.373** | 15.10 | **-26.3** | 8.85 | ✗ | 89.1 |
+| aggressive_growth | 0.3 | 0.371 | 16.92 | **-30.14** | 9.23 | ✗ | 93.8 |
+| balanced | 0.0 | 0.665 | 10.64 | -15.81 | 11.06 | ✗ | 34.4 |
+| balanced | 0.1 | 0.690 | 11.98 | -14.38 | 12.23 | ✗ | 48.4 |
+| balanced | 0.3 | **0.711** | 12.63 | -15.73 | **12.93** | ✗ | 62.5 |
+| conservative | 0.0 | **0.664** | 10.64 | -15.87 | 11.05 | ✗ | **57.8** |
+| conservative | 0.1 | 0.560 | 10.98 | -15.25 | 10.00 | ✗ | 34.4 |
+| conservative | 0.3 | 0.601 | 11.61 | -15.20 | 10.83 | ✗ | 45.3 |
+
+### 結論：trade-off 形狀**強烈** profile 依賴（確認 `05` §5 / §4.9）
+1. **aggressive_growth：τ 傾斜是「災難」。** τ↑ → 波動衝到 16.9%、MaxDD 惡化到 -30%、Sharpe 崩到 0.37、**CAGR 反降到 ~9%**。偏好勝率雖升到 94%，但**承擔大量風險卻換到負的報酬報償**。→ **強力佐證：往「CAGR 排名」傾斜 ≠ 拿到報酬，只是白白加風險。報酬導向使用者不能用排名傾斜服務，必須 U-C2（系統性風險溢酬/beta）。**
+2. **balanced：τ 傾斜是「雙贏」。** τ↑ → Sharpe(0.665→0.711) 與 CAGR(11.06→12.93) 同升、偏好勝率也升。**無 trade-off，甚至正相關。** balanced τ=0.3 是全場最佳全方位點（Sharpe 0.711 > VT 0.645、CAGR 12.93% 近 VT 但波動低很多）。
+3. **conservative：τ≈0（純最小變異）已是甜蜜點。** τ=0 同時拿到最高 Sharpe(0.664) 與最高偏好勝率(57.8%)；加 τ 反而兩者皆降。**最小變異本身就最大化保守型的偏好，不需傾斜。**
+4. **沒有任何 profile 在任何 τ 贏過 VT 的 CAGR(13.51%)**（最接近：balanced τ=0.3 的 12.93%）。確認：現有工具無法贏過 VT 絕對報酬。
+
+### 對 τ 映射的含義
+τ 應 profile 依賴：**保守型 → τ≈0；平衡型 → τ 中高（雙贏）；報酬導向 → 不用排名傾斜，改走 U-C2。**
+
+## 2026-06-05：升級 A 完成 — 偏好→參數映射 g(w)（U-C2 前置）
+
+狀態：完成並驗收（純 helper，預設關閉，不影響 Arm A/C 現有行為）。
+
+### 改了什麼
+- `parameters.py`：新增 `USE_PREF_PARAM_MAPPING`（預設 False）+ 映射係數（`CORE_MODE_T_LOW=0.40`、`CORE_MODE_T_HIGH=0.65`、`VOL_BUDGET_BASE=0.10`、`VOL_BUDGET_SLOPE=0.40`、`VOL_BUDGET_MIN/MAX=0.10/0.45`、`TAU_MAP_COEF=0.30`）。
+- `functions.py`：新增 `derive_params_from_weights(global_weights)`，回傳 `{R, T_growth, core_mode, vol_budget, tau}`。
+- `backtest_engine.py`：直接 `from functions import derive_params_from_weights`（**單一真理來源，保證兩系統數值完全一致**，免去手動同步風險）。
+- 驗收腳本：`_verify_gw_mapping.py`（印 7 profile 映射表）。
+
+### 設計決議（2026-06-05，使用者確認）
+1. **核心類型用「資本利得渴望」選，不用總報酬**：`T_growth = CAGR/(CAGR+Vol+MaxDD)`。理由：核心=「要不要買成長/市場風險」，股息渴望不該把收入型推進 beta 核心。修正了初版 income 被誤分到 beta（高波動低股息）的問題。股息偏好改由 τ 傾斜處理。
+2. **τ 保平滑小量級、只編碼方向**：`τ = 0.30·(1−T_growth)·R̂`。不硬擬合單一路徑 sweep 的甜蜜點（避免 overfit），精確量級交給 walk-forward。beta 核心（高 T_growth）自動低 τ；收入型（低 T_growth、高 R）自動拿到較高 τ 做股息傾斜。
+
+### 驗收結果（7 profile，方向全部合理）
+| profile | R | T_growth | core | vol_budget | τ |
+|---|---:|---:|:--|---:|---:|
+| aggressive_growth | 0.550 | 0.846 | beta | 0.438 | 0.025 |
+| return_leaning | 0.500 | 0.667 | beta | 0.367 | 0.050 |
+| cost_liquidity | 0.280 | 0.474 | market | 0.289 | 0.044 |
+| balanced | 0.350 | 0.449 | market | 0.280 | 0.058 |
+| diversified_quality | 0.250 | 0.405 | market | 0.262 | 0.045 |
+| income | 0.500 | 0.312 | minvar | 0.225 | 0.103 |
+| conservative | 0.200 | 0.138 | minvar | 0.155 | 0.052 |
+
+- income → minvar + 低 vol_budget + 最高 τ（股息傾斜）✓；conservative → minvar + 最低 vol_budget ✓；beta 核心 → 低 τ ✓。
+
+## 2026-06-05：升級 B 完成 — U-C2 profile-dependent 三核心（Arm "C2"）
+
+狀態：實作完成 + 煙霧測試通過（合成資料，三核心皆正常）。尚未跑真實多 profile 回測。
+
+### 改了什麼（兩檔同步）
+- `functions.py`：
+  - 新增共用 helper `compute_benchmark_cov_vector(etf_returns, benchmark_returns)` → 回傳 `(c, var_bench)`，`c[i]=Cov(rᵢ,r_bench)·252`、`beta=c/var_bench`。只需每日報酬。
+  - 新增主系統用 `get_benchmark_returns_aligned()`（抓 VT 價格、對齊 returns_matrix 交易日）。
+  - Stage 3 新增 `OPTIMIZATION_ARM=="C2"` 分支：用 `derive_params_from_weights()` 取 core_mode/τ/vol_budget，三核心目標：minvar=`½wᵀΣw−τ·wᵀs`、market=`½wᵀΣw−wᵀc−τ·wᵀs`、beta=`max wᵀβ+τ·wᵀs`；共同約束 Σw=1 / 界內 / 波動預算 / 成本 / HHI；三層 fallback。
+- `backtest_engine.py`：
+  - `from functions import compute_benchmark_cov_vector`（c 向量算法單一真理來源）。
+  - `optimize_preference_portfolio` 加 `benchmark_returns` 參數 + 與主系統逐項相同的 C2 分支。
+  - `run_rolling_backtest`：ARM=="C2" 時從 `prices[benchmark]` 取 lookback 報酬流傳入（只用報酬，不需成分權重）。
+- `parameters.py`：`OPTIMIZATION_ARM` 註解加 "C2"。
+- 煙霧測試 `_smoke_c2.py`：beta 估計 ≈ 真值；minvar→分散、market→port_beta≈1.00、beta→往高 beta 傾斜，權重皆 Σ=1 合法。
+
+### 設計要點
+- market 核心 `min ½wᵀΣw − wᵀc` 等價於對 VT 報酬流最小化追蹤誤差（`min Var(r_p−r_VT)`），用真實 VT 報酬流，**不需任何成分權重**。
+- 取不到基準共變異時 market/beta 核心自動退回 minvar（兩檔一致）。
+- C2 一律使用 g(w)（`USE_PREF_PARAM_MAPPING` 旗標保留供未來讓 Arm C 也吃 g(w)，目前 C2 不依賴它）。
+
+### 待驗證（下一步）
+- 真實多 profile rolling backtest：C2 vs Arm C vs VT。**關鍵驗收**：aggressive_growth 在 C2(beta 核心) 下 CAGR 須突破 Arm C 的 ~9%、逼近/超過 VT 13.51%（C2 存在的唯一理由）；balanced/conservative 不得低於 Arm C 甜蜜點。
+- 跑前設 `OPTIMIZATION_ARM="C2"`，**跑後務必還原 "A"**。
+
+## 2026-06-05：C2 風險預算改「相對候選池可行波動範圍」（修正無解 + 脫離池子問題）
+
+狀態：實作完成 + 煙霧測試通過。使用者確認採此版（非單純 floor）。
+
+### 問題（使用者指出）
+g(w) 原本輸出絕對 `vol_budget`（aggressive 0.438、conservative 0.155）。兩個缺陷：
+1. **可能無解**：若候選池最小變異組合的波動 > vol_budget，`√(wᵀΣw)≤vol_budget` 約束無解（舊版只能逐層 drop 掉約束 → beta 核心會失去風險控制，壓到最高 beta 標的）。
+2. **脫離當期池子**：絕對值可能高到沒意義（0.438）或低到不可行，與當期選到的 ETF 實際可達波動範圍無關。
+
+### 修法
+- g(w) 改輸出無量綱 `risk_fraction∈[0,1]`（= clip(T_growth, RISK_FRACTION_MIN=0.05, MAX=0.95)；另有 `RISK_FRACTION_OVERRIDE` 供實驗掃描）。
+- 新增共用 helper `compute_feasible_vol_budget(cov_annual, max_weight, risk_fraction)`（functions.py，backtest import）：
+  - `v_min` = 最小變異組合波動（min wᵀΣw s.t. Σw=1,0≤w≤cap）
+  - `v_max` = 最大變異組合波動（max wᵀΣw 同約束）
+  - `vol_budget = v_min + risk_fraction·(v_max−v_min)`，夾 ≥ v_min·(1+1e-3) → **恆可行**。
+- 兩檔 C2 分支改呼叫此 helper 算 vol_budget。
+
+### 煙霧測試（合成池可行範圍 [12.4%,19.2%]）
+- conservative rfrac=0.14 → 預算 13.3%（貼 v_min）、實際 port_vol 13.4% ✓
+- balanced rfrac=0.45 → 預算 15.5%（中段）、beta 0.94 ✓
+- aggressive rfrac=0.85 → 預算 18.2%（貼 v_max）、**port_vol 18.2% 卡到預算**、beta 1.12 ✓（風險預算成為主動控制，用滿去買 beta）
+
+→ 永不無解、永遠相對當期池子、beta 核心的風險控制有效。
+
+## 2026-06-05：s_full vs s_noCAGR 比較（完成）— ★資本利得排名有害★
+
+狀態：完成（Arm C，3 profile × 2 s-version × 2 τ = 12 回測）。輸出：`upgrade_figures/s_sweep/s_sweep_summary.csv`。
+VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Return_CAGR)是否幫得上 OOS？
+
+### 結果
+| profile | τ | s | Sharpe | Vol% | MaxDD% | CAGR% | 贏VT | win_VT |
+|---|---:|:--|---:|---:|---:|---:|:--:|---:|
+| conservative | 0.1 | full | 0.560 | 10.98 | -15.25 | 10.00 | ✗ | 34.4 |
+| conservative | 0.1 | **noCAGR** | 0.624 | 11.23 | -16.75 | 10.91 | ✗ | 25.0 |
+| conservative | 0.3 | full | 0.601 | 11.61 | -15.20 | 10.83 | ✗ | 45.3 |
+| conservative | 0.3 | **noCAGR** | 0.670 | 11.75 | -17.37 | 11.81 | ✗ | 54.7 |
+| balanced | 0.1 | full | 0.691 | 11.98 | -14.38 | 12.23 | ✗ | 48.4 |
+| balanced | 0.1 | **noCAGR** | 0.756 | 11.86 | -16.97 | 13.02 | ✗ | 56.2 |
+| balanced | 0.3 | full | 0.711 | 12.63 | -15.73 | 12.93 | ✗ | 62.5 |
+| balanced | 0.3 | **noCAGR** | **0.782** | 12.50 | -17.83 | **13.84** | ✓ | 70.3 |
+| return_leaning | 0.1 | full | 0.666 | 12.26 | -14.21 | 12.07 | ✗ | 89.1 |
+| return_leaning | 0.1 | **noCAGR** | 0.685 | 11.53 | -16.44 | 11.87 | ✗ | 68.8 |
+| return_leaning | 0.3 | full | 0.558 | 13.85 | -19.22 | 11.35 | ✗ | 92.2 |
+| return_leaning | 0.3 | **noCAGR** | **0.841** | 12.28 | -17.03 | **14.50** | ✓ | 93.8 |
+
+### 結論（決定性）
+1. **noCAGR 在 Sharpe 上 6/6 勝過 full**；CAGR 5/6 勝（唯一例外 return_leaning τ=0.1，CAGR 12.07 vs 11.87 接近，但 noCAGR Sharpe 仍較高）。
+2. **高 τ 時差距爆炸**：含 CAGR 排名在強傾斜(τ=0.3)下**有毒**——return_leaning τ=0.3 full 崩到 0.558/CAGR11.35，noCAGR 飆到 **0.841/CAGR14.50**。即「CAGR 排名」正是讓強傾斜變壞的元兇；拿掉它，強傾斜反而大有助益。
+3. **兩個 noCAGR 配置贏過 VT**（皆 τ=0.3）：balanced 13.84%、return_leaning 14.50%，且**波動更低、回撤更淺、Sharpe 更高**（return_leaning：vol 12.28% < VT 15.3%、MaxDD -17% < VT -24.6%）。**重大更正：先前「沒有 profile 贏過 VT」是含 CAGR 排名(s_full)的假象！**
+4. 代價：noCAGR 回撤略深（約 -17% vs -15%），但遠優於 VT。
+5. 機制（呼應 03 §1.1 / 05 §4.9）：資本利得排名=追過去贏家（會均值回歸），不預測未來報酬；拿掉後傾斜改載在較持久的訊號（股息/品質/低成本/低風險）。
+
+### 行動
+- **決議：`TILT_INCLUDE_CAGR` 預設改 False（noCAGR）** 套用於 Arm C / C2（預設 ARM="A" 不受影響）。C2 實驗 Part 2 用 noCAGR。
+- ⚠️ 單一路徑結果，須 walk-forward 驗證（尤其「贏 VT」的 τ=0.3 noCAGR 是否跨期穩健）。方向性結論（CAGR 排名有害）跨 12 格一致，較可信。
+
+## 2026-06-05：U-C2 多 profile 驗證 + risk_fraction 行為地圖（完成）— ★U-C2 驗證成功★
+
+狀態：完成。**完整成果見 `06_overnight_experiment_report_2026-06-05.md`。** 輸出：`upgrade_figures/c2_experiment/{c2_multiprofile_summary,c2_riskfraction_map}.csv`。
+
+### Part 1：多 profile C2 vs Arm C（重點）
+- C2 在 Sharpe+CAGR 上 **6/7 profile 勝過 Arm C**。
+- **aggressive_growth：Arm C 8.85% CAGR → C2 beta 核心 13.80%（贏 VT 13.51%）**，代價 vol 18.65%、Sharpe 0.573（<VT）→ U-C2 核心目的達成。
+- C2(noCAGR) 4 profile CAGR 贏 VT：aggressive 13.80 / return_leaning 14.12 / income 14.27 / cost_liquidity 14.15。
+- income(minvar+強股息傾斜) 最佳全方位：Sharpe 0.858、CAGR 14.27、vol 11.71、win_VT 100%。
+- **張力**：beta 核心 win_VT 低（aggressive 42%、return_leaning 11%）= 報酬導向用 beta 核心會犧牲「偏好分數招牌」；minvar/market 核心保住招牌（income 100%、balanced 64%）。
+
+### Part 2：risk_fraction 行為地圖（回答「能否用風險換報酬」）
+- **能**：beta 核心 rf 0→1 呈乾淨「風險↑→報酬↑」（aggressive 9.2%vol/13.47%CAGR → 19.8%vol/15.54%CAGR）。
+- **但 Sharpe 遞減**（0.99→0.63）→ 印證低波動異常：買得到絕對報酬，買不到風險調整報酬。
+- **rf=0（最小變異端）Sharpe 最高(0.99)、CAGR 已近 VT(13.47%)、vol 僅 9.2%** → 此期間防禦端 CP 值最高（強烈受 2021–26 因子運氣影響，須 walk-forward）。
+- market 核心 rf≥0.5 飽和（預算不再綁定，符合設計）。
+
+### 結論與待辦
+- U-C2 驗證成功；最大可推廣發現是 noCAGR（不動核心就讓多 profile 贏 VT）。
+- **下一步：walk-forward（多視窗）驗證**「贏 VT」非單期運氣；定調兩個張力（beta vs 偏好招牌、rf 高低）。
+- ⚠️ 全為單一路徑，數字僅指示性。
+
+## 2026-06-05：偏好分數結構分析 + 資本利得成長獎勵修正（展示層）
+
+### 結構分析（使用者提問：偏好分數有沒有獎勵資本利得成長？）
+- `Norm_Return_CAGR` = `robust_scale`：clip 到 [p1,p99] 後線性 min-max（**winsorized min-max，非純排名**）。
+- 全宇宙 491 檔實測：clip 上界 p99=55.15%，**前 5 名（CAGR 56%~132%）分數全被砍平到 1.0**；p99 以上「每多 1% CAGR → +0.0000 分」。區間內線性 +0.0179/1%。
+- **三層結構限制讓成長獎勵不足**：① winsorize 砍平上尾（極端成長零差別）；② 橫斷面相對、每期重正規化（無法表達絕對成長）；③ 上限 [0,1] 與其他 8 維同天花板（卓越成長無法壓過其他維度）。
+- 加上 V-1：此「過去 CAGR」分數不預測未來報酬（r≈0）。
+- **結論：使用者直覺正確**——分數對成長幅度（尤其極端/絕對成長）獎勵不足。
+
+### 「拿掉 CAGR 權重去哪」的答案
+- `s_noCAGR = s_full − w_CAGR·Norm_CAGR = Σ_{k≠CAGR} w_k·Norm_k`：**CAGR 權重直接丟掉、不重分配**；其餘 8 維維持原絕對權重（總和=1−w_CAGR），方向不變、強度縮小。
+- 解釋了為何成長型需要 beta 核心：拿掉 CAGR 後成長型的傾斜幾乎被掏空。
+
+### 修正（使用者決議：現在就修，但只為招牌/展示，不進最佳化器）
+- **關鍵安全性**：最佳化器為 noCAGR → `s_noCAGR` 中 `Norm_Return_CAGR` 完全抵消（User_Pref_Score 的 +w_CAGR·Norm_CAGR 與被減項對消，代數上恆等），故改 `Norm_Return_CAGR` 只影響展示/評估分數（V-1/V-6、維度比較），**不影響 Arm C/C2 noCAGR 最佳化**。僅改 CAGR 一維（Div 等若改會經 s_noCAGR 漏進最佳化，故不動）。
+- 作法：新增 `PREF_SCORE_CAGR_UPPER_Q`（預設 0.999，原 0.99），放寬 CAGR 上尾 winsorize，讓極端高成長不再被砍平到同一個 1.0。兩處同步：functions.py（主管線 stage2 正規化）+ backtest_engine.py（scale_preference_features）。
+- 限制（誠實）：只能修 ①（砍平）；②橫斷面相對 與 ③同天花板 是 min-max 加權和的結構特性，要動需重新設計整個分數（會牽動其他維度與最佳化器），本次不做。
+
+## 2026-06-05：Walk-forward 穩健性驗證（完成）— ★修正單期樂觀★
+
+狀態：完成。完整分析見 `06` §6.5。輸出：`upgrade_figures/walkforward/{wf_timewindow,wf_lookback}.csv`。
+設計：7 profile × 6 滾動時間窗(lb=2y) + 4 lookback(窗 2021-26)。資料 2016-2026。
+
+### 關鍵結論
+- **跨 6 窗後，只有 beta 核心 profile 穩健贏 VT 絕對 CAGR**：aggressive 4/6、return_leaning 5/6。其餘(income/balanced/cost_liquidity/diversified_quality/conservative)贏 VT 0-1/6 CAGR。
+- **單一路徑 2021-26 的「4 profile 贏 VT」大半是該窗運氣** → 已修正：minvar/market profile 的價值在 Sharpe/回撤/偏好分數(win_VT)，非絕對報酬。
+- 風險換報酬跨規制一致：beta 贏 CAGR 不贏 Sharpe；market/minvar 贏 Sharpe 不贏 CAGR，從不兼得。
+- 強多頭窗(2022-26 VT 20%+)誰都贏不過 VT。
+- lookback：lb=2~3 甜蜜區、lb=1 雜訊；beta「贏 VT」對 lookback 略脆弱。
+- **誠實對外論述 = 報酬導向(beta)跨規制贏 VT 絕對報酬；其他 profile 贏在風險效率與偏好滿足。**（取代「人人贏 VT」）
+
+## 2026-06-05：排隊實驗（noCAGR 穩健性 / risk_fraction 跨區 / DCA）完成
+
+完整分析見 `06` §6.6。輸出：`upgrade_figures/queued/{exp3_nocagr_robustness,exp4_riskfraction_regime,exp5_dca}.csv`。
+
+- **Exp3 ★第二個更正★**：noCAGR vs full 跨 6 窗是 **regime-dependent、大致 wash**（full 在 2018-22、2021-24 還贏，return_leaning full 甚至兩窗 CAGR 贏 VT）。單期「noCAGR 壓倒 full」也是 2021-26 窗現象。→ **`TILT_INCLUDE_CAGR=False` 預設翻轉不被跨區證據支持（財務 wash）；決策待使用者定調**（principle noCAGR vs signature full）。已在 parameters.py 標註待定。
+- **Exp4 ★強化 U-C2★**：risk_fraction 0→1「風險↑→報酬↑」跨 3 規制窗全成立、Sharpe 隨 rf 遞減全成立、高 rf 在非強多頭窗能贏 VT、market 核心 rf≥0.5 飽和。**U-C2 核心機制跨規制穩健（最可靠發現）。**
+- **Exp5 DCA**：時間加權 Sharpe/CAGR 單筆≈DCA（同持股）；財富倍數單筆>DCA 每窗（多頭早投入贏）；DCA 降跨窗離散度、高波動組合絕對降幅最大（弱支持使用者直覺）但同降平均、CV 不變。量測限制：未調投入時點，宜改用 IRR。
+
+## 2026-06-05：beta 錨 VT vs VTI 解耦實驗（完成）— 結論：錨是弱槓桿
+
+新增 `BETA_ANCHOR_TICKER`（parameters.py，預設 None=沿用報告基準），讓 C2 beta/market 核心的市場錨可與報告基準解耦（兩檔同步：functions.py + backtest_engine.py）。動機：使用者構想「換 VTI(整體美國市場)是否拉開報酬導向 vs 保守的價差，讓偏好敘事更一致」。
+實驗：4 profile × {VT,VTI} 錨 × 2 窗（2021-26、2020-23含熊）。報告基準維持 VT。輸出 `upgrade_figures/anchor_test/anchor_test.csv`。
+
+### 結論
+- **解耦正確**：conservative(minvar)在兩錨下數字完全相同（控制組通過）。
+- **VTI 效果又小又混**：aggressive 近窗微好(+0.43% CAGR)、2022 熊市窗更差(-1.09%)；return_leaning/balanced 兩窗皆略差。
+- **價差未穩健拉開**：近窗 aggressive−conservative CAGR 價差 2.89%→3.32%(微增)，熊市窗 5.60%→4.51%(反縮)。
+- **根因**：候選池(DEA+分群後)幾乎全是美國 ETF，故 VT(全球) vs VTI(美國)的 beta 排序幾乎不變 → 換錨效果天生很小。
+- **真正的價差槓桿 = 核心類型(beta vs minvar) + risk_fraction(rf)**，非錨。Exp4 已證 rf 0→1 把 aggressive 從 ~9%vol/13%CAGR 推到 ~20%/20%，遠大於換錨。且現有 VT 設定下「報酬導向高波動高報酬Sharpe不定 / 保守低波動穩Sharpe」的敘事已成立。
+- **決議**：錨維持 VT(理論乾淨=全球市場/CAPM先驗、誠實基準)；`BETA_ANCHOR_TICKER` 解耦功能保留備用。要更大價差改調 rf 映射。
+
+## 2026-06-05：偏好分數「報酬維度」改用 beta 評分（A/B 測試成功）
+
+動機（使用者 Q3/Q6）：目標是讓「每種使用者類型的偏好分數都容易贏」。報酬維度用「過去 CAGR 排名」不持續(V-1 r≈0) → 報酬導向 win_VT 墊底。改用 beta(系統性風險曝險，會持續、beta 核心交付得了)。
+實作：新增 `PREF_RETURN_BASIS`("cagr"/"beta")、`PREF_BETA_REF=2.0`；報酬分數 = `clip(beta_vs_anchor/REF,0,1)`(VT beta=1→0.5)。**只動評估/偏好分數(win_VT)，不動最佳化器傾斜 s → 投組完全相同 → 乾淨 A/B**。`calculate_portfolio_utility` 加 `benchmark_returns` 參數，5 個評分呼叫點傳入(forward/benchmark/equal/maxsharpe 用評估截面 VT、ex-ante 用 lookback VT)。輸出 `upgrade_figures/beta_score_test/`。
+
+### 結果（CAGR/Sharpe 兩基礎完全相同 → 確認最佳化器未動）
+- win_VT（cagr→beta）：aggressive 13.6→**66.1**(2021-26)、5.6→**38.9**(2020-23)；return_leaning 11.9→25.4、5.6→13.9；balanced 72.9→69.5；income 100→100；conservative 57.6→42.4。
+- **vs EqualWeight/MaxSharpe：beta 基礎幾乎全部→~100%**（aggressive vs EW 59→100、vs MS 25→100）。
+- 解讀：✅ 核心假設成立(報酬導向 win 大幅提升)。對 VT 未達 100% 因 VT 在成本/分散/流動性結構維度近滿分，集中型高 beta 投組本就不該贏分散度(誠實)。return_leaning 改善較小=偏好矛盾(要報酬又給抗波動 0.14)；conservative 微降=低 beta 報酬維度本就該低分(誠實)，且仍贏 EW/MS。
+- **評估**：beta 基礎明確更好、理論更乾淨(獎勵持續的系統性風險曝險=預期報酬誠實來源)。
+
+### 修正：低 beta 不懲罰（使用者要求）
+公式改為 `報酬分數 = 0.5 + 0.5·clip((beta−1)/(REF−1),0,1)`：市場(beta=1)=0.5、低於市場 floor 0.5(不扣)、beta=REF→1.0。
+重跑結果（win_VT，cagr→修正beta）：aggressive 13.6→**67.8**/5.6→**47.2**(維持);conservative 57.6→**64.4**/36.1→**38.9**(從被扣的 42.4 回升、甚至高於 cagr);return_leaning 11.9→37.3/5.6→22.2;balanced 72.9→84.7;income 100→100。對 EW/MS 全部 ~85-100%。
+**結論：每個 profile win_VT 都「不降反升」，達成「每種使用者偏好分數都容易贏」。CAGR/Sharpe 兩基礎完全相同 → 求解器未動(純展示/評估層)。**
+### 正式採用 + 主系統同步（2026-06-05，使用者確認）
+- `PREF_RETURN_BASIS` 預設改 **"beta"**。
+- **主系統 functions.py 同步**：`calc_utility(w, for_display=False)` 加旗標；`for_display=True` 且 basis="beta" 時報酬維度用 `beta_score_vec`（同公式，市場錨 VT，與 backtest 一致）。`pref_utility_score`/`ms_utility_score` 4 處改 `for_display=True`。
+- **★求解器完全未動★**：`objective_function` 用 `calc_utility(w)`（不帶 for_display）→ Arm A 目標仍 CAGR；Arm C/C2 自有目標、不經 calc_utility。per-ETF `User_Pref_Score`（傾斜 s）也仍 CAGR。
+- 驗證(主系統 Stage 3 跑通)：pref_utility_score cagr=0.7027 → beta=0.5907（展示已同步、不崩）；求解器投組相同為結構保證。
+- CAGR 仍保留(Norm_Return_CAGR)供 V-1 展示。
+
+## 2026-06-05：品質約束系統化框架 + OAT-1（成本）★負面結果★
+
+### 框架（設計見 07）
+門檻 = 該維度當期候選池可行範圍 [v_min,v_max] 內的偏好加權位置（恆可行）。tightness 中性點 = 該使用者品質 5-slot 平均權重；fully tight at FULL_RATIO(=2)×平均。新 helper（functions.py，backtest import）：`quality_tightness_map / feasible_linear_range / quality_threshold / feasible_hhi_range / liq_composite_vector / build_quality_constraints`。四個品質區塊（functions Arm C/C2 + backtest Arm C/C2）全換成框架；魔術數字 0.75/0.50 棄用。逐維度開關 `QC_ENABLE_COST/HHI/LIQ/SENT`。流動性合併依 Vol:AUM 比例。
+
+### OAT-1：成本約束 off vs on（C2 noCAGR + beta 評分，7 profile × 2 窗，月度）
+- 框架正確：ts=0 的 profile（aggressive、diversified_quality）off==on 完全相同。
+- 本來就便宜的 profile（return_leaning、balanced）→ 約束不綁定、零影響。
+- 持高費用 ETF 的 profile：約束有壓低費用率但**傷 OOS**：income avg_cost 0.286→0.142、Sharpe 0.759→0.692；conservative 0.312→0.221、Sharpe 0.682→0.572、win_VT 72.9→59.3；**cost_liquidity（ts=1.0）win_VT 96.6→57.6（傷最重）**。
+- **★洞察：成本這種「逐檔線性特徵」已軟性在偏好傾斜(User_Pref_Score)+DEA 篩選裡；再加硬約束＝重複計算+過度強調，把投組推離最佳點，甚至跟 income/conservative 的主偏好(高股息/防禦)打架。★**
+- **決議：不採用硬成本約束（`QC_ENABLE_COST=False`）。** 推論：逐檔線性維度(成本/流動性/情緒)都可能同此問題；唯一真正需要硬約束的是 **HHI(投組層級湧現性質，軟傾斜表達不了)** → OAT-2 測 HHI（季度）。
+
+## 2026-06-05：OAT-2(HHI) + OAT-3(流動性) + 品質約束收尾結論 ★硬品質約束無益★
+
+（季度再平衡加速；C2 noCAGR + beta 評分；7 profile × 2 窗 × off/on）
+- **OAT-2 HHI**：6/7 profile off==on **完全相同**（連 tightness 0.71 的 balanced 都不綁定）；唯一 ts=0.89 的 diversified_quality 微綁定且**輕微負面**（Sharpe 0.562→0.544）。→ **多餘**：C2 核心 + DEA + 分群已使投組夠分散（每期 ~33-35 檔、權重分散）。
+- **OAT-3 流動性**：**每一格 off==on 完全相同**（連 cost_liquidity liq_ts=0.058 都不綁定）→ **完全 inert**。
+- 輸出：`upgrade_figures/{oat_hhi,oat_liq}/`。
+
+### ★收尾結論：硬品質約束對本系統無價值★
+三個 OAT：成本=有害、HHI=多餘、流動性=inert。情緒(OAT-4)同為逐檔線性維度+資料不穩(使用者指出)→ 跳過。
+**品質已由三層處理：軟性偏好傾斜(User_Pref_Score 含 9 維)+ DEA 篩選(基線)+ 核心(分散自然湧現)。** 硬約束只重複計算/扭曲。
+**決議：所有 `QC_ENABLE_*=False`（框架保留但預設全關）。** 奧坎剃刀：用更簡潔的「軟傾斜+DEA+核心」處理品質。
+- 系統現況：C2 求解約束僅 `Σw=1 + 界內 + vol_budget`（品質約束全關）。
+- 框架程式碼(`build_quality_constraints` 等)保留備用，魔術數字 0.75/0.50 已棄用。
+
+## 2026-06-05：Black-Litterman 路(a) 實作 + A/B（統一 BL vs 三核心 C2）
+
+實作 `OPTIMIZATION_ARM="BL"`（與 C2 並存,兩檔同步）：統一目標 `max wᵀΠ + τ·wᵀs s.t. vol≤budget`，Π=市場隱含報酬(用 β=c/var_bench)、約束式（λ_mkt 縮放不變消去、λ_user 由 vol_budget 取代）、risk_fraction 不變、保留傾斜。設計與結論見 `08`。
+
+### A/B 結論（季度,7 profile × 2 窗；`upgrade_figures/bl_ab/`）★負面結果但確立三核心★
+- beta 端(aggressive/return_leaning)：**C2==BL 完全相同**。
+- minvar/market 端：**統一 BL 明顯更差**（balanced win_VT 80→0、conservative 60→5、income Sharpe 0.776→0.597、cost_liquidity 100→50、diversified_quality 80→0;回撤普遍更深）。
+- 原因：保守型 vol_budget>v_min,BL「在預算內衝 beta」會花掉風險預算買 beta → 推向市場、失去低波動/防禦優勢 → win_VT 崩。
+- **敘事**：以 BL 為理論基礎開發統一模式 → 發現市場/保守型在「給定風險預算下追 beta」反而結果變差、偏好分數大降 → 因此用三核心(minvar/market/beta)解決,而三核心正是 BL 不同風險趨避的效率前緣點。
+- **決議**：維持三核心 C2 為運作設計;**BL 當 C2 的理論正名(Π=CAPM 市場隱含報酬,三核心=BL 前緣點)**;BL 臂保留為消融對照。`OPTIMIZATION_ARM` 還原 "A"。
+
+## 2026-06-05：rf 上限封頂測試（負面結果，已還原）— 「衝報酬 Sharpe 遞減」張力收尾
+
+動機：Exp4 顯示報酬導向 rf 高(~0.85)時 Sharpe 低。假設「封 rf 上限到 0.6 可避開回撤、保留多數報酬」。
+驗證(`_rf_cap`,C2 noCAGR+beta,aggressive/return_leaning × {cap0.95,cap0.60} × 2 窗,季度;`upgrade_figures/rf_cap/`)：
+- **封到 0.6 全面更差**：aggressive 2020-23 CAGR 19.81→17.23、MaxDD -22.4→**-25.7(更深)**、Sharpe 0.864→0.819;2021-26 13.01→11.92、-22.9→-26.0。return_leaning 同向。
+- **兩個誤判**：(i) 先前「rf>0.6 只增回撤不增報酬」過度套用 2023-26 多頭窗;其他窗高 rf 確實多賺。(ii) **vol 約束 ≠ 回撤控制** → 壓低 vol 預算反而出現更深回撤。
+- **結論**：張力是低波動異常的本質,**無免費修法**。報酬導向維持高 rf（最大絕對報酬,低 Sharpe 是誠實代價）。`RISK_FRACTION_MAX` 還原 0.95。
+- 方法論價值：假設→驗證→資料推翻建議→誠實還原（若要控回撤,正解是 MaxDD 約束而非壓 vol 預算,列未來）。
+
+## 2026-06-05：DCA 公平重測（XIRR + 跨起始點離散度）— 假設未獲支持
+
+修正 Exp5 的不公平(財富倍數懲罰 DCA 的在場時間)。用 **XIRR(日期感知金額加權報酬率)** + 跨 6 個 3年窗(=6 起始點)離散度。C2 noCAGR+beta,季度,aggressive/balanced/conservative × {lump,DCA}。`_dca_irr.py`、`upgrade_figures/dca_irr/`。
+- 量測驗證：lump XIRR ≈ 時間加權 CAGR（16.94 vs 16.95）✓。
+- **① 公平 XIRR：DCA 反而略勝**（aggressive +1.20、balanced +2.04、conservative +0.93 %）→ **Exp5「單筆完勝」確為在場時間假象**。但 DCA 略勝是**路徑依賴**（這些窗前跌後漲,DCA 買低）,非結構性優勢。
+- **② 進場時機風險(XIRR 跨起始點 std)：DCA 沒更低、反略高**（aggressive 2.96→3.12、balanced 3.31→3.68、conservative 持平）;**高波動組合未更受益**（balanced 受益最多）。→ **使用者假設「DCA 降進場時機風險、高成長更受益」未獲支持。**
+- 量測限制：6 個不同窗混了「進場時機 + 市場規制」;更乾淨測法=固定未來、平移起始點小步長（未來精修）。
+- **結論**：DCA vs 單筆 ≈ 路徑依賴平手;DCA 可當使用者選項但不宣稱系統性幫高成長。`OPTIMIZATION_ARM` 還原 "A"。
+
+## 6. 改動紀錄模板
+
+## 7. 下一個聊天室交接注意事項
+
+### 7.1 絕對重要原則
+
+後續所有演算法升級都必須同時檢查並修改兩套邏輯：
+
+1. 主程式：`functions.py`
+2. 回測引擎：`backtest_engine.py`
+
+原因：
+
+1. 主程式 Stage 3 與回測引擎不是共用同一個最佳化函式。
+2. 回測引擎有自己獨立的 `optimize_preference_portfolio()` 與 `calculate_portfolio_utility()`。
+3. 如果只改 `functions.py`，主程式結果會改變，但 rolling backtest 仍然用舊演算法。
+4. 如果只改 `backtest_engine.py`，回測結果會改變，但主程式推薦投組仍然是舊演算法。
+5. 因此任何效用函數、風險分數、候選池、DEA 後處理、權重限制、相關性分群等改動，都必須同步檢查主程式與回測。
+
+### 7.2 目前已完成的演算法級改動
+
+已完成：
+
+1. 主程式與回測引擎的 `Risk_MaxDD` 效用分數改為 true portfolio MaxDD score。
+2. true MaxDD 使用投組 buy-and-hold NAV 路徑計算，而不是單檔 ETF MaxDD 分數線性加權。
+3. 舊版 MaxDD proxy 保留為 fallback。
+4. 開關位置在 `functions.py`：
+
+```python
+USE_TRUE_MDD_OPTIMIZATION = True
+TRUE_MDD_TIME_WARNING_SECONDS = 30.0
+```
+
+5. 若 true MaxDD 最佳化在測試中多次超過 30 秒，可以暫時將 `USE_TRUE_MDD_OPTIMIZATION` 改成 `False`，切回舊 proxy。
+
+### 7.3 目前系統仍然存在的演算法問題
+
+1. 報酬導向使用者的結果仍未明顯拉開大盤或 Max Sharpe。
+2. DEA 第一階段可能過早排除高報酬但高風險 ETF。
+3. 目前風險仍主要是效用加分項，而不是使用者風險預算。
+4. 40% 單檔權重上限可能限制報酬導向使用者。
+5. 相關性分群可能過早刪除高成長 ETF 的替代品。
+6. 成本、流動性、分散、情緒等輔助維度可能稀釋報酬導向主目標。
+7. 回測 final-period frontier 中仍有歷史遺留的蒙地卡羅函式，可之後清理，但不屬於演算法核心。
+
+### 7.4 建議下一步開發方向
+
+優先順序建議如下：
+
+1. **Preference-aware rescue list**
+   - 在 DEA 後保留通過 DEA 的 ETF。
+   - 額外救回使用者最重視維度的前 N 名 ETF。
+   - 對目前報酬導向使用者，應救回 `Return_CAGR` 前 N 名或 return composite 前 N 名。
+   - 目的：避免 DEA 作為客觀門檻時過早殺掉高報酬 ETF。
+
+2. **風險預算取代低風險加分**
+   - 對報酬導向使用者，不應只獎勵低波動。
+   - 可改為：
+
+```text
+maximize return / preference utility
+subject to volatility <= user risk budget
+subject to max drawdown score or max drawdown <= user drawdown budget
+```
+
+3. **權重上限依使用者風格調整**
+   - 保守型可維持 30%-40%。
+   - 報酬導向可測試 50%-60%。
+   - 但需同時控制持股數與風險上限。
+
+4. **延後 correlation clustering**
+   - 不要太早在 Stage 2_2 刪除高度相關 ETF。
+   - 可改為讓 optimizer 看到完整候選池，再用相關性懲罰或持股數限制處理。
+
+5. **主目標與輔助品質拆分**
+   - 報酬導向使用者的主要目標應是資本利得或總報酬。
+   - 成本、流動性、分散、情緒應作為品質篩選或懲罰，而不是和報酬完全平等加總。
+
+### 7.5 開發流程建議
+
+每次改動前：
+
+1. 先寫清楚數學設計。
+2. 再確認要改 `functions.py` 哪一段。
+3. 同步確認 `backtest_engine.py` 是否有對應邏輯。
+4. 更新本文件。
+5. 跑 `py_compile`。
+6. 至少跑一次 Stage 3。
+7. 若改到回測邏輯，至少跑一次小型或完整 rolling backtest。
+8. 比較改動前後：
+   - 權重
+   - CAGR
+   - volatility
+   - MaxDD
+   - Sharpe
+   - preference score
+   - benchmark 比較
+
+### YYYY-MM-DD：改動名稱
+
+### YYYY-MM-DD：改動名稱
+
+狀態：待填  
+是否已批准：待填  
+
+#### 目標
+
+待填。
+
+#### 改動前問題
+
+待填。
+
+#### 核准設計
+
+待填。
+
+#### 修改檔案
+
+待填。
+
+#### 驗證方式
+
+待填。
+
+#### 結果
+
+待填。
+
+#### 對主程式與回測一致性的影響
+
+待填。

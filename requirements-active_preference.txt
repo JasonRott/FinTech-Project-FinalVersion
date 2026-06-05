@@ -1,0 +1,13 @@
+# ==========================================
+# Optional Active Preference dependencies
+# 僅在 active_preference/ 自然語言偏好、Gemini 訪談、
+# synthetic training data、Torch BNN 訓練流程中需要
+# ==========================================
+
+# BNN training / inference
+torch>=2.0.0
+numpy>=1.24.0
+
+# Optional Gemini SDK adapter.
+# The current REST client can run without this package, but GeminiTextGenerator uses it.
+google-generativeai>=0.8.0

@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+AVSC,1,1,1,SeekingAlpha,1,1,0,0,0.136922,0.320953,0.0,0.885101,0.885101,253,1,181,1,0.3953,0.5525,2026-04-15,2026-04-15

@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+EUFN,121,121,2,SeekingAlpha,112,16,69,36,0.063524,0.22476,-0.179147,0.888995,-0.177957,253,72,181,67,28.4585,37.0166,2025-09-15,2026-05-22

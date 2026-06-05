@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+SOXL,118,118,3,Benzinga,71,33,49,36,0.024628,0.096435,-0.188033,0.422406,-0.083311,253,84,181,75,33.2016,41.4365,2025-09-24,2026-05-22

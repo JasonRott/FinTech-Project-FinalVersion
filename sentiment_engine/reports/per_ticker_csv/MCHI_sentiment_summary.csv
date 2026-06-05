@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+MCHI,267,267,3,SeekingAlpha,245,92,103,72,0.053241,0.100435,-0.73281,0.150284,-0.033447,253,154,181,113,60.8696,62.4309,2025-09-13,2026-05-21

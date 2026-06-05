@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+VXF,319,319,2,SeekingAlpha,316,102,122,95,0.041311,0.169692,-0.089544,0.937118,-0.00718,253,181,181,134,71.5415,74.0331,2025-09-12,2026-05-22

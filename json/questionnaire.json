@@ -1,0 +1,111 @@
+{
+    "Main_Comparisons": [
+        {
+            "pair": ["Return_Main", "Risk_Main"],
+            "question": "M1. 投資時，「降低帳面虧損風險」與「追求高報酬」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【降低風險】",
+            "right_pole": "(+4) 絕對看重【追求報酬】"
+        },
+        {
+            "pair": ["Return_Main", "Cost_Main"],
+            "question": "M2. 投資時，「降低內扣管理費成本」與「追求高報酬」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【降低成本】",
+            "right_pole": "(+4) 絕對看重【追求報酬】"
+        },
+        {
+            "pair": ["Return_Main", "Liquidity_Main"],
+            "question": "M3. 投資時，「確保隨時可變現的流動性」與「追求高報酬」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【流動性】",
+            "right_pole": "(+4) 絕對看重【追求報酬】"
+        },
+        {
+            "pair": ["Return_Main", "Diversity_Main"],
+            "question": "M4. 投資時，「產業分散以抵抗單一產業衰退」與「追求高報酬」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【產業分散】",
+            "right_pole": "(+4) 絕對看重【追求報酬】"
+        },
+        {
+            "pair": ["Return_Main", "Sentiment_Main"],
+            "question": "M5. 投資時，「順應市場熱度與新聞趨勢」與「追求高報酬」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【順應趨勢】",
+            "right_pole": "(+4) 絕對看重【追求報酬】"
+        },
+        {
+            "pair": ["Risk_Main", "Cost_Main"],
+            "question": "M6. 投資時，「降低內扣管理費成本」與「降低帳面虧損風險」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【降低成本】",
+            "right_pole": "(+4) 絕對看重【降低風險】"
+        },
+        {
+            "pair": ["Risk_Main", "Liquidity_Main"],
+            "question": "M7. 投資時，「確保隨時可變現的流動性」與「降低帳面虧損風險」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【流動性】",
+            "right_pole": "(+4) 絕對看重【降低風險】"
+        },
+        {
+            "pair": ["Risk_Main", "Diversity_Main"],
+            "question": "M8. 投資時，「產業分散以抵抗單一產業衰退」與「降低帳面虧損風險」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【產業分散】",
+            "right_pole": "(+4) 絕對看重【降低風險】"
+        },
+        {
+            "pair": ["Risk_Main", "Sentiment_Main"],
+            "question": "M9. 投資時，「順應市場熱度與新聞趨勢」與「降低帳面虧損風險」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【順應趨勢】",
+            "right_pole": "(+4) 絕對看重【降低風險】"
+        },
+        {
+            "pair": ["Cost_Main", "Liquidity_Main"],
+            "question": "M10. 投資時，「確保隨時可變現的流動性」與「降低內扣管理費成本」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【流動性】",
+            "right_pole": "(+4) 絕對看重【降低成本】"
+        },
+        {
+            "pair": ["Cost_Main", "Diversity_Main"],
+            "question": "M11. 投資時，「產業分散以抵抗單一產業衰退」與「降低內扣管理費成本」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【產業分散】",
+            "right_pole": "(+4) 絕對看重【降低成本】"
+        },
+        {
+            "pair": ["Cost_Main", "Sentiment_Main"],
+            "question": "M12. 投資時，「順應市場熱度與新聞趨勢」與「降低內扣管理費成本」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【順應趨勢】",
+            "right_pole": "(+4) 絕對看重【降低成本】"
+        },
+        {
+            "pair": ["Liquidity_Main", "Diversity_Main"],
+            "question": "M13. 投資時，「產業分散以抵抗單一產業衰退」與「確保隨時可變現的流動性」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【產業分散】",
+            "right_pole": "(+4) 絕對看重【流動性】"
+        },
+        {
+            "pair": ["Liquidity_Main", "Sentiment_Main"],
+            "question": "M14. 投資時，「順應市場熱度與新聞趨勢」與「確保隨時可變現的流動性」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【順應趨勢】",
+            "right_pole": "(+4) 絕對看重【流動性】"
+        },
+        {
+            "pair": ["Diversity_Main", "Sentiment_Main"],
+            "question": "M15. 投資時，「順應市場熱度與新聞趨勢」與「產業分散以抵抗單一產業衰退」，哪一個對你更重要？",
+            "left_pole": "(-4) 絕對看重【順應趨勢】",
+            "right_pole": "(+4) 絕對看重【產業分散】"
+        }
+    ],
+    "Sub_Comparisons": {
+        "Return_Main": {
+            "question": "S1. 在報酬維度中，「穩定發放的現金股息 (Dividend)」與「資產長期的價格成長 (CAGR)」，何者更重要？",
+            "left_pole": "(-4) 絕對看重【穩定股息】",
+            "right_pole": "(+4) 絕對看重【價格成長】"
+        },
+        "Risk_Main": {
+            "question": "S2. 在風險維度中，「經歷一次長達半年的深度虧損 (最大回撤)」與「每天價格上沖下洗 (波動率)」，你更想避免哪一個？",
+            "left_pole": "(-4) 絕對更想避免【深度虧損】",
+            "right_pole": "(+4) 絕對更想避免【日常波動】"
+        },
+        "Liquidity_Main": {
+            "question": "S3. 在流動性維度中，「資產總規模不易下市 (AUM)」與「每日交易活絡度 (Volume)」，何者更重要？",
+            "left_pole": "(-4) 絕對看重【總資產規模】",
+            "right_pole": "(+4) 絕對看重【交易活絡度】"
+        }
+    }
+}

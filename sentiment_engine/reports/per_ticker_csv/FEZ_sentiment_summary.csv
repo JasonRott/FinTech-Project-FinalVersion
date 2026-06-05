@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+FEZ,458,458,3,SeekingAlpha,442,120,201,137,-0.0487,0.119719,-0.587171,0.109861,-0.135248,253,197,181,160,77.8656,88.3978,2025-09-12,2026-05-22

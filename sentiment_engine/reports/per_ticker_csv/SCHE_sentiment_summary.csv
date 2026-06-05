@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+SCHE,94,94,1,SeekingAlpha,94,29,47,18,0.169084,0.11219,-0.0062,0.380182,0.024738,253,74,181,63,29.249,34.8066,2025-09-17,2026-05-21

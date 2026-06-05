@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+TMFC,9,9,3,SeekingAlpha,6,1,6,2,-0.06188,0.109783,-0.250938,0.06411,0.06411,253,9,181,9,3.5573,4.9724,2025-12-10,2026-05-12

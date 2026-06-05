@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+NVDL,20,20,3,Benzinga,12,4,15,1,0.149276,0.256689,-0.126838,0.942724,0.156593,253,20,181,20,7.9051,11.0497,2025-09-19,2026-05-18

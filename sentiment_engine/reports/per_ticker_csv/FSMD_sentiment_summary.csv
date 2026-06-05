@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+FSMD,310,310,1,SeekingAlpha,310,100,115,95,0.039141,0.170598,-0.101818,0.937118,-0.014835,253,175,181,130,69.17,71.8232,2025-09-12,2026-05-22

@@ -1,0 +1,2 @@
+﻿ticker,articles,scored_articles,sources,top_source,top_source_articles,positive_articles,neutral_articles,negative_articles,sentiment_mean,sentiment_std,sentiment_min,sentiment_max,latest_sentiment,calendar_days,calendar_days_with_news,business_days,business_days_with_news,calendar_coverage_pct,business_coverage_pct,first_news_date,last_news_date
+URA,107,107,3,Benzinga,53,39,59,9,0.252808,0.112313,0.0,0.686176,0.145754,253,80,181,71,31.6206,39.2265,2025-09-15,2026-05-21
