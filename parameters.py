@@ -166,7 +166,22 @@ USER_PROFILES = {
     },
 }
 
-CASE_NAME = "Neutral_user" # 預設情境名稱
+# ==========================================
+# 要跑「哪一個使用者」的單一控制旋鈕
+# ==========================================
+# 設成 USER_PROFILES 的某個 key（如 "conservative"）→ Stage 2_1 會直接用該原型的 9 維全局權重
+#   當「系統輸入」（繞過 AHP 模擬），且所有輸出檔名/標題改用該 profile 名（每個使用者各自獨立結果）。
+# 設成 None/空 → 沿用原本的靜態 AHP 模擬（build_user_simulation，案例名 Neutral_user）。
+# 可用環境變數覆寫（方便一次跑多個使用者：`ACTIVE_USER_PROFILE=conservative python main.py`）。
+ACTIVE_USER_PROFILE = os.getenv("ACTIVE_USER_PROFILE") or None
+if ACTIVE_USER_PROFILE and ACTIVE_USER_PROFILE not in USER_PROFILES:
+    raise ValueError(
+        f"ACTIVE_USER_PROFILE='{ACTIVE_USER_PROFILE}' 不在 USER_PROFILES；可選："
+        f"{list(USER_PROFILES.keys())}"
+    )
+
+# 情境名稱：有指定 profile 就用 profile 名，否則預設 Neutral_user（隨 ACTIVE_USER_PROFILE 變動）。
+CASE_NAME = ACTIVE_USER_PROFILE if ACTIVE_USER_PROFILE else "Neutral_user"
 # 使用者結果總資料夾：主系統與回測「每次執行」各開一個含全部圖表+報表的時間戳子資料夾。
 USER_RESULTS_DIR = "user_results"
 # 集中式日誌資料夾：每次執行（任何 import functions 的程式）會在此寫一個時間戳 log 檔。

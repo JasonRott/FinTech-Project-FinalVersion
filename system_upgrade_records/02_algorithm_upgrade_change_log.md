@@ -843,6 +843,23 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 ### Commits
 `5a5403a`(產品化UX) → `900b9b3`(回測10年窗) → `10edd1e`(回測巢狀+四分類+還原前緣) → `3e70178`(雷達β=1.2) → `ac3f1e6`(集中式log) → `293084b`(最終系統瘦身)。
 
+## 2026-06-06：可控的「使用者選擇」旋鈕 ACTIVE_USER_PROFILE（修正 Neutral_user 被寫死為 return_leaning）
+
+狀態：完成 + 多 user 驗證。非 optimizer 改動（只改「系統輸入的偏好權重從哪來」）。
+
+### 問題（使用者指出）
+主系統輸出的雷達圖權重（報酬 40%/殖利率 10%/抗波動 14%/抗回撤 6%…）其實 = `USER_PROFILES["return_leaning"]`，並非 neutral。根因：靜態 AHP 模擬 `build_user_simulation(deterministic=True)` 產出的權重固定 ≈ return_leaning，卻掛名 `CASE_NAME="Neutral_user"`，且無法切換使用者。
+
+### 改了什麼
+- `parameters.py`：新增單一控制旋鈕 `ACTIVE_USER_PROFILE`（可用環境變數覆寫：`ACTIVE_USER_PROFILE=conservative python main.py`）。設成 `USER_PROFILES` 的 key → 用該原型的 9 維全局權重當系統輸入；None → 沿用原 AHP 模擬（Neutral_user）。打錯 key 直接 `raise ValueError` 列出合法選項（避免靜默跑錯）。`CASE_NAME` 改成隨 `ACTIVE_USER_PROFILE` 變動（有 profile 用 profile 名、否則 Neutral_user）→ 輸出檔名/標題/`user_results/main_{case}_*` 自動分使用者。
+- `pipeline_stages.py / stage2_1_static_ahp_preference_extraction`：若 `ACTIVE_USER_PROFILE` 有設 → 直接把該 profile 的 9 維權重寫進 `json/stage2_ahp_global_weights.json` 的 `Global_Weights`（繞過 AHP 成對比較）；否則跑原 AHP 模擬。下游 stage2_2 / stage3 / prompt 回測都讀同一個 JSON，故**系統輸入權重隨選定 user 一起變動**（使用者特別叮囑的點）。
+- 之所以可直接套：`USER_PROFILES` 的 key 與 `TwoLevel_AHP_Model.calculate_global_weights` 產出的 `global_weights` key 完全相同（9 維正規化、Σ=1），格式相容。
+
+### 驗證
+- `import parameters`：None→CASE_NAME=Neutral_user；`ACTIVE_USER_PROFILE=conservative`→CASE_NAME=conservative；非法值→ValueError ✓。
+- 多 user 端到端跑（cached stage0）：權重/雷達/輸出夾名隨 profile 改變。
+- 用途：接續的「7 使用者最終呈現」只要對 7 個 profile 各跑一次（設 env 或旋鈕），`user_results/` 即得 7 份各自獨立、權重正確的結果。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

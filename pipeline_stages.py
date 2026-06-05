@@ -222,17 +222,27 @@ def stage2_1_static_ahp_preference_extraction(
     from functions import TwoLevel_AHP_Model, build_user_simulation, log
 
     log.info("Stage 2_1-A - Static AHP preference extraction started.")
-    deterministic = parameters.DETERMINISTIC_AHP_WEIGHTS
-    user_inputs = build_user_simulation(deterministic=deterministic)
-    ahp_model = TwoLevel_AHP_Model()
-    global_weights, cr = ahp_model.calculate_global_weights(user_inputs)
+    active_profile = getattr(parameters, "ACTIVE_USER_PROFILE", None)
+    if active_profile:
+        # 直接採用指定使用者原型的 9 維全局權重當「系統輸入」（繞過 AHP 成對比較模擬）。
+        # 下游 stage2_2 / stage3 / 回測都讀此 JSON，故權重會隨選定的 user 一起變動。
+        global_weights = dict(parameters.USER_PROFILES[active_profile])
+        cr = 0.0
+        source = f"USER_PROFILES[{active_profile}] (direct profile weights)"
+        log.info(f"Stage 2_1-A - 使用指定使用者原型 '{active_profile}' 的全局權重（略過 AHP 模擬）。")
+    else:
+        deterministic = parameters.DETERMINISTIC_AHP_WEIGHTS
+        user_inputs = build_user_simulation(deterministic=deterministic)
+        ahp_model = TwoLevel_AHP_Model()
+        global_weights, cr = ahp_model.calculate_global_weights(user_inputs)
+        source = "stage2_1_static_ahp_preference_extraction"
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "CR": cr,
         "Global_Weights": global_weights,
-        "Source": "stage2_1_static_ahp_preference_extraction",
+        "Source": source,
     }
     output.write_text(json.dumps(payload, ensure_ascii=False, indent=4), encoding="utf-8")
     log.info("Stage 2_1-A - Static AHP preference extraction finished.")
