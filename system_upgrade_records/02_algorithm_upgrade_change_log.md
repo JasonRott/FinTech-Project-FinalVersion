@@ -882,6 +882,14 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 結論與設計論述一致：**只有 beta 核心贏 VT 絕對報酬**（承擔更高波動）;market/minvar 贏在風險效率與偏好滿足;全員對 EW/MaxSharpe 偏好勝率 93–100%。誠實張力：return_leaning win_VT 低（偏好自我矛盾）、部分防禦型 MaxDD 比 VT 深（壓波動≠控回撤）。
 - 過程備忘：balanced 首跑撞 OneDrive 暫時鎖檔（Permission denied on 價格快取）→ 基準對齊失敗 → market 退回 minvar;重跑後正常。**OneDrive 同步是隨機鎖檔風險，大量連跑前宜暫停同步或移出 OneDrive 夾。**
 
+## 2026-06-06：回測圖標題加 {user}_ 前綴（用既有資料重繪）+ 縮短回測夾名（修 Windows 260 路徑上限）
+
+狀態：完成。非 optimizer 改動（純繪圖/命名）。
+
+- **回測繪圖函式全部加 `title_prefix: str = ""` 參數**（預設空字串→生產行為不變）：`_plot_backtest_outputs / _plot_backtest_performance_report / _plot_annual_returns / _plot_weight_evolution / _plot_dea_distribution_backtest / _plot_preference_predictive_scatter(V-1) / _plot_preference_score_timeseries(V-6)`，前綴接在各圖主標題前。`_plot_distribution_grid` 本就吃 title 參數（直接傳完整標題）。
+- **七使用者回測圖以「已跑出的 CSV」重繪**（不重跑回測），標題改成 `{profile}_{原標題}`（如 `aggressive_growth_Rolling Robo-Advisor Backtest NAV`）。臨時 driver 讀 `04_data_csv/*.csv` → 呼叫上述函式重畫到各自 `02_eda_dea_figures/`、`03_performance_figures/`，跑完刪除。已目視確認標題正確。
+- **縮短回測彙整夾名稱**：`_mirror_run_figures_to_upgrade` 的 `backtest_{run_id}_arm{arm}_{stamp}`（run_id 很長→`backtest_backtest_q_lookback-3y_minhist-8y_dca-0_armC2_...`）改成 `{prefix}_arm{arm}_{stamp}`（=`backtest_q_armC2_...`）。原因：巢狀進 `showcase_7_profiles/main_*/` 後完整路徑超過 Windows 260 字元上限導致 savefig FileNotFound。既有 7 夾一併改名為 `backtest_q_armC2`。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

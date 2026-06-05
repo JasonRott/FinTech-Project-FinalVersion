@@ -1499,7 +1499,7 @@ def _income_split_summary(
     }
 
 
-def _plot_backtest_outputs(nav: pd.DataFrame, output_prefix: str, output_dir: Path | str = "png") -> None:
+def _plot_backtest_outputs(nav: pd.DataFrame, output_prefix: str, output_dir: Path | str = "png", title_prefix: str = "") -> None:
     sns.set_theme(style="whitegrid")
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -1507,7 +1507,7 @@ def _plot_backtest_outputs(nav: pd.DataFrame, output_prefix: str, output_dir: Pa
     plt.figure(figsize=(11, 6))
     for col in nav.columns:
         plt.plot(nav.index, nav[col], label=col, linewidth=2)
-    plt.title("Rolling Robo-Advisor Backtest NAV")
+    plt.title(f"{title_prefix}Rolling Robo-Advisor Backtest NAV")
     plt.ylabel("Net Asset Value")
     plt.legend()
     plt.tight_layout()
@@ -1518,7 +1518,7 @@ def _plot_backtest_outputs(nav: pd.DataFrame, output_prefix: str, output_dir: Pa
     plt.figure(figsize=(11, 5))
     for col in drawdown.columns:
         plt.plot(drawdown.index, drawdown[col] * 100, label=col, linewidth=2)
-    plt.title("Rolling Robo-Advisor Backtest Drawdown")
+    plt.title(f"{title_prefix}Rolling Robo-Advisor Backtest Drawdown")
     plt.ylabel("Drawdown (%)")
     plt.legend()
     plt.tight_layout()
@@ -1550,7 +1550,7 @@ def _annual_return_table(returns: pd.DataFrame) -> pd.DataFrame:
     return annual.reset_index()
 
 
-def _plot_backtest_performance_report(nav: pd.DataFrame, output_path: Path) -> None:
+def _plot_backtest_performance_report(nav: pd.DataFrame, output_path: Path, title_prefix: str = "") -> None:
     if nav.empty:
         return
 
@@ -1568,7 +1568,7 @@ def _plot_backtest_performance_report(nav: pd.DataFrame, output_path: Path) -> N
         ax1.plot(nav.index, nav[col], label=col, linewidth=2)
         ax2.plot(drawdown.index, drawdown[col] * 100, label=col, linewidth=1.5)
 
-    ax1.set_title("Backtest Portfolio Performance")
+    ax1.set_title(f"{title_prefix}Backtest Portfolio Performance")
     ax1.set_ylabel("Net Asset Value")
     ax1.legend()
     ax2.set_title("Drawdown")
@@ -1579,13 +1579,13 @@ def _plot_backtest_performance_report(nav: pd.DataFrame, output_path: Path) -> N
     plt.close()
 
 
-def _plot_annual_returns(annual_returns: pd.DataFrame, output_path: Path) -> None:
+def _plot_annual_returns(annual_returns: pd.DataFrame, output_path: Path, title_prefix: str = "") -> None:
     if annual_returns.empty:
         return
 
     plot_df = annual_returns.set_index("Year") * 100
     ax = plot_df.plot(kind="bar", figsize=(11, 6), width=0.8)
-    ax.set_title("Backtest Annual Returns")
+    ax.set_title(f"{title_prefix}Backtest Annual Returns")
     ax.set_ylabel("Annual Return (%)")
     ax.axhline(0, color="black", linewidth=1)
     plt.xticks(rotation=0)
@@ -1594,7 +1594,7 @@ def _plot_annual_returns(annual_returns: pd.DataFrame, output_path: Path) -> Non
     plt.close()
 
 
-def _plot_weight_evolution(weights_df: pd.DataFrame, output_path: Path, top_n: int = 10) -> None:
+def _plot_weight_evolution(weights_df: pd.DataFrame, output_path: Path, top_n: int = 10, title_prefix: str = "") -> None:
     if weights_df.empty:
         return
 
@@ -1612,7 +1612,7 @@ def _plot_weight_evolution(weights_df: pd.DataFrame, output_path: Path, top_n: i
         plot_df["Other"] = other
 
     ax = plot_df.plot(kind="area", stacked=True, figsize=(12, 6), linewidth=0)
-    ax.set_title("Backtest Weight Evolution")
+    ax.set_title(f"{title_prefix}Backtest Weight Evolution")
     ax.set_ylabel("Portfolio Weight")
     ax.set_ylim(0, 1)
     plt.xticks(rotation=45, ha="right")
@@ -1656,7 +1656,7 @@ def _plot_distribution_grid(
     plt.close()
 
 
-def _plot_dea_distribution_backtest(dea_results: pd.DataFrame, output_path: Path) -> None:
+def _plot_dea_distribution_backtest(dea_results: pd.DataFrame, output_path: Path, title_prefix: str = "") -> None:
     if dea_results.empty or "DEA_Score" not in dea_results.columns:
         return
 
@@ -1665,7 +1665,7 @@ def _plot_dea_distribution_backtest(dea_results: pd.DataFrame, output_path: Path
     top_frac = getattr(parameters, "DEA_TOP_FRACTION", 0.25)
     cutoff = float(dea_results["DEA_Score"].quantile(1.0 - top_frac))
     plt.axvline(cutoff, color="red", linestyle="--", linewidth=2, label=f"Top {top_frac*100:.0f}% cutoff = {cutoff:.3f}")
-    plt.title("Backtest Final Rebalance DEA Score Distribution")
+    plt.title(f"{title_prefix}Backtest Final Rebalance DEA Score Distribution")
     plt.xlabel("DEA Score")
     plt.ylabel("ETF Count")
     plt.legend()
@@ -1890,6 +1890,7 @@ def _plot_preference_predictive_scatter(
     preference_scores_df: pd.DataFrame,
     output_path: Path,
     benchmark_label: str = "VOO",
+    title_prefix: str = "",
 ) -> None:
     """V-1：偏好分數的樣本外預測力散佈圖。
 
@@ -1941,7 +1942,7 @@ def _plot_preference_predictive_scatter(
         "Return-oriented view (valid only for return-seeking users)",
     )
     fig.suptitle(
-        "V-1  Does a higher preference score predict better out-of-sample outcomes?",
+        f"{title_prefix}V-1  Does a higher preference score predict better out-of-sample outcomes?",
         fontsize=14,
         fontweight="bold",
     )
@@ -1954,6 +1955,7 @@ def _plot_preference_score_timeseries(
     preference_scores_df: pd.DataFrame,
     output_path: Path,
     benchmark_label: str = "VOO",
+    title_prefix: str = "",
 ) -> None:
     """V-6：隨時間變化的偏好分數。
 
@@ -1995,7 +1997,7 @@ def _plot_preference_score_timeseries(
     ax1.plot(plot_df["date"], plot_df["ms"], label="Max Sharpe", color="darkorange", linewidth=1.8, alpha=0.85)
     ax1.set_ylabel("Forward (realized) Preference Score")
     ax1.set_title(
-        "V-6a  Out-of-sample preference score by strategy\n"
+        f"{title_prefix}V-6a  Out-of-sample preference score by strategy\n"
         f"System wins — {benchmark_label}: {wr_voo:.0f}%   EqualWeight: {wr_eq:.0f}%   MaxSharpe: {wr_ms:.0f}%  of periods"
     )
     ax1.legend(loc="best", fontsize=9)
@@ -2036,11 +2038,13 @@ def _mirror_run_figures_to_upgrade(
     """
     stamp = time.strftime("%Y%m%d_%H%M%S")
     arm = str(getattr(parameters, "OPTIMIZATION_ARM", "A")).upper()
+    # 用較短的資料夾名（prefix 已含頻率，如 backtest_q），避免巢狀後超過 Windows 260 字元路徑上限。
+    short_name = f"{prefix}_arm{arm}_{stamp}"
     if parent_dir is not None:
-        dest = Path(parent_dir) / f"backtest_{run_id}_arm{arm}_{stamp}"
+        dest = Path(parent_dir) / short_name
     else:
         user_root = Path(getattr(parameters, "USER_RESULTS_DIR", "user_results"))
-        dest = user_root / f"backtest_{run_id}_arm{arm}_{stamp}"
+        dest = user_root / short_name
 
     def _bucket(name: str) -> str:
         low = name.lower()

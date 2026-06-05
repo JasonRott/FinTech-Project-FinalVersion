@@ -122,6 +122,30 @@ $$\min_{\mathbf{w}}\ \tfrac{1}{2}\mathbf{w}^{\top}\Sigma\mathbf{w} - \mathbf{w}^
 
 ---
 
+### 3.6 七使用者原型實跑對照（季度回測，2019–2026，約 7 年 OOS）
+
+對 7 個 `USER_PROFILES` 原型各跑一次生產流程（主系統 + 季度滾動回測）。VT 基準：CAGR 14.32%、Sharpe 0.606、波動 18.30%、MaxDD −33.72%。
+
+| profile | g(w) 核心 | CAGR % | 波動 % | Sharpe | MaxDD % | 贏 VT 報酬 | win_VT % |
+|---|:--:|--:|--:|--:|--:|:--:|--:|
+| aggressive_growth | beta | **17.58** | 21.59 | 0.675 | −33.33 | ✅ | 75.0 |
+| return_leaning | beta | **16.40** | 19.74 | 0.668 | −33.46 | ✅ | 25.0 |
+| cost_liquidity | market | 14.12 | 16.96 | 0.630 | −33.08 | ✗ | 92.9 |
+| balanced | market | 12.71 | 16.71 | 0.563 | −36.13 | ✗ | 67.9 |
+| diversified_quality | market | 12.67 | 16.55 | 0.564 | −33.97 | ✗ | 57.1 |
+| income | minvar | 11.94 | 15.68 | 0.545 | −38.45 | ✗ | 100 |
+| conservative | minvar | 9.70 | 14.02 | 0.447 | −35.15 | ✗ | 75.0 |
+
+- **只有 beta 核心（報酬導向）贏 VT 絕對報酬**（17.58 / 16.40% > 14.32%，且 Sharpe 也 > VT），代價是更高波動 → 驗證 U-C2 的存在理由。
+- **market / minvar 核心換到的是風險效率與偏好滿足**，非絕對報酬（CAGR < VT，但波動全部 < VT；cost_liquidity Sharpe 0.630 > VT）。
+- **全員對 EqualWeight / MaxSharpe 偏好勝率 93–100%**。
+- 誠實張力：return_leaning 偏好自我矛盾（要報酬又要抗波動）→ win_VT 低（25%）；部分防禦型 MaxDD 反比 VT 深（壓波動 ≠ 控回撤）。
+- g(w) 行為正確：T_growth 0.85→0.14，核心自動 beta→market→minvar、風險水準同步遞減。
+
+（完整版含偏好權重表與 g(w) 參數表見 `user_results/showcase_7_profiles/對照分析報告.md`。）
+
+---
+
 ## 4. 假設與限制（誠實揭露）
 
 ### 4.1 資料/特徵層假設
