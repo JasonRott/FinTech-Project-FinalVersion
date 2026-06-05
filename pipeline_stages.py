@@ -47,10 +47,15 @@ STAGE_TITLES = {
 }
 
 
-# 主系統推薦後「針對使用者偏好的回測」預設時間窗（資料約 2016-2026；固定一個預設窗，
-# 頻率由使用者選。lookback 預設 3 年與主系統一致；2018 起的早期再平衡 lookback 會用到的
-# 較早資料若不足，回測會自動以可用資料計算/跳過）。
-DEFAULT_PROMPT_BACKTEST_START = "2018-06-01"   # 近 ~8 年 OOS
+# 主系統推薦後「針對使用者偏好的回測」：資料/視窗固定在 10 年以內。
+# 設計（使用者指定）：OOS 視窗從「7 年前」開始，估計 lookback 最多 3 年，
+#   → 視窗 + lookback ≤ 10 年（與既有約 2016–2026 的回測快取相符，通常免大量補抓）。
+# 起點以「今天往前推 7 年」動態計算（隨時間滑動），頻率由使用者選。
+PROMPT_BACKTEST_WINDOW_YEARS = 7      # OOS 視窗長度（從 7 年前開始）
+PROMPT_BACKTEST_LOOKBACK_YEARS = 3    # 估計 lookback（最多 3 年）
+PROMPT_BACKTEST_MAX_DATA_YEARS = (    # 回測實際用到的資料總跨度上限（年）= 10
+    PROMPT_BACKTEST_WINDOW_YEARS + PROMPT_BACKTEST_LOOKBACK_YEARS
+)
 
 
 @dataclass
@@ -384,28 +389,35 @@ def stage3b_optional_preference_backtest(
         raw = ""
     freq = raw if raw in freq_map else "Q"
 
+    from datetime import datetime
     from backtest_engine import run_rolling_backtest, BacktestConfig
 
-    # 偏好回測需要「起點再往前 lookback 年」的歷史。若回測價格快取不夠長，
-    # filter_min_history 會擲出 "No ETF passes the minimum history filter"。
-    # 為了讓使用者「直接跑就有結果」，這裡做兩件事：
-    #   1. 開啟 fetch_missing_data + fetch_period="max"：第一次執行會自動補抓
-    #      完整歷史價格並寫入回測快取（之後快取夠長就不會重抓，後續執行很快）。
-    #   2. 若指定的「近 ~8 年」窗仍湊不到足夠標的（離線／標的太年輕），自動退而
-    #      改用較近的起點重試，確保一定能產出回測，並告知實際採用的窗。
+    # 資料/視窗固定在 10 年內：OOS 視窗從「7 年前」開始、lookback 3 年 → 7+3=10。
+    # 起點動態（今天往前推 N 年、取當月 1 號），隨時間滑動但跨度恆 ≤ 10 年。
+    # 與既有 ~2016 起的回測快取相符，通常不需補抓；fetch 僅作為「缺資料」時的安全網
+    #   （快取已涵蓋就不會抓；fresh clone 無快取時才會補。無論如何回測只用到 10 年資料）。
+    # 若 7 年窗在當前快取湊不到足夠標的，會自動退到較近起點（視窗縮短，仍 ≤ 10 年）。
+    _now = datetime.now()
+
+    def _years_ago(n: int) -> str:
+        return f"{_now.year - n:04d}-{_now.month:02d}-01"
+
     _common = dict(
-        end_date=None,                       # 用到資料最新日
-        rebalance_freq=freq,                 # 使用者選
-        preference_file=preference_file,     # ★用剛產生的使用者偏好★
-        fetch_missing_data=True,             # 缺歷史就自動補抓
-        fetch_period="max",                  # 補抓全歷史（涵蓋 8 年窗 + lookback）
+        end_date=None,                                   # 用到資料最新日
+        lookback_years=PROMPT_BACKTEST_LOOKBACK_YEARS,   # 最多 3 年
+        rebalance_freq=freq,                             # 使用者選
+        preference_file=preference_file,                 # ★用剛產生的使用者偏好★
+        fetch_missing_data=True,                         # 僅補「缺資料」的標的（快取夠就不抓）
+        fetch_period="max",                              # 安全網：無快取時才會真的補抓
     )
-    _candidate_starts = [DEFAULT_PROMPT_BACKTEST_START, "2020-06-01", "2022-01-01"]
-    _probe = BacktestConfig(start_date=DEFAULT_PROMPT_BACKTEST_START, **_common)
+    _primary_start = _years_ago(PROMPT_BACKTEST_WINDOW_YEARS)            # 7 年前
+    _candidate_starts = [_primary_start, _years_ago(5), _years_ago(3)]  # 退而求其次：仍 ≤10 年
+    _probe = BacktestConfig(start_date=_primary_start, **_common)
     print(f"\n啟動偏好回測：演算法={parameters.OPTIMIZATION_ARM}、再平衡={freq_map[freq]}、"
-          f"目標窗={DEFAULT_PROMPT_BACKTEST_START}~最新、lookback={_probe.lookback_years}年、"
+          f"OOS 視窗={_primary_start}~最新（約 {PROMPT_BACKTEST_WINDOW_YEARS} 年）、"
+          f"lookback={_probe.lookback_years} 年 → 資料跨度上限 {PROMPT_BACKTEST_MAX_DATA_YEARS} 年、"
           f"基準={_probe.benchmark_ticker}")
-    print("（首次執行會自動補抓完整歷史價格，可能需要數分鐘；之後用快取加速…）")
+    print("（資料/視窗固定在 10 年內；通常直接用既有快取，缺資料才會自動補抓…）")
     _done = False
     for _i, _sd in enumerate(_candidate_starts):
         cfg = BacktestConfig(start_date=_sd, **_common)
@@ -413,8 +425,8 @@ def stage3b_optional_preference_backtest(
             run_rolling_backtest(cfg)
             _done = True
             if _i > 0:
-                print(f"（提示：價格快取歷史不足以支撐 {DEFAULT_PROMPT_BACKTEST_START} 起點，"
-                      f"已自動改用較近起點 {_sd} 完成回測。）")
+                print(f"（提示：{_primary_start} 起點在當前快取湊不到足夠標的，"
+                      f"已自動改用較近起點 {_sd}；視窗縮短但仍在 10 年內。）")
             print(f"\n✅ 偏好回測完成（起點 {_sd}）。輸出在 user_results/（backtest_* 夾）"
                   f"與 backtest_report/。")
             break

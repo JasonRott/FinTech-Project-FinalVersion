@@ -8,11 +8,11 @@
 
 ## ★ 系統定案 + GitHub 整理（2026-06-06）★
 - **生產演算法 = C2**（`OPTIMIZATION_ARM="C2"`）+ beta 評分 + noCAGR + 品質約束全關 + 錨 VT。主系統 Stage 3 與回測**邏輯一致已逐行驗證**（`09`）。
-- **主系統跑完會問是否做「針對此偏好」的回測**（選頻率,窗固定近 8 年;`pipeline_stages.stage3b_optional_preference_backtest`）。
-- **視覺化稽核**（`10`）：雷達報酬軸已深化為 beta、前緣圖加註描述性;死碼標記。前緣「標 VT+三核心」的深度重繪尚未做（待目視 QA）。
+- **主系統跑完會問是否做「針對此偏好」的回測**（選頻率;**資料/視窗固定 ≤10 年**＝OOS 從 7 年前起算 + lookback 3 年,起點動態隨時間滑動,缺資料才補抓;`pipeline_stages.stage3b_optional_preference_backtest`）。
+- **視覺化稽核**（`10`）：雷達**報酬軸=beta（標籤與顯示值皆 β,與評分同口徑）、殖利率軸=固定 0~5% 尺度（避免微差放大）**。**主系統的績效圖與效率前緣圖已停用不再輸出**（描述性、非 C2/BL 最佳化所在,易誤導）→ 故先前「前緣標 VT+三核心」的深度重繪已取消（直接移除該圖）。
 - **兩份報告**：`REPORT_A_results_and_math.md`、`REPORT_B_design_story.md`（含假設）。
 - **GitHub 整理完成（本地）**：無硬編金鑰（.env + os.getenv）;`.env.example` 已建;`.gitignore` 擴充（排除 .env/FinBERT 模型/1.1GB active_preference results/價格庫/50MB新聞快取/生成輸出/日誌）;實驗腳本移到 `experiments/`;README 加最新演算法 banner + 報告連結。已 `git init` + 初始 commit（master,1289 檔/25MB,無敏感檔）。**push 待使用者提供 repo 網址/授權。**
-- **輸出重整（2026-06-06）**：新增單一父資料夾 `user_results/`（`parameters.USER_RESULTS_DIR`,已 gitignore）。**主系統每次執行** → `user_results/main_{case}_{時間戳}/`（收齊 png/{case}_*、eda_*、dea*、report/{case}_* 全部圖+報表;在 `run_stage3_pipeline` 末段收集,已驗證）。**回測每次執行** → `user_results/backtest_{run_id}_arm{X}_{時間戳}/`（收齊該次 png_dir+report_dir+csv_dir 全部;改寫自 `_mirror_run_figures_to_upgrade`）。原 `png/`、`report/`、`backtest_report/`、`upgrade_figures/` 仍是工作輸出,user_results 是自包含彙整。
+- **輸出重整（2026-06-06）**：新增單一父資料夾 `user_results/`（`parameters.USER_RESULTS_DIR`,已 gitignore）。**主系統每次執行** → `user_results/main_{case}_{時間戳}/`，**分兩子夾**：`01_screening_eda/`（eda_*、*dea* 圖 + `stage1_dea_results.csv`）與 `02_portfolio/`（`{case}_radar_chart.png` + 推薦報表;績效/前緣圖已停用故不收）;在 `run_stage3_pipeline` 末段收集。**回測每次執行** → `user_results/backtest_{run_id}_arm{X}_{時間戳}/`（收齊該次 png_dir+report_dir+csv_dir 全部;改寫自 `_mirror_run_figures_to_upgrade`）。原 `png/`、`report/`、`backtest_report/`、`upgrade_figures/` 仍是工作輸出,user_results 是自包含彙整。
 - **待辦**：(1) 前緣深度重繪（VT+三核心,需目視 QA）;(2) push 到 GitHub（需 repo 網址）;(3) 報告請使用者審。
 
 ## 0. 一句話現況

@@ -805,7 +805,8 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 5. **輸出未分類**：希望 DEA 分布＋EDA 一夾、投組/報表一夾。
 
 ### 改了什麼
-- **`pipeline_stages.py / stage3b_optional_preference_backtest`**：prompt 回測改 `fetch_missing_data=True, fetch_period="max"`（首次自動補抓全歷史並寫快取，之後用快取加速）；並加「起點漸進回退」：`[2018-06-01 → 2020-06-01 → 2022-01-01]`，遇 minimum-history 錯誤自動換較近起點重試，確保一定有結果並告知實際採用窗。
+- **`pipeline_stages.py / stage3b_optional_preference_backtest`**：prompt 回測**資料/視窗固定在 10 年內**（使用者指定）。新增常數 `PROMPT_BACKTEST_WINDOW_YEARS=7`、`PROMPT_BACKTEST_LOOKBACK_YEARS=3`（和=10），移除舊的 `DEFAULT_PROMPT_BACKTEST_START="2018-06-01"`。OOS 起點改**動態**「今天往前推 7 年、取當月 1 號」（隨時間滑動但跨度恆 ≤10 年）；lookback 固定 3 年。`fetch_missing_data=True, fetch_period="max"` 改為**安全網**（既有 ~2016 快取已涵蓋 → 通常不補抓；fresh clone 無快取才補；回測無論如何只用到 10 年資料）。保留「起點漸進回退」`[7y → 5y → 3y]`（仍 ≤10 年），遇 minimum-history 錯誤自動換較近起點，確保一定有結果並告知實際採用窗。
+  - 根因確認：回測快取實際從 **2016-05-20** 起；舊 `2018-06-01` 起點 + 3y lookback 需 `2015-06` 資料 → 全淘汰。新 `2019-06-01`（7 年前）起點僅需 `2016-06` 資料 → 既有快取直接涵蓋，免補抓。
 - **`functions.py / plot_preference_radar_chart`**：
   - 報酬軸標籤改「報酬（以β對VT評分）」；`metric_map["Return_CAGR"]` 原始代理值由 `Arithmetic_Ret %` 改 `Beta_vs_VT`（`β=…`），讓標註數字與雷達位置（皆 beta）一致。
   - 殖利率軸改「固定尺度映射」`bounded_score(Div_Yield, 0%, 5%)`（取代相對勝負映射）→ 微差忠實重疊、高殖利率才外擴。
