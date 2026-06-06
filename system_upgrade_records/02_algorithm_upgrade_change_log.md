@@ -1168,6 +1168,13 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 新增 `app/打包單機版.ps1`：一鍵 = pyinstaller onedir + 複製 `.env.example` 到 exe 旁 + 複製 csv/json/sentiment 快取 + 清中間檔。日後重建單機包只需這一行。
 - 桌面捷徑（`桌面/ETF 偏好投組.lnk`）已指向此 exe，重建同路徑覆蓋，雙擊即用。
 
+## 2026-06-07：修「關掉分頁伺服器仍常駐」——心跳 watchdog 自動關閉 + 結束程式鈕
+
+- 問題：單機視窗版（無 console）關掉瀏覽器分頁後，後端 exe 仍背景常駐（佔 port/記憶體），無從關閉。
+- 修法（`etf_web/app.py`）：前端每 5 秒 `GET /api/ping` 更新心跳；背景 `_watchdog` 執行緒在「最後心跳 > 30 秒」時 `os._exit(0)` 關整個行程。關分頁→心跳停→約 30 秒自動關；重新整理會在 30 秒內恢復心跳故不誤關；多分頁時任一開著就維持。另加 `POST /api/shutdown`。
+- 前端：`app.js` 啟動心跳 `setInterval(ping,5000)`；header 加「✕ 結束程式」鈕 → 確認後 `POST /api/shutdown` 即時關閉並顯示「已結束程式，可關閉分頁」。`style.css` 加 `.quit-btn`。
+- 驗證：路由 `/api/ping`、`/api/shutdown` 註冊；`GET /api/ping`→{ok:true}；JS/CSS 括號平衡、心跳/鈕皆在。需重建單機包生效。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

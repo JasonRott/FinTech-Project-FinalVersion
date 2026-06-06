@@ -420,6 +420,17 @@ function bind() {
   names.forEach((s, i) => {
     $("stepbar-" + (i + 1)).onclick = () => { if (reached[s]) showStage(s); };
   });
+  // 心跳：每 5 秒告訴後端「分頁還開著」。關掉分頁就沒心跳 → 後端約 30 秒後自動關閉（不再背景常駐）。
+  const ping = () => fetch("/api/ping").catch(() => {});
+  ping();
+  setInterval(ping, 5000);
+  // 結束程式按鈕：關閉伺服器
+  const q = $("app-quit");
+  if (q) q.onclick = async () => {
+    if (!confirm("確定要結束程式嗎？\n伺服器會關閉，之後可直接關掉這個視窗/分頁。")) return;
+    try { await fetch("/api/shutdown", {method: "POST"}); } catch (e) {}
+    document.body.innerHTML = '<div style="padding:48px;font-size:20px;color:#0f2a5e">已結束程式 ✓　您可以關閉這個分頁了。</div>';
+  };
 }
 
 bind();

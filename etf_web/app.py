@@ -32,6 +32,7 @@ import csv
 import json
 import sys
 import threading
+import time
 import traceback
 from pathlib import Path
 
@@ -92,6 +93,22 @@ def _warmup():
 # 模組載入（＝伺服器啟動）即背景預熱；daemon 執行緒不阻塞 Flask 綁定 port。
 threading.Thread(target=_warmup, daemon=True, name="bge-warmup").start()
 
+# ── 生命週期：前端每 5 秒送一次心跳；最後一次心跳超過 GRACE 秒沒人 → 自動關閉伺服器。
+#    解決「關掉瀏覽器分頁，後端仍在背景常駐（佔 port/記憶體）」。重新整理會在 GRACE 內恢復心跳，不會誤關。
+_HEARTBEAT = {"last": None}
+_SHUTDOWN_GRACE = 30  # 秒
+
+
+def _watchdog():
+    while True:
+        time.sleep(5)
+        last = _HEARTBEAT["last"]
+        if last is not None and (time.time() - last) > _SHUTDOWN_GRACE:
+            os._exit(0)  # 強制結束整個行程（Flask + 所有執行緒）
+
+
+threading.Thread(target=_watchdog, daemon=True, name="heartbeat-watchdog").start()
+
 
 def _finish(snap, reason):
     """問答完成出口：把 9 維權重交付到主系統 json（供 pipeline 的 web_preference 模式讀取）。"""
@@ -130,7 +147,22 @@ def _compute_next():
 
 @app.route("/")
 def index():
+    _HEARTBEAT["last"] = time.time()
     return render_template("index.html")
+
+
+@app.get("/api/ping")
+def api_ping():
+    """前端心跳；更新最後活躍時間，watchdog 用它判斷分頁是否已關閉。"""
+    _HEARTBEAT["last"] = time.time()
+    return jsonify({"ok": True})
+
+
+@app.post("/api/shutdown")
+def api_shutdown():
+    """使用者按「結束程式」→ 關閉伺服器行程。"""
+    threading.Thread(target=lambda: (time.sleep(0.3), os._exit(0)), daemon=True).start()
+    return jsonify({"bye": True})
 
 
 @app.post("/api/pref/start")
