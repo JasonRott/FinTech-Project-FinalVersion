@@ -1,8 +1,40 @@
 # 現況快照與交接（START HERE）
 
-最後更新：2026-06-05  
-用途：對話壓縮/換新聊天室後的單一入口。本檔自包含，讀完即可接續演算法升級工作。  
+最後更新：2026-06-06  
+用途：對話壓縮/換新聊天室後的單一入口。本檔自包含，讀完即可接續工作。  
 其他檔：`01` 舊基準、`02` 改動流水帳、`03` 待辦/設計、`04` 文獻+程式稽核、`05` 設計理由與成敗脈絡。
+
+---
+
+## ★★ 最新狀態 + 待辦（2026-06-06，壓縮前快照）★★
+
+### 已上 GitHub（公開 repo，乾淨）
+- **Repo**：https://github.com/JasonRott/FinTech-Project-FinalVersion ，分支 `main`，最新 commit ≈ `00ce58f`。
+- HTTPS remote 已設、憑證已快取（Git Credential Manager），`git push origin main` 可直接推。`gh` CLI 未安裝。
+- 安全：`.env` 未追蹤、無硬編金鑰（全 `os.getenv`）。
+
+### ★ 進行中／下一步：接「網頁版 preference」★
+- 使用者**即將提供網頁版 preference 介面**，要把它接上系統。
+- **接點極窄（已就緒）**：整條後段（stage2_2→stage3→回測）只認 `json/stage2_ahp_global_weights.json` 的 `Global_Weights`（9 維、總和=1，鍵=Return_CAGR/Return_Div/Risk_Vol/Risk_MaxDD/Cost_ExpRatio/Liq_Volume/Liq_AUM/Div_Score/FinBERT_score）。
+- **已有非互動接口可直接給網頁用**：`pipeline_stages.stage2_1_preference_engine_elicitation(output_path=..., philosophy_text=<開場理念>, answers=[<逐題答案>])` → 會自動答完 9 題、正規化、寫出上述 JSON。網頁端只要把使用者的理念+逐題答案傳進來即可；或網頁自己算出 9 維權重後直接寫該 JSON。
+- 底層引擎：`preference_engine/`（`from phase3_system import Phase3Engine`；`start_session→next_question→submit_answer→snapshot()["Ew"]`）。BGE-M3 首次自動下載 ~2.2GB。
+- 目前終端互動版（`preference_mode="preference_engine"`）已完成且測過：**預設答完整 9 題**（引擎在第~3 題就會提議早停，但未答完 CI 不可信，故預設續答；互動時詢問一次是否早停）。
+
+### preference 模式（三選一，輸出同一 JSON）
+`main.py` 的 `preference_mode`：`"static_ahp"`（AHP 模擬）/ `"preference_engine"`（投資理念+問答 BNN，使用者目前設這個）/ `"active_bayesian"`（Gemini）。
+
+### 使用者結果輸出
+- 主系統每次跑 → `user_results/new_user_{n}`（n=現有最大+1，永不覆寫）；回測巢狀其中。`new_user_*` 不入庫。
+- **固定展示** `user_results/showcase_7_profiles/`（**已追蹤+上 GitHub**）：7 profile 各含主系統+季度回測；`對照分析報告.md`（含多維度表、熱圖、小倍數長條、`迷你雷達_vs_VT/` 7 張）。
+- `upgrade_figures/`（關鍵實驗數據+圖）也已追蹤上 GitHub（供組員簡報）。
+
+### 近期已完成（細節見 02 對應日期）
+- 回測自動產 `_metrics_comparison.png`（各策略 vs VT；含**股息**：堆疊資本利得+股息、平均殖利率）。
+- **CAGR/累積總報酬含股息**（=資本利得+估計現金股息、未再投入）；報表另拆 Capital_Gain/Dividend_Income。
+- FinBERT 載入改檢查「權重檔」存在（fresh clone 缺權重會自動下載 ProsusAI/finbert）。
+- 雷達 β 尺度 `RADAR_BETA_REF=1.2`（與 PREF_BETA_REF=2.0 解耦，只動顯示）。
+- 集中式 log → `logs/`（每次執行一個時間戳檔）。
+- REPORT_A 數學：**區塊用 ```math 圍欄（GitHub 會渲染）、行內改純 Unicode**（行內 `$...$` 在該檢視器不渲染會露原始碼）。
 
 ---
 
