@@ -15,6 +15,14 @@ if getattr(sys, "frozen", False):
     os.chdir(APP_HOME)
     for _d in ("csv", "json", "png", "report", "logs", "user_results"):
         os.makedirs(os.path.join(APP_HOME, _d), exist_ok=True)
+    # 視窗模式（無 console）時 stdout/stderr 為 None → print/logging 會崩潰；導向 log 檔。
+    if sys.stdout is None or sys.stderr is None:
+        try:
+            _logf = open(os.path.join(APP_HOME, "etf_app.log"), "a", encoding="utf-8", buffering=1)
+            sys.stdout = _logf
+            sys.stderr = _logf
+        except Exception:
+            pass
 
 import threading  # noqa: E402
 import time  # noqa: E402

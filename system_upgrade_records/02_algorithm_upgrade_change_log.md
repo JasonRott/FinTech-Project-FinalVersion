@@ -1139,6 +1139,13 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - `.gitignore`：`!app/etf_app.spec`（手寫 spec 入庫；PyInstaller 自動產生的其他 .spec 仍忽略）。
 - 註：測試時為了與使用者既有的 dev server（同樣佔 8050）區隔，曾暫停其 dev server 做隔離測試；使用者可隨時重跑 `python main.py` 復原。
 
+## 2026-06-07：單機版改視窗模式（不跳 console）+ 交付 5GB 整包
+
+- `app/etf_app.spec`：`console=True → False`（雙擊不跳黑色 console 視窗）。
+- `app/frozen_main.py`：視窗模式下 `sys.stdout/stderr` 為 None → print/logging 會崩潰；偵測到 None 即導向 exe 資料夾的 `etf_app.log`（也方便除錯）。
+- 重建並**實測**：5.0GB onedir（exe 68MB + _internal）；啟動視窗版 exe → 服務 `GET / 200`、`/static/app.js 200`、`/api/status 200`、log 無錯。
+- 依使用者要求**保留整包**於 `C:\Users\lojas\etf_build\dist\ETF偏好投組\`（OneDrive 外，避免同步）；刪除 build 中間檔僅留 dist 交付物。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

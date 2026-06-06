@@ -54,7 +54,7 @@ a = Analysis(
 pyz = PYZ(a.pure)
 exe = EXE(
     pyz, a.scripts, [], exclude_binaries=True,
-    name="ETF偏好投組", console=True,
+    name="ETF偏好投組", console=False,   # 視窗模式：雙擊不跳黑色 console（log 寫到 etf_app.log）
     icon=os.path.join(ROOT, "app", "etf_icon.ico"),
 )
 coll = COLLECT(exe, a.binaries, a.datas, name="ETF偏好投組")
