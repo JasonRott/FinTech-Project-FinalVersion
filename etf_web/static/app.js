@@ -158,6 +158,89 @@ async function startSession() {
   renderAction(res.action);
 }
 
+// 範例偏好（一鍵帶入）：理念 + 每維對應的示範回答（依 dim_key）
+const PRESETS = {
+  income: {
+    label: "💵 現金流／收入導向",
+    philosophy: "我是想要穩定被動現金流的投資人，最重視股息與配息收入，報酬普通就好、不追求高成長，但希望波動與回撤不要太誇張。",
+    answers: {
+      Return_Div: "我最重視穩定的股息與現金流，希望配息高又穩定，這是我選 ETF 最在意的事。",
+      Return_CAGR: "資本增值還好，我不追求高成長，穩穩領息更重要。",
+      Risk_Vol: "波動希望溫和一點，但可以接受一些。",
+      Risk_MaxDD: "我不喜歡大跌，抗跌中等重要。",
+      Cost_ExpRatio: "費用低一點當然好，但不是我的首要考量。",
+      Div_Score: "適度分散即可，不用特別追求。",
+      Liq_Volume: "成交量普通就好，我不太在意。",
+      Liq_AUM: "基金規模普通即可。",
+      FinBERT_score: "市場情緒我不太參考。",
+      _default: "普通，沒有特別偏好。",
+    },
+  },
+  growth: {
+    label: "📈 成長／報酬導向",
+    philosophy: "我追求長期資本增值與較高報酬，願意承擔較高的波動，不太在意股息，標的要能充分參與市場成長。",
+    answers: {
+      Return_CAGR: "我最重視長期資本增值與成長，這是我最在意的，願意為此承擔風險。",
+      Return_Div: "股息我不太在意，能成長比較重要。",
+      Risk_Vol: "我可以接受較高的波動。",
+      Risk_MaxDD: "大跌還能忍受，只要長期能漲。",
+      Cost_ExpRatio: "費用普通即可。",
+      Div_Score: "分散普通即可。",
+      Liq_Volume: "成交量普通即可。",
+      Liq_AUM: "基金規模普通即可。",
+      FinBERT_score: "市場情緒參考一下就好。",
+      _default: "普通，沒有特別偏好。",
+    },
+  },
+  conservative: {
+    label: "🛡️ 保守／抗跌",
+    philosophy: "我很保守，最怕大跌，希望波動低、抗跌強，報酬普通就好，寧可少賺也不要大賠。",
+    answers: {
+      Risk_MaxDD: "我最怕大跌，抗跌對我最重要，寧可少賺也不要大賠。",
+      Risk_Vol: "波動越低越好，我要睡得安穩。",
+      Return_CAGR: "報酬普通就好，不追求高成長。",
+      Return_Div: "有一點配息不錯，但不是重點。",
+      Cost_ExpRatio: "費用低一點比較好。",
+      Div_Score: "希望適度分散降低風險。",
+      Liq_Volume: "成交量普通即可。",
+      Liq_AUM: "規模大一點比較安心。",
+      FinBERT_score: "市場情緒我不太參考。",
+      _default: "普通，沒有特別偏好。",
+    },
+  },
+};
+
+async function runPreset(key) {
+  const p = PRESETS[key];
+  if (!p) return;
+  userName = (($("uname") || {}).value || "").trim() || userName;
+  $("conv").innerHTML = "";
+  appendConv("a", esc(p.philosophy), "a");
+  $("input-area").innerHTML = `<div class="hint">套用範例「${esc(p.label)}」，系統自動逐題作答中…（首次載入模型可能需數秒）</div>`;
+  let r = await api("/api/pref/start", {philosophy: p.philosophy});
+  appendConv("sys", `已套用範例「${esc(p.label)}」並建立個人化先驗，將自動回答 9 題。`, "sys");
+  let action = r.action, guard = 0;
+  while (action && guard++ < 40) {
+    if (action.type === "question") {
+      const q = action.q;
+      const ans = p.answers[q.dim_key] || p.answers._default;
+      renderBelief(action.snapshot);
+      appendConv("q", `<span class="tag tag-cover">第 ${q.step} 題 · ${esc(q.dim_label)}</span> ${esc(q.question)}`, "q");
+      appendConv("a", esc(ans), "a");
+      scrollConv();
+      action = (await api("/api/pref/answer", {answer: ans})).action;
+    } else if (action.type === "offer") {
+      action = (await api("/api/pref/choose", {kind: action.kind, decision: "continue"})).action;
+    } else if (action.type === "done") {
+      onPrefDone(action.snapshot, action.reason);
+      action = null;
+    } else {
+      action = null;
+    }
+  }
+  scrollConv();
+}
+
 function initPref() {
   showStage("pref");
   $("conv").innerHTML = `
@@ -171,13 +254,20 @@ function initPref() {
     </div>`;
   renderBelief({phase:"coverage",n_covered:0,n_reasks:0,Sigma_alpha:0,tau:2.50,stop_progress:0,ranking:[],ci_note:""});
   $("input-area").innerHTML = `
+    <div class="presets">
+      <span class="presets-label">範例偏好一鍵帶入：</span>
+      <button class="preset-btn" data-preset="income">💵 現金流／收入導向</button>
+      <button class="preset-btn" data-preset="growth">📈 成長／報酬導向</button>
+      <button class="preset-btn" data-preset="conservative">🛡️ 保守／抗跌</button>
+    </div>
     <label class="field"><span>你的名稱（選填，會用在結果標題與資料夾名稱；留空則用 new_user）</span>
       <input id="uname" type="text" placeholder="例如 Jason" autocomplete="off"></label>
-    <div class="role field-label">開場：你的投資理念</div>
+    <div class="role field-label">開場：你的投資理念（或直接點上方範例一鍵帶入）</div>
     <textarea id="philo" placeholder="請用幾句話描述您整體的 ETF 投資理念，以及最重視的幾個方向…"></textarea>
     <div class="row"><button class="btn" id="go">開始問答</button></div>
     <div class="hint">本地模型（BGE-M3 ＋ 9 個 1D BNN），不接生成式 LLM。</div>`;
   $("go").onclick = startSession;
+  document.querySelectorAll(".preset-btn").forEach(b => { b.onclick = () => runPreset(b.dataset.preset); });
 }
 
 // ========== ② 執行分析 ==========

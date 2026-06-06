@@ -80,6 +80,12 @@ textarea{width:100%;min-height:70px;background:#fbfdff;color:var(--txt);border:1
 .field>span{display:block;font-size:14.5px;color:var(--muted);margin-bottom:5px}
 .field input{width:100%;background:#fbfdff;color:var(--txt);border:1px solid var(--line);border-radius:9px;padding:11px;font:inherit}
 .field-label{font-size:15px;color:var(--muted);margin:6px 0 4px}
+/* 範例偏好一鍵帶入 */
+.presets{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+.presets-label{font-size:14.5px;color:var(--muted)}
+.preset-btn{background:#eef5ff;color:#1d4ed8;border:1px solid #bcd9ff;border-radius:20px;
+  padding:7px 14px;cursor:pointer;font:inherit;font-size:14.5px;transition:background .15s,border-color .15s}
+.preset-btn:hover{background:#dbeafe;border-color:var(--accent)}
 .offer{background:#f4f9ff;border:1px solid var(--accent);border-radius:10px;padding:12px}
 .offer .title{font-weight:600;margin-bottom:4px}.offer .msg{font-size:13px;color:var(--muted);margin-bottom:8px}
 
