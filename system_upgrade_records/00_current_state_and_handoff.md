@@ -9,19 +9,22 @@
 ## ★★ 最新狀態 + 待辦（2026-06-06，壓縮前快照）★★
 
 ### 已上 GitHub（公開 repo，乾淨）
-- **Repo**：https://github.com/JasonRott/FinTech-Project-FinalVersion ，分支 `main`，最新 commit ≈ `00ce58f`。
+- **Repo**：https://github.com/JasonRott/FinTech-Project-FinalVersion ，分支 `main`，最新 commit ≈ `a3a5abf`。
 - HTTPS remote 已設、憑證已快取（Git Credential Manager），`git push origin main` 可直接推。`gh` CLI 未安裝。
 - 安全：`.env` 未追蹤、無硬編金鑰（全 `os.getenv`）。
 
-### ★ 進行中／下一步：接「網頁版 preference」★
-- 使用者**即將提供網頁版 preference 介面**，要把它接上系統。
-- **接點極窄（已就緒）**：整條後段（stage2_2→stage3→回測）只認 `json/stage2_ahp_global_weights.json` 的 `Global_Weights`（9 維、總和=1，鍵=Return_CAGR/Return_Div/Risk_Vol/Risk_MaxDD/Cost_ExpRatio/Liq_Volume/Liq_AUM/Div_Score/FinBERT_score）。
-- **已有非互動接口可直接給網頁用**：`pipeline_stages.stage2_1_preference_engine_elicitation(output_path=..., philosophy_text=<開場理念>, answers=[<逐題答案>])` → 會自動答完 9 題、正規化、寫出上述 JSON。網頁端只要把使用者的理念+逐題答案傳進來即可；或網頁自己算出 9 維權重後直接寫該 JSON。
-- 底層引擎：`preference_engine/`（`from phase3_system import Phase3Engine`；`start_session→next_question→submit_answer→snapshot()["Ew"]`）。BGE-M3 首次自動下載 ~2.2GB。
-- 目前終端互動版（`preference_mode="preference_engine"`）已完成且測過：**預設答完整 9 題**（引擎在第~3 題就會提議早停，但未答完 CI 不可信，故預設續答；互動時詢問一次是否早停）。
+### ★ 已完成：網頁版 preference 已接上（`etf_preference_bundle`，舊 `preference_engine` 已刪）★
+- 使用者上傳 `etf_preference_bundle/`（舊 `preference_engine` 的超集：同 `phase3_system/`+`assets/`，外加 Flask 網頁層 `web/`、`run_web.py`、`recommender_hook.py`）。**舊 `preference_engine/` 已從 repo 與磁碟移除**（共用引擎/assets 以 rename 形式保留）。
+- **接點極窄**：後段（stage2_2→stage3→回測）只認 `json/stage2_ahp_global_weights.json` 的 `Global_Weights`（9 維、總和=1）。
+- **網頁→主系統兩段橋接（檔案交付，跨行程）**：
+  1. `etf_preference_bundle/recommender_hook.deliver_weights(weights, snapshot)`：問答完成時（web 或 library 都呼叫此唯一接點）→ 正規化 9 維 → **直寫主系統 `json/stage2_ahp_global_weights.json`**（canonical payload）。
+  2. `pipeline_stages.stage2_1_web_preference_ingest()`（`preference_mode="web_preference"`）：讀網頁最近結果（優先 `etf_preference_bundle/web/last_result.json` ⇒ 退而求其次讀 hook 直寫 json）→ 正規化 → 續跑下游。找不到 → fallback + 提示先跑網頁。
+- **使用流程**：`python etf_preference_bundle/run_web.py`（http://127.0.0.1:8000 完成問答，自動交付）→ `python main.py`（`web_preference`）。
+- 終端版仍可用：`preference_mode="preference_engine"`（`stage2_1_preference_engine_elicitation`，引擎路徑已改指 `etf_preference_bundle`，預設答完 9 題）。
+- BGE-M3 首次自動下載 ~2.2GB（或放 `etf_preference_bundle/encoder_model/` 離線）。網頁後端需 `flask>=3.0`（已加 requirements）。
 
-### preference 模式（三選一，輸出同一 JSON）
-`main.py` 的 `preference_mode`：`"static_ahp"`（AHP 模擬）/ `"preference_engine"`（投資理念+問答 BNN，使用者目前設這個）/ `"active_bayesian"`（Gemini）。
+### preference 模式（四選一，輸出同一 JSON）
+`main.py` 的 `preference_mode`：`"web_preference"`（網頁問答→檔案交付，**使用者目前設這個**）/ `"preference_engine"`（終端逐題 BNN）/ `"static_ahp"`（AHP 模擬 / USER_PROFILES 原型）/ `"active_bayesian"`（Gemini）。
 
 ### 使用者結果輸出
 - 主系統每次跑 → `user_results/new_user_{n}`（n=現有最大+1，永不覆寫）；回測巢狀其中。`new_user_*` 不入庫。
