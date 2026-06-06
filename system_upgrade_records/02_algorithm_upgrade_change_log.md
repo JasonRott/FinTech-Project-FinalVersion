@@ -1029,6 +1029,16 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
   - `REPORT_B`：第七幕後加同義註（13.6%→67.8%、統一 BL「win_VT 崩」為修正前尺度；方向性結論不變）。
 - 仍未重跑 §3.2/3.3/3.4 的實際 A/B 數字（使用者明確不要）；其餘所有對外結論已與修正後尺度一致。
 
+## 2026-06-06：ETF 網頁視覺化（明亮動態背景 / 對話 UX）+ 新增回測偏好雷達 vs VT
+
+狀態：完成（前端 3 項 + 回測新增一張雷達圖）。非 optimizer 改動。
+
+- **明亮 + 動態背景**：`etf_web/static/style.css` 全面改亮色主題（白卡片 + 柔和陰影），背景為**緩慢動態漸層**（只動 `background-position`、GPU 友善；`@media (prefers-reduced-motion)` 自動關閉，避免影響順暢）。
+- **對話自動捲到底**：`app.js` 新增 `scrollConv()`（雙 rAF，待輸入框/回饋訊息長高後再捲），於 `renderAction` 末尾呼叫 → 每次答完都看得到最新題目。
+- **換行置左**：對話泡泡 `text-align:left` + `white-space:pre-wrap`，泡泡本身可靠右（使用者訊息）但**內文一律置左**，多行不再右對齊。
+- **★新增 `_plot_backtest_preference_radar`★**（backtest_engine，診斷層、不碰最佳化）：9 維事後偏好子分數的回測期間平均，**系統(紅) vs VT(藍)** 雷達；用修正後共同 MaxDD 尺度，故各維公平。已接進 `_write_unified_backtest_report`（檔名 `{prefix}_preference_radar_vs_benchmark.png`，落 03_performance_figures）→ 未來每次回測自動產生；並用既有 7 showcase 的 preference_scores.csv 補生成 7 張。
+- 註：`結果頁版面（results presentation）`待與使用者討論後再改；本次只加圖、未動結果頁佈局。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

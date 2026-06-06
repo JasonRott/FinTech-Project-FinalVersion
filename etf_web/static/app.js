@@ -24,6 +24,15 @@ function showStage(name) {
 }
 
 // ========== 偏好問答（與語意萃取網頁同一套引擎）==========
+function scrollConv() {
+  // 等版面重排（輸入框/回饋訊息長高後）再捲到底，確保每次答完都看得到最新題目
+  const c = $("conv"); if (!c) return;
+  requestAnimationFrame(() => {
+    c.scrollTop = c.scrollHeight;
+    requestAnimationFrame(() => { c.scrollTop = c.scrollHeight; });
+  });
+}
+
 function appendConv(role, html, cls) {
   const d = document.createElement("div");
   d.className = "msg " + (cls || role);
@@ -96,6 +105,7 @@ function renderAction(action) {
   } else if (action.type === "done") {
     onPrefDone(action.snapshot, action.reason);
   }
+  scrollConv();   // 版面定案後再捲到底（修「答完沒自動到最下面、看不到題目」）
 }
 
 async function submitAnswer() {

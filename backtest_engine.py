@@ -2127,6 +2127,75 @@ def _plot_preference_score_timeseries(
     plt.close()
 
 
+def _plot_backtest_preference_radar(
+    preference_scores_df: pd.DataFrame,
+    output_path: Path,
+    benchmark_label: str = "VT",
+    title_prefix: str = "",
+) -> None:
+    """偏好維度雷達（回測）：系統(紅) vs 基準(藍)，9 維事後(forward)偏好子分數的回測期間平均。
+    一眼看出「相對使用者偏好，系統在哪些維度勝過 VT」。純診斷分數，不碰最佳化邏輯。
+    使用修正後的共同跨截面 MaxDD 尺度，故各維可公平比較。"""
+    if preference_scores_df is None or preference_scores_df.empty:
+        return
+    dims = [
+        ("Score_Return_CAGR", "報酬(β)"), ("Score_Return_Div", "股息"),
+        ("Score_Risk_Vol", "低波動"), ("Score_Risk_MaxDD", "抗跌"),
+        ("Score_Cost", "低成本"), ("Score_Liq_Volume", "成交量"),
+        ("Score_Liq_AUM", "基金規模"), ("Score_Div_Score", "分散"),
+        ("Score_FinBERT", "情緒"),
+    ]
+
+    def _means(role_prefix):
+        vals = []
+        for key, _lab in dims:
+            col = f"{role_prefix}_{key}"
+            if col not in preference_scores_df.columns:
+                return None
+            vals.append(float(pd.to_numeric(preference_scores_df[col], errors="coerce").mean()))
+        return vals
+
+    sys_vals = _means("Portfolio_Forward")
+    vt_vals = _means("Benchmark_Forward")
+    if sys_vals is None or vt_vals is None:
+        return
+
+    labels = [lab for _k, lab in dims]
+    angles = np.linspace(0, 2 * np.pi, len(labels), endpoint=False).tolist()
+    angles += angles[:1]
+    sys_p = sys_vals + sys_vals[:1]
+    vt_p = vt_vals + vt_vals[:1]
+
+    try:
+        plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei", "Microsoft YaHei", "SimHei", "Arial Unicode MS"]
+        plt.rcParams["axes.unicode_minus"] = False
+    except Exception:
+        pass
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = plt.subplot(111, polar=True)
+    ax.set_theta_offset(np.pi / 2)
+    ax.set_theta_direction(-1)
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels, fontsize=11)
+    ax.set_ylim(0, 1)
+    ax.set_yticks([0.2, 0.4, 0.6, 0.8, 1.0])
+    ax.set_yticklabels(["0.2", "0.4", "0.6", "0.8", "1.0"], fontsize=8, color="#94a3b8")
+    ax.plot(angles, vt_p, color="steelblue", linewidth=2.0, label=benchmark_label)
+    ax.fill(angles, vt_p, color="steelblue", alpha=0.12)
+    ax.plot(angles, sys_p, color="crimson", linewidth=2.4, label="System (Preference-Driven)")
+    ax.fill(angles, sys_p, color="crimson", alpha=0.18)
+    ax.set_title(
+        f"{title_prefix}偏好維度雷達：系統 vs {benchmark_label}\n"
+        f"（回測期間平均事後偏好子分數，越外圈越符合該維度）",
+        fontsize=12, pad=24,
+    )
+    ax.legend(loc="upper right", bbox_to_anchor=(1.18, 1.12), fontsize=10)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+
 def _mirror_run_figures_to_upgrade(
     png_dir: Path, prefix: str, run_id: str, parent_dir: str | Path | None = None
 ) -> Path:
@@ -2371,6 +2440,11 @@ def _write_unified_backtest_report(
         _plot_preference_score_timeseries(
             preference_scores_df,
             png_dir / f"{prefix}_preference_score_timeseries.png",
+            benchmark_label=config.benchmark_ticker,
+        )
+        _plot_backtest_preference_radar(
+            preference_scores_df,
+            png_dir / f"{prefix}_preference_radar_vs_benchmark.png",
             benchmark_label=config.benchmark_ticker,
         )
     if final_feature_df is not None and not final_feature_df.empty:
