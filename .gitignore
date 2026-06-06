@@ -4,6 +4,12 @@ __pycache__/
 .env.local
 active_preference/.env
 
+# 應用程式打包產物（PyInstaller）；exe 由 app/build_exe.py 在本機建立，不入庫
+dist/
+build_pyinstaller/
+app/*.spec
+app/*.exe
+
 # 實驗/執行日誌（集中於 logs/；functions.py 每次執行寫一個時間戳檔）
 *.log
 logs/
