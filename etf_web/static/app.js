@@ -186,22 +186,89 @@ async function pollStatus() {
   }
 }
 
-// ========== ③ 結果呈現 ==========
+// ========== ③ 結果呈現（敘事式儀表板）==========
+function fmt(v, unit) { return (v == null || isNaN(v)) ? "—" : (v.toFixed(unit === "%0" ? 0 : 2) + (unit && unit !== "" && unit !== "x" ? (unit === "%0" ? "%" : unit) : "")); }
+
+function statCard(label, sysv, vtv, betterHigh, unit, hero) {
+  let cls = hero ? "stat-card hero" : "stat-card";
+  if (!hero && vtv != null && sysv != null) cls += (betterHigh ? sysv > vtv : sysv < vtv) ? " good" : " bad";
+  const cmp = (!hero && vtv != null) ? `VT ${fmt(vtv, unit)}` : (hero ? "（事後偏好分數勝 VT 期數%）" : "");
+  return `<div class="${cls}"><div class="k">${esc(label)}</div><div class="v">${fmt(sysv, unit)}</div><div class="cmp">${esc(cmp)}</div></div>`;
+}
+
+function renderSummary(m) {
+  const box = $("dash-summary");
+  if (!m || !m.system) { box.innerHTML = `<p class="muted">本次未產生回測摘要。</p>`; return; }
+  const s = m.system, v = m.vt || {};
+  box.innerHTML =
+    statCard("偏好勝率 win_VT", m.win_vt, null, true, "%0", true) +
+    statCard("年化報酬 CAGR", s.cagr, v.cagr, true, "%") +
+    statCard("年化波動", s.vol, v.vol, false, "%") +
+    statCard("Sharpe", s.sharpe, v.sharpe, true, "") +
+    statCard("最大回撤 MaxDD", s.mdd, v.mdd, true, "%");
+}
+
+function renderPrefBars(weights) {
+  const box = $("dash-pref-bars");
+  if (!weights || !weights.length) { box.innerHTML = ""; return; }
+  const max = Math.max(...weights.map(w => w.weight), 0.0001);
+  const sorted = [...weights].sort((a, b) => b.weight - a.weight);
+  box.innerHTML = sorted.map((w, i) => `
+    <div class="bar-row">
+      <div class="bar-label ${i === 0 ? "top" : ""}">${esc(w.label)}</div>
+      <div class="track"><div class="fill ${i === 0 ? "top" : ""}" style="width:${(w.weight / max) * 100}%"></div></div>
+      <div class="bar-val ${i === 0 ? "top" : ""}">${w.weight.toFixed(3)}</div>
+    </div>`).join("");
+}
+
+function renderHoldings(holdings) {
+  const box = $("dash-holdings");
+  if (!holdings || !holdings.length) { box.innerHTML = `<p class="muted">未找到推薦投組權重。</p>`; return; }
+  const max = Math.max(...holdings.map(h => h.weight), 0.0001);
+  box.innerHTML = holdings.map(h => `
+    <div class="hold-row">
+      <div class="hold-etf">${esc(h.etf)}</div>
+      <div class="hold-track"><div class="hold-fill" style="width:${(h.weight / max) * 100}%"></div></div>
+      <div class="hold-w">${h.weight.toFixed(1)}%</div>
+    </div>`).join("");
+}
+
+function imgBlock(url, caption) {
+  if (!url) return "";
+  return `<figure class="fig"><a href="${url}" target="_blank"><img loading="lazy" src="${url}" alt="${esc(caption)}"></a><figcaption>${esc(caption)}</figcaption></figure>`;
+}
+
+function renderBacktest(fm) {
+  const box = $("dash-backtest");
+  const parts = [
+    imgBlock(fm.nav, "淨值曲線（各策略 vs VT/VOO）"),
+    imgBlock(fm.metrics_comparison, "關鍵指標對照（vs VT）"),
+    imgBlock(fm.backtest_radar, "偏好維度雷達：系統 vs VT"),
+    imgBlock(fm.v6, "偏好分數樣本外勝率時序（V-6）"),
+  ].filter(Boolean).join("");
+  box.innerHTML = parts || `<p class="muted">本次未產生回測圖。</p>`;
+}
+
 async function loadResults() {
   const r = await getJSON("/api/results");
-  $("results-dir").textContent = r.user_dir ? ("· " + r.user_dir) : "";
+  $("results-dir").textContent = r.user_dir ? ("· " + r.user_dir.split(/[\\/]/).pop()) : "";
+  const d = r.dashboard || {};
+  renderSummary(d.metrics);
+  renderPrefBars(d.weights);
+  $("dash-main-radar").innerHTML = imgBlock((d.figures_map || {}).main_radar, "主系統偏好雷達（推薦投組）");
+  renderHoldings(d.holdings);
+  renderBacktest(d.figures_map || {});
+
+  // ④ 完整明細（收合）
   const byGroup = {};
   (r.figures || []).forEach(f => { (byGroup[f.group] = byGroup[f.group] || []).push(f); });
   let html = "";
   Object.keys(byGroup).sort().forEach(g => {
     html += `<div class="fig-group"><div class="fig-group-title">${esc(g)}</div><div class="fig-grid">`;
-    byGroup[g].forEach(f => {
-      html += `<figure class="fig"><a href="${f.url}" target="_blank"><img loading="lazy" src="${f.url}" alt="${esc(f.name)}"></a>
-               <figcaption>${esc(f.name)}</figcaption></figure>`;
-    });
+    byGroup[g].forEach(f => { html += imgBlock(f.url, f.name); });
     html += `</div></div>`;
   });
-  $("figures").innerHTML = html || `<p class="muted">沒有找到圖檔。</p>`;
+  $("figures").innerHTML = html || `<p class="muted">沒有其他圖檔。</p>`;
   $("reports").innerHTML = (r.reports || []).map(rep =>
     `<details class="report"><summary>${esc(rep.group)}/${esc(rep.name)}</summary><pre>${esc(rep.text)}</pre></details>`
   ).join("") || `<p class="muted">沒有找到報表。</p>`;
@@ -216,10 +283,6 @@ function bind() {
   names.forEach((s, i) => {
     $("stepbar-" + (i + 1)).onclick = () => { if (reached[s]) showStage(s); };
   });
-  $("tab-fig").onclick = () => { $("view-fig").hidden=false; $("view-rep").hidden=true;
-    $("tab-fig").classList.add("active"); $("tab-rep").classList.remove("active"); };
-  $("tab-rep").onclick = () => { $("view-fig").hidden=true; $("view-rep").hidden=false;
-    $("tab-rep").classList.add("active"); $("tab-fig").classList.remove("active"); };
 }
 
 bind();

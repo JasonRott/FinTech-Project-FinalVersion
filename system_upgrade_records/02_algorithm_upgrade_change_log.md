@@ -1039,6 +1039,19 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - **★新增 `_plot_backtest_preference_radar`★**（backtest_engine，診斷層、不碰最佳化）：9 維事後偏好子分數的回測期間平均，**系統(紅) vs VT(藍)** 雷達；用修正後共同 MaxDD 尺度，故各維公平。已接進 `_write_unified_backtest_report`（檔名 `{prefix}_preference_radar_vs_benchmark.png`，落 03_performance_figures）→ 未來每次回測自動產生；並用既有 7 showcase 的 preference_scores.csv 補生成 7 張。
 - 註：`結果頁版面（results presentation）`待與使用者討論後再改；本次只加圖、未動結果頁佈局。
 
+## 2026-06-06：ETF 網頁結果頁改為「敘事式儀表板」（使用者選定方向）
+
+狀態：完成（後端結構化資料 + 前端儀表板）。非 optimizer 改動。
+
+- **後端 `etf_web/app.py`**：`/api/results` 新增 `dashboard` 結構化資料 —— 由本次 `user_dir` 解析：
+  - `metrics`：系統(Preference_Driven) vs VT 的 CAGR/波動/Sharpe/MaxDD（讀 `backtest_q_summary.csv`）+ `win_vt`（讀 `backtest_q_preference_scores.csv` 算 Portfolio>Benchmark 期數%）。
+  - `weights`：9 維偏好權重（讀本次全域 `json/stage2_ahp_global_weights.json`）。
+  - `holdings`：推薦投組持股（讀 `02_portfolio/{case}_weights.csv` 的「偏好組合 Weight (%)」）。
+  - `figures_map`：依檔名挑出關鍵圖（nav / metrics_comparison / preference_radar_vs_benchmark / V-6 / 主系統雷達 / 前緣 / 回撤）；明細區 `figures[]` 自動排除已上版的關鍵圖避免重複。
+  - 修：`app.py` 原本未 `import json`（`json_loads_safe` 會 NameError 被吞→權重全 0）→ 已補 `import json` / `import csv`。
+- **前端**：結果頁改為由上而下 —— ① 摘要大數字卡（win_VT hero + CAGR/波動/Sharpe/MaxDD，系統值大、VT 小字、優於 VT 綠/劣紅）② 你的偏好（9 維長條 + 主系統雷達）③ 推薦投組（持股權重長條）④ 回測 vs VT（NAV + 對照長條 + 偏好雷達 + V-6）⑤ 完整圖表/報表（收合 `<details>`）。移除舊 tab。
+- 驗證：test client 對 showcase income 夾 → metrics（CAGR 11.94 vs VT 14.32、win_VT 100）、weights sum=1、holdings（JEPI 40/SCHY 37.5/SCHD 22.5）、8 張關鍵圖全中、明細 13 圖 3 報表；GET / 200、JS/CSS 括號平衡。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

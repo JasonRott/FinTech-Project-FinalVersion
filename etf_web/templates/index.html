@@ -71,17 +71,39 @@
       </div>
     </section>
 
-    <!-- ③ 結果呈現 -->
+    <!-- ③ 結果呈現（敘事式儀表板）-->
     <section class="stage" id="stage-results" hidden>
-      <div class="panel">
-        <h3>分析結果 <span id="results-dir" class="muted"></span></h3>
-        <div class="tabbar">
-          <button class="tab active" id="tab-fig">📊 圖表</button>
-          <button class="tab" id="tab-rep">📄 報表</button>
+      <div class="panel dash">
+        <div class="dash-scroll">
+          <div class="dash-head">分析結果 <span id="results-dir" class="muted"></span></div>
+          <div id="dash-summary" class="dash-cards"></div>
+
+          <div class="dash-2col">
+            <div class="dash-block">
+              <div class="dash-title">① 你的偏好</div>
+              <div id="dash-pref-bars" class="dash-bars"></div>
+              <div id="dash-main-radar" class="dash-img" style="margin-top:10px"></div>
+            </div>
+            <div class="dash-block">
+              <div class="dash-title">② 推薦投組（偏好組合權重）</div>
+              <div id="dash-holdings"></div>
+            </div>
+          </div>
+
+          <div class="dash-block">
+            <div class="dash-title">③ 回測表現 vs VT</div>
+            <div id="dash-backtest" class="fig-grid"></div>
+          </div>
+
+          <details id="dash-detail" class="dash-block">
+            <summary class="dash-title" style="cursor:pointer">④ 完整圖表與報表（點開）</summary>
+            <div style="margin-top:10px">
+              <div id="figures" class="figures"></div>
+              <div id="reports" style="margin-top:14px"></div>
+            </div>
+          </details>
         </div>
-        <div id="view-fig" class="view"><div id="figures" class="figures"></div></div>
-        <div id="view-rep" class="view" hidden><div id="reports"></div></div>
-        <div class="row"><button class="btn-ghost" id="restart">重新開始</button></div>
+        <div class="dash-footer"><button class="btn-ghost" id="restart">重新開始</button></div>
       </div>
     </section>
   </main>

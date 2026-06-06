@@ -98,12 +98,31 @@ select{background:#fbfdff;color:var(--txt);border:1px solid var(--line);border-r
 .run-log{flex:1 1 auto;min-height:0;background:#0f1b2d;border:1px solid #1e2c44;border-radius:9px;padding:12px;margin-top:12px;
   overflow:auto;font-family:ui-monospace,Consolas,monospace;font-size:12px;white-space:pre-wrap;color:#cfe0f2}
 
-/* ③ 結果 */
+/* ③ 結果（敘事式儀表板）*/
 #stage-results .panel{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
-.tabbar{display:flex;gap:8px;margin:6px 0 12px;flex:0 0 auto}
-.tab{background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 14px;cursor:pointer;font:inherit}
-.tab.active{color:var(--txt);border-color:var(--accent);background:#fff}
-.view{flex:1 1 auto;min-height:0;overflow:auto}
+.dash-scroll{flex:1 1 auto;min-height:0;overflow:auto;padding-right:6px}
+.dash-footer{flex:0 0 auto;padding-top:10px;border-top:1px solid var(--line);margin-top:8px}
+.dash-head{font-size:18px;font-weight:600;color:#0f2a5e;margin-bottom:12px}
+.dash-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.stat-card{background:linear-gradient(160deg,#ffffff,#f3f8ff);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat-card .k{font-size:12px;color:var(--muted)}
+.stat-card .v{font-size:24px;font-weight:700;margin-top:2px;color:#0f2a5e}
+.stat-card .cmp{font-size:11px;color:var(--muted);margin-top:3px}
+.stat-card.good .v{color:var(--accent2)}
+.stat-card.bad .v{color:var(--red)}
+.stat-card.hero{background:linear-gradient(160deg,#eaf3ff,#e7fbef);border-color:#bcd9ff}
+.stat-card.hero .v{color:var(--accent)}
+.dash-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+@media(max-width:900px){.dash-2col{grid-template-columns:1fr}}
+.dash-block{margin-bottom:18px}
+.dash-title{font-size:14px;font-weight:600;color:#0f2a5e;border-left:3px solid var(--accent);padding-left:8px;margin-bottom:10px}
+.hold-row{display:grid;grid-template-columns:64px 1fr 52px;gap:8px;align-items:center;margin:6px 0}
+.hold-etf{font-weight:600;font-size:13px;color:#0f2a5e}
+.hold-track{position:relative;height:14px;background:var(--panel2);border-radius:7px;overflow:hidden}
+.hold-fill{position:absolute;top:0;bottom:0;left:0;background:linear-gradient(90deg,var(--accent),#60a5fa);border-radius:7px}
+.hold-w{font-size:12px;text-align:right;color:var(--muted)}
+.dash-img img{width:100%;border-radius:8px;border:1px solid var(--line);background:#fff}
+.dash-img figcaption{font-size:11px;color:var(--muted);margin-top:4px}
 .fig-group{margin-bottom:20px}
 .fig-group-title{font-size:13px;color:var(--muted);margin-bottom:8px;border-left:3px solid var(--accent);padding-left:8px}
 .fig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}

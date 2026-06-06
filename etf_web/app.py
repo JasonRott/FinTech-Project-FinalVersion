@@ -23,6 +23,8 @@ API：
 """
 from __future__ import annotations
 
+import csv
+import json
 import os
 import sys
 import threading
@@ -235,20 +237,134 @@ def api_status():
                     "error": _RUN["error"]})
 
 
+_DIM_ORDER = ["Return_CAGR", "Return_Div", "Risk_Vol", "Risk_MaxDD", "Cost_ExpRatio",
+              "Liq_Volume", "Liq_AUM", "Div_Score", "FinBERT_score"]
+
+
+def _csv_rows(path):
+    try:
+        with open(path, encoding="utf-8-sig", newline="") as f:
+            return list(csv.DictReader(f))
+    except Exception:
+        return []
+
+
+def _num(x):
+    try:
+        return float(x)
+    except (TypeError, ValueError):
+        return None
+
+
+def _dashboard_data(ud):
+    """從本次 user_dir 蒐集敘事式儀表板要的結構化資料（數字/權重/持股/關鍵圖）。"""
+    out = {"metrics": None, "weights": [], "holdings": [], "figures_map": {}, "key_urls": []}
+    root = str(_USER_RESULTS_ROOT)
+    png_by_name, summary_p, pref_p, port_w = {}, None, None, None
+    for dp, _d, files in os.walk(ud):
+        for f in files:
+            full = os.path.join(dp, f)
+            low = f.lower()
+            if low.endswith(".png"):
+                png_by_name[f] = "/results-file/" + os.path.relpath(full, root).replace("\\", "/")
+            if low.endswith("backtest_q_summary.csv"):
+                summary_p = full
+            elif low.endswith("backtest_q_preference_scores.csv"):
+                pref_p = full
+            elif low.endswith("_weights.csv") and (os.sep + "02_portfolio" + os.sep) in full:
+                port_w = full
+
+    # 關鍵數字（系統 vs VT）
+    if summary_p:
+        rows = {r.get("Strategy"): r for r in _csv_rows(summary_p)}
+
+        def _m(strat):
+            r = rows.get(strat)
+            if not r:
+                return None
+            return {"cagr": _num(r.get("CAGR_%")), "vol": _num(r.get("Annualized_Volatility_%")),
+                    "sharpe": _num(r.get("Sharpe")), "mdd": _num(r.get("Max_Drawdown_%")),
+                    "cum": _num(r.get("Cumulative_Return_%"))}
+
+        sys_m, vt_m = _m("Preference_Driven"), _m("VT")
+        win_vt = None
+        if pref_p:
+            pairs = [(_num(r.get("Portfolio_Forward_Preference_Score")),
+                      _num(r.get("Benchmark_Forward_Preference_Score"))) for r in _csv_rows(pref_p)]
+            pairs = [(a, b) for a, b in pairs if a is not None and b is not None]
+            if pairs:
+                win_vt = round(sum(1 for a, b in pairs if a > b) / len(pairs) * 100, 1)
+        if sys_m:
+            out["metrics"] = {"system": sys_m, "vt": vt_m, "win_vt": win_vt}
+
+    # 9 維偏好權重（本次 run 的全域權重）
+    try:
+        gj = json_loads_safe(_PROJECT_ROOT / "json" / "stage2_ahp_global_weights.json")
+        gw = (gj or {}).get("Global_Weights", {})
+        out["weights"] = [{"dim": d, "label": SHORT.get(d, d), "weight": float(gw.get(d, 0.0) or 0.0)}
+                          for d in _DIM_ORDER]
+    except Exception:
+        pass
+
+    # 推薦投組持股（偏好組合權重 %）
+    if port_w:
+        for r in _csv_rows(port_w):
+            etf = r.get("ETF")
+            wcol = next((k for k in r.keys() if k and "偏好" in k), None)
+            w = _num(r.get(wcol)) if wcol else None
+            if etf and w and w > 0:
+                out["holdings"].append({"etf": etf, "weight": w})
+        out["holdings"].sort(key=lambda x: -x["weight"])
+
+    # 關鍵圖（依檔名挑）
+    def pick(*subs, exclude=()):
+        for name, url in png_by_name.items():
+            ln = name.lower()
+            if all(s in ln for s in subs) and not any(e in ln for e in exclude):
+                return url
+        return None
+
+    fm = {
+        "nav": pick("_nav.png"),
+        "metrics_comparison": pick("metrics_comparison"),
+        "backtest_radar": pick("preference_radar_vs_benchmark"),
+        "v6": pick("preference_score_timeseries"),
+        "v1": pick("preference_predictive_scatter"),
+        "main_radar": pick("radar_chart"),
+        "frontier": pick("efficient frontier"),
+        "drawdown": pick("_drawdown.png"),
+    }
+    out["figures_map"] = fm
+    out["key_urls"] = [u for u in fm.values() if u]
+    return out
+
+
+def json_loads_safe(path):
+    try:
+        return json.loads(Path(path).read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
 @app.get("/api/results")
 def api_results():
     ud = _RUN.get("user_dir")
-    figures, reports = [], []
+    figures, reports, dash = [], [], None
     if ud and os.path.isdir(ud):
+        dash = _dashboard_data(ud)
+        key_urls = set(dash.get("key_urls", []))
         root = str(_USER_RESULTS_ROOT)
         for dirpath, _dirs, files in os.walk(ud):
             group = os.path.relpath(dirpath, ud).replace("\\", "/")
             for f in sorted(files):
                 full = os.path.join(dirpath, f)
                 rel = os.path.relpath(full, root).replace("\\", "/")
+                url = "/results-file/" + rel
                 ext = f.lower().rsplit(".", 1)[-1] if "." in f else ""
                 if ext == "png":
-                    figures.append({"name": f, "url": "/results-file/" + rel,
+                    if url in key_urls:
+                        continue  # 關鍵圖已在儀表板上方呈現，明細區不重複
+                    figures.append({"name": f, "url": url,
                                     "group": "（根目錄）" if group == "." else group})
                 elif ext in ("txt", "md"):
                     try:
@@ -257,7 +373,7 @@ def api_results():
                         text = "(無法讀取)"
                     reports.append({"name": f, "group": group, "text": text})
     return jsonify({"state": _RUN["state"], "user_dir": ud,
-                    "figures": figures, "reports": reports})
+                    "dashboard": dash, "figures": figures, "reports": reports})
 
 
 @app.get("/results-file/<path:relpath>")
