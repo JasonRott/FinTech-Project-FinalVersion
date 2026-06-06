@@ -996,6 +996,33 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 ### 一致性（重要）
 - **未動最佳化器**：`optimize_preference_portfolio`（line ~1175）仍以候選池 `calculate_individual_maxdd_bounds(returns)` 運作，與主系統一致；`calculate_true_maxdd_score` / `calculate_individual_maxdd_bounds` 函式本體未改（只在 `calculate_portfolio_utility` 加可選參數 + 改評分呼叫端）。投組權重、NAV、夏普、最大回撤績效圖**完全不變**；只有 V-6 偏好分數比較（診斷層）變公平。
 
+## 2026-06-06：MaxDD 評分修正後 — 重跑 7 使用者、更新 §3.6 + showcase（win_VT 修正）
+
+狀態：完成。延續上一則「修 VT 抗跌退化滿分」評分修正，重生受污染的偏好分數輸出。
+
+### 查核結論（回應使用者三問）
+1. **最佳化器未受污染**（已逐行確認）：生產 C2 臂（functions.py 與 backtest_engine.py）偏好傾斜用 `User_Pref_Score`＝各維 `Norm_*`（含 `Norm_Risk_MaxDD = robust_scale(候選池全體)`，跨截面多檔），**不用**會退化的單檔 MaxDD 上下界。`calculate_individual_maxdd_bounds` 在最佳化器內傳入的恆是多檔選股池（≥5 檔），且 C2/B/BL 目標函式根本未引用該 bounds。退化僅發生在 `calculate_portfolio_utility` 對**單一標的基準**評分（診斷層）。→ 權重/NAV/Sharpe/回撤全部不受影響。
+2. **受污染需重生**：V-6（win_VT 時序）、V-1（ex-ante vs forward）、`*_preference_scores.csv`、REPORT_A 的 win_VT 數字、showcase §4/§5 勝率。**乾淨**：NAV/績效/回撤圖、`_metrics_comparison`（原始維度）、雷達（β 基礎）、權重、前緣、REPORT_A 的 CAGR/Sharpe 勝率。
+3. 範圍（使用者選）：**只修 7 使用者 + §3.6 + showcase**；§3.2/3.3/3.4 的 A/B 方法學實驗暫不重跑、不加註。
+
+### 做法
+- 一次性腳本重跑 7 個 `USER_PROFILES` 的季度回測（start 2019-06-01、lookback 3、freq Q、arm C2、fetch=max），用修正後評分；以 `run_rolling_backtest` 回傳的 `preference_scores` 重算 win_VT/win_Eq/win_MS，並以 `title_prefix={profile}_` 重畫 V-6/V-1 覆寫回 `showcase_7_profiles/main_<profile>_*/backtest_q_armC2/`，同步覆寫 `preference_scores.csv`。腳本與暫存檔（`_regen_*`、`json/_regen_pref_*`）跑完即刪。
+- **Sharpe 與原表一致（0.44–0.68）→ 證明投組完全相同，只有偏好分數變公平。**
+
+### win_VT 修正（舊 → 新；28 期）
+| profile | 舊 | 新 |
+|---|--:|--:|
+| aggressive_growth | 75.0 | **100** |
+| return_leaning | 25.0 | **89.3** |
+| cost_liquidity | 92.9 | **100** |
+| balanced | 67.9 | **100** |
+| diversified_quality | 57.1 | **100** |
+| income | 100 | **100** |
+| conservative | 75.0 | **96.4** |
+
+- 對 EqualWeight 93–100%、對 MaxSharpe 89–100%。整體：移除 VT 在抗跌的免費滿分後，**全員偏好分數穩定贏 VT（89–100%）**，結論不變但更乾淨、更有利系統。
+- 已更新：`REPORT_A §3.6`（表 win_VT 欄 + 敘述 + 評分修正註）、`showcase/對照分析報告.md`（§4 勝率表、§5 win_VT% 欄、§6/§7 敘述「全員 89–100%」、return_leaning 改「最低但仍 89%」+ 修正註）。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

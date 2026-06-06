@@ -154,18 +154,20 @@ T_{\text{growth}} = \frac{w_{\text{CAGR}}}{w_{\text{CAGR}}+w_{\text{Vol}}+w_{\te
 
 | profile | g(w) 核心 | CAGR % | 波動 % | Sharpe | MaxDD % | 贏 VT 報酬 | win_VT % |
 |---|:--:|--:|--:|--:|--:|:--:|--:|
-| aggressive_growth | beta | **17.58** | 21.59 | 0.675 | −33.33 | ✅ | 75.0 |
-| return_leaning | beta | **16.40** | 19.74 | 0.668 | −33.46 | ✅ | 25.0 |
-| cost_liquidity | market | 14.12 | 16.96 | 0.630 | −33.08 | ✗ | 92.9 |
-| balanced | market | 12.71 | 16.71 | 0.563 | −36.13 | ✗ | 67.9 |
-| diversified_quality | market | 12.67 | 16.55 | 0.564 | −33.97 | ✗ | 57.1 |
+| aggressive_growth | beta | **17.58** | 21.59 | 0.675 | −33.33 | ✅ | 100 |
+| return_leaning | beta | **16.40** | 19.74 | 0.668 | −33.46 | ✅ | 89.3 |
+| cost_liquidity | market | 14.12 | 16.96 | 0.630 | −33.08 | ✗ | 100 |
+| balanced | market | 12.71 | 16.71 | 0.563 | −36.13 | ✗ | 100 |
+| diversified_quality | market | 12.67 | 16.55 | 0.564 | −33.97 | ✗ | 100 |
 | income | minvar | 11.94 | 15.68 | 0.545 | −38.45 | ✗ | 100 |
-| conservative | minvar | 9.70 | 14.02 | 0.447 | −35.15 | ✗ | 75.0 |
+| conservative | minvar | 9.70 | 14.02 | 0.447 | −35.15 | ✗ | 96.4 |
 
 - **只有 beta 核心（報酬導向）贏 VT 絕對報酬**（17.58 / 16.40% > 14.32%，且 Sharpe 也 > VT），代價是更高波動 → 驗證 U-C2 的存在理由。
 - **market / minvar 核心換到的是風險效率與偏好滿足**，非絕對報酬（CAGR < VT，但波動全部 < VT；cost_liquidity Sharpe 0.630 > VT）。
-- **全員對 EqualWeight / MaxSharpe 偏好勝率 93–100%**。
-- 誠實張力：return_leaning 偏好自我矛盾（要報酬又要抗波動）→ win_VT 低（25%）；部分防禦型 MaxDD 反比 VT 深（壓波動 ≠ 控回撤）。
+- **全員偏好分數穩定贏 VT（win_VT 89–100%）**；對 EqualWeight 93–100%、對 MaxSharpe 89–100% → 在「滿足使用者偏好」上對三個對照組全面領先。
+- 誠實張力：return_leaning 偏好自我矛盾（要報酬又要抗波動）→ win_VT 最低（89.3%，但仍高）；部分防禦型 MaxDD 反比 VT 深（壓波動 ≠ 控回撤）。
+
+> 註（2026-06-06 評分修正）：上表 win_VT 已修正「單一標的基準（VT）在抗跌維度被退化評分強制給滿分 1.0」的瑕疵——修正前 VT 的 MaxDD 分數固定為 1.0（不論實際 −33.7% 回撤），且每個策略各用「自身持股」當尺度、本就不可比，導致系統勝率被低估（舊值 25–100%）。現所有策略（含 VT）改用「同一跨截面 MaxDD 尺度」公平比較。**投組權重、CAGR、波動、Sharpe、MaxDD 完全不變**，僅偏好分數的比較尺度被統一。
 - g(w) 行為正確：T_growth 0.85→0.14，核心自動 beta→market→minvar、風險水準同步遞減。
 
 （完整版含偏好權重表與 g(w) 參數表見 `user_results/showcase_7_profiles/對照分析報告.md`。）
