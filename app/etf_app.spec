@@ -32,6 +32,9 @@ datas += [
     (os.path.join(ROOT, "etf_preference_bundle", "assets"), "assets"),
     (os.path.join(ROOT, "requirements.txt"), "."),
     (os.path.join(ROOT, ".env.example"), "."),   # 放到 exe 旁，使用者複製成 .env 填金鑰
+    # BGE-M3 文字編碼模型（~2.2GB）一起打包 → 對方完全免下載模型；
+    # engine ENCODER_PATH = parents[1]/encoder_model/bge-m3 = _internal/encoder_model/bge-m3。
+    (os.path.join(ROOT, "etf_preference_bundle", "encoder_model", "bge-m3"), "encoder_model/bge-m3"),
 ]
 
 # 延遲匯入的專案模組（PyInstaller 靜態分析抓不到）
