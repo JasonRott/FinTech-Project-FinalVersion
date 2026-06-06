@@ -54,24 +54,43 @@ _USER_RESULTS_ROOT = _PROJECT_ROOT / "user_results"
 
 # ── 偏好問答的單一會話狀態（沿用 bundle web 的提議流程）──
 _S = {"engine": None, "continue_full": False, "continue_reask": False,
-      "last_weights": None, "last_snapshot": None, "delivered": False}
+      "last_weights": None, "last_snapshot": None, "last_trace": [], "delivered": False}
 
 # ── pipeline 背景執行狀態 ──
 _RUN = {"state": "idle", "log": [], "user_dir": None, "error": None}
 _RUN_LOCK = threading.Lock()
 
+# 引擎鎖（防止「背景預熱」與「首個請求」重複建構；接上 bundle web/app.py 的改動）
+_ENGINE_LOCK = threading.Lock()
+
 
 # =================== 偏好問答（重用 Phase3 引擎）===================
 def _engine() -> Phase3Engine:
     if _S["engine"] is None:
-        _S["engine"] = Phase3Engine()
+        with _ENGINE_LOCK:
+            if _S["engine"] is None:
+                _S["engine"] = Phase3Engine()
     return _S["engine"]
+
+
+def _warmup():
+    """背景預熱：伺服器一啟動就載 BGE-M3 + 9 個 BNN，使用者答第一題不必空等。"""
+    try:
+        _engine()
+    except Exception:
+        pass
+
+
+# 模組載入（＝伺服器啟動）即背景預熱；daemon 執行緒不阻塞 Flask 綁定 port。
+threading.Thread(target=_warmup, daemon=True, name="bge-warmup").start()
 
 
 def _finish(snap, reason):
     """問答完成出口：把 9 維權重交付到主系統 json（供 pipeline 的 web_preference 模式讀取）。"""
     weights = snap.get("Ew", {})
     _S["last_weights"], _S["last_snapshot"] = weights, snap
+    # 逐輪萃取過程 trace（每輪 μ 強度/σ 不確定性/gate/revision/Σα）—接上 bundle 的學術留存。
+    _S["last_trace"] = list(getattr(_S.get("engine"), "history", []) or [])
     try:
         deliver_weights(weights, snap)
         _S["delivered"] = True
@@ -145,6 +164,7 @@ def api_pref_choose():
 def api_pref_weights():
     return jsonify({"weights": _S.get("last_weights"),
                     "snapshot": _S.get("last_snapshot"),
+                    "trace": _S.get("last_trace", []),
                     "delivered": _S.get("delivered", False)})
 
 

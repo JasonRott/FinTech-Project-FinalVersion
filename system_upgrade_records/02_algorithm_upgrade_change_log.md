@@ -1052,6 +1052,12 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - **前端**：結果頁改為由上而下 —— ① 摘要大數字卡（win_VT hero + CAGR/波動/Sharpe/MaxDD，系統值大、VT 小字、優於 VT 綠/劣紅）② 你的偏好（9 維長條 + 主系統雷達）③ 推薦投組（持股權重長條）④ 回測 vs VT（NAV + 對照長條 + 偏好雷達 + V-6）⑤ 完整圖表/報表（收合 `<details>`）。移除舊 tab。
 - 驗證：test client 對 showcase income 夾 → metrics（CAGR 11.94 vs VT 14.32、win_VT 100）、weights sum=1、holdings（JEPI 40/SCHY 37.5/SCHD 22.5）、8 張關鍵圖全中、明細 13 圖 3 報表；GET / 200、JS/CSS 括號平衡。
 
+## 2026-06-06：接上使用者更新後的 etf_preference_bundle（warmup / lock / trace）
+
+狀態：完成。使用者更新了 bundle（engine.py 內部 `semC_gated` 證據更新 + `self.history` trace；web/app.py 背景預熱 + engine lock + last_result 帶 trace；integrate_example 回傳 trace）。**公開引擎 API 不變**（start_session/next_question/submit_answer/snapshot），故 `etf_web` 仍相容。
+- 已把三項改動接進 `etf_web/app.py`：① `_ENGINE_LOCK` 雙重檢查鎖 ② 模組載入即啟動 `_warmup()` daemon 執行緒（伺服器一開就預載 BGE-M3，首問不空等）③ `_finish` 擷取 `engine.history` 存 `_S["last_trace"]`，`/api/pref/weights` 回傳 `trace`（供學術留存/前端日後呈現）。
+- 驗證：app.py 編譯 OK；引擎含 `self.history`。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項
