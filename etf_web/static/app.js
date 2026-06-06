@@ -86,10 +86,9 @@ function renderAction(action) {
       <textarea id="ans" placeholder="請用自然語句具體回答…"></textarea>
       <div class="row">
         <button class="btn" id="send">送出</button>
-        <button class="btn-ghost" id="stop">結束問答</button>
+        <span class="hint" style="margin:0">為求結果完整可信，將完整詢問 9 個面向。</span>
       </div>`;
     $("send").onclick = submitAnswer;
-    $("stop").onclick = () => choose(lastSnap && lastSnap.phase==="reask" ? "T2":"T1", "stop");
     $("ans").focus();
     $("ans").addEventListener("keydown", e => { if (e.key==="Enter" && (e.metaKey||e.ctrlKey)) submitAnswer(); });
   } else if (action.type === "offer") {

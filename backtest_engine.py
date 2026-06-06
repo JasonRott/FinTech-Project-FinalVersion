@@ -2147,7 +2147,7 @@ def _plot_backtest_preference_radar(
         return
     # (顯示標籤, 欄位, 方向 +1=越大越好/-1=越小越好)
     specs_all = [
-        ("報酬 CAGR", "CAGR_%", +1),
+        ("報酬 (β對VT)", "Avg_Score_Return_CAGR", +1),   # 與偏好評分一致：報酬維度用 beta（系統性風險曝險），非過去 CAGR
         ("殖利率", "Avg_Raw_Dividend_Yield_%", +1),
         ("低波動", "Annualized_Volatility_%", -1),
         ("抗跌(全期MaxDD)", "Max_Drawdown_%", +1),       # 負值，越接近 0（越大）越好

@@ -107,12 +107,8 @@ def _finish(snap, reason):
 def _compute_next():
     e = _S["engine"]
     snap = e.snapshot()
-    if e.phase == "coverage" and e.should_stop() and not _S["continue_full"]:
-        return {"type": "offer", "kind": "T1", "snapshot": snap,
-                "title": "已找到您最重視的面向",
-                "message": f"系統已能排出您最重視的面向（已問 {snap['n_asked']} 題）。"
-                           f"可以就此結束；或繼續問完整 9 個面向以取得完整、可信賴的結果。",
-                "continue_label": "繼續問完整 9 面向", "stop_label": "結束（看排序）"}
+    # ★早停已停用★：使用者要求「答完 9 題前不可結束」（未答完會壓低未問維度、CI 不可信），
+    # 故略過覆蓋階段的 T1 早停提議，引擎一律問到 9 維全覆蓋為止。
     if e.all_covered() and e.t3_pending() and not _S["continue_reask"]:
         names = "、".join(SHORT.get(x, x) for x in snap["pending_conflicts"])
         return {"type": "offer", "kind": "T2", "snapshot": snap,
