@@ -1693,7 +1693,7 @@ def _plot_dea_distribution_backtest(dea_results: pd.DataFrame, output_path: Path
 def _plot_backtest_metrics_comparison(summary_df: pd.DataFrame, dimension_df: "pd.DataFrame | None",
                                       output_path: Path, title_prefix: str = "") -> None:
     """把回測關鍵數據畫成「各策略 vs VT」對照圖（取代看 CSV）：
-    累積總報酬(資本利得+股息堆疊) / 年化報酬(含息) / 平均殖利率 / 年化波動 / 夏普 / 最大回撤。
+    累積總報酬(資本利得+股息堆疊，括號標年化 CAGR) / 平均費用率 / 平均殖利率 / 年化波動 / 夏普 / 最大回撤。
     偏好組合(紅)、VT(藍)highlight，其餘對照組(灰)；股息以金色堆疊，讓收入型偏好是否被滿足一眼可見。
     """
     if summary_df is None or summary_df.empty or "Strategy" not in summary_df.columns:
@@ -1712,14 +1712,14 @@ def _plot_backtest_metrics_comparison(summary_df: pd.DataFrame, dimension_df: "p
     xs = list(range(len(order)))
     xt = [label.get(s, s) for s in order]
 
-    # 每期加權「平均殖利率」取自 dimension comparison（收入型招牌指標）
-    ydiv = None
+    # 維度層級指標（平均殖利率 / 平均費用率）取自 dimension comparison
+    dim_src = None
     if dimension_df is not None and not getattr(dimension_df, "empty", True):
         dd = dimension_df.copy()
         if "Strategy" not in dd.columns and dd.index.name == "Strategy":
             dd = dd.reset_index()
-        if "Strategy" in dd.columns and "Avg_Raw_Dividend_Yield_%" in dd.columns:
-            ydiv = dd.drop_duplicates(subset="Strategy").set_index("Strategy")
+        if "Strategy" in dd.columns:
+            dim_src = dd.drop_duplicates(subset="Strategy").set_index("Strategy")
 
     def _num(src, s, col):
         try:
@@ -1753,25 +1753,32 @@ def _plot_backtest_metrics_comparison(summary_df: pd.DataFrame, dimension_df: "p
         ax.bar(xs, dv, bottom=cg, color="#F59E0B", edgecolor="black", linewidth=0.6, label="股息(現金)")
         for i in xs:
             tot = cg[i] + dv[i]
-            ax.annotate(f"{tot:.0f}", (i, tot), ha="center", va="bottom", fontsize=8.5, fontweight="bold")
+            cagr_i = _num(df, order[i], "CAGR_%")
+            lbl = f"{tot:.0f}" + (f"\n(年化{cagr_i:.1f}%)" if cagr_i == cagr_i else "")
+            ax.annotate(lbl, (i, tot), ha="center", va="bottom", fontsize=8.5, fontweight="bold")
             if dv[i] > 4:
                 ax.annotate(f"息{dv[i]:.0f}", (i, cg[i] + dv[i] / 2), ha="center", va="center", fontsize=8)
-        ax.set_title("累積總報酬 %（資本利得＋股息）", fontsize=13, fontweight="bold")
+        ax.set_title("累積總報酬 %（資本利得＋股息；括號為年化 CAGR）", fontsize=13, fontweight="bold")
         ax.set_xticks(xs); ax.set_xticklabels(xt, rotation=18, fontsize=9)
-        ax.legend(fontsize=8, loc="upper right"); ax.margins(y=0.20)
+        ax.legend(fontsize=8, loc="upper right"); ax.margins(y=0.22)
     else:
         simple_bar(ax, "Cumulative_Return_%", "累積總報酬 %（含息）")
 
-    simple_bar(axes[1], "CAGR_%", "年化報酬率 %（CAGR，含息）")
-    if ydiv is not None:
-        simple_bar(axes[2], "Avg_Raw_Dividend_Yield_%", "平均殖利率 %（每期加權）", src=ydiv)
+    # (2) 平均費用率（取代原 CAGR 欄；CAGR 已併入累積總報酬長條的括號標籤）
+    if dim_src is not None and "Avg_Raw_Expense_Ratio_%" in dim_src.columns:
+        simple_bar(axes[1], "Avg_Raw_Expense_Ratio_%", "平均費用率 %（每期加權，越低越好）", src=dim_src)
+    else:
+        axes[1].axis("off")
+    # (3) 平均殖利率
+    if dim_src is not None and "Avg_Raw_Dividend_Yield_%" in dim_src.columns:
+        simple_bar(axes[2], "Avg_Raw_Dividend_Yield_%", "平均殖利率 %（每期加權）", src=dim_src)
     else:
         simple_bar(axes[2], "Dividend_Income_Return_%", "累積股息報酬 %")
     simple_bar(axes[3], "Annualized_Volatility_%", "年化波動率 %")
     simple_bar(axes[4], "Sharpe", "夏普值 (Sharpe)")
     simple_bar(axes[5], "Max_Drawdown_%", "最大回撤 %")
 
-    fig.suptitle(f"{title_prefix}回測績效對照（各策略 vs VT，季度再平衡）　紅=偏好組合 藍=VT 灰=對照",
+    fig.suptitle(f"{title_prefix}回測績效對照（各策略 vs VT）　紅=偏好組合 藍=VT 灰=對照",
                  fontsize=14, fontweight="bold")
     plt.tight_layout(rect=(0, 0, 1, 0.95))
     plt.savefig(output_path, dpi=300)
