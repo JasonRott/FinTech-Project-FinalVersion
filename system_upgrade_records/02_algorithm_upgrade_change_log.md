@@ -1146,6 +1146,14 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 重建並**實測**：5.0GB onedir（exe 68MB + _internal）；啟動視窗版 exe → 服務 `GET / 200`、`/static/app.js 200`、`/api/status 200`、log 無錯。
 - 依使用者要求**保留整包**於 `C:\Users\lojas\etf_build\dist\ETF偏好投組\`（OneDrive 外，避免同步）；刪除 build 中間檔僅留 dist 交付物。
 
+## 2026-06-07：修單機版「偏好問答卡住/500」——凍結時 assets 路徑錯置
+
+- 症狀：雙擊單機 exe → 網頁出來，但按範例後卡在「自動逐題作答中」。etf_app.log 顯示 `/api/pref/start` 500：`FileNotFoundError: _internal\assets\config.json`。
+- 根因：凍結時 `phase3_system` 是**頂層套件**（_internal/phase3_system），engine 的 `ASSETS=parents[1]/assets=_internal/assets`；但 spec 原本把 assets 放到 `_internal/etf_preference_bundle/assets` → 找不到。
+- 修法：`app/etf_app.spec` 把 assets 的 dest 由 `etf_preference_bundle/assets` 改為 **`assets`**（_internal 頂層）。重建後實測：`_internal/assets/config.json` 存在；`POST /api/pref/start` 回 200 並給出題目（BGE-M3 載入、assets 讀取皆正常）。
+- 桌面捷徑 `桌面/ETF 偏好投組.lnk` 指向 `C:\Users\lojas\etf_build\dist\ETF偏好投組\ETF偏好投組.exe`（重建後同路徑覆蓋）。
+- 待辦：步驟②「執行分析」（完整 pipeline）在單機 exe 由空的 csv/json 起跑，Stage 0 會重抓行情、且可能需 .env 金鑰；本機測試可把專案的 `.env`+`csv/`+`json/` 複製進 exe 資料夾，對外發佈則需處理金鑰（或僅用免金鑰資料源）。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

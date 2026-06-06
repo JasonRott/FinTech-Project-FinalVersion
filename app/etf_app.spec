@@ -27,7 +27,9 @@ for _pkg in ["torch", "sentence_transformers", "transformers", "sklearn", "scipy
 datas += [
     (os.path.join(ROOT, "etf_web", "templates"), "etf_web/templates"),
     (os.path.join(ROOT, "etf_web", "static"), "etf_web/static"),
-    (os.path.join(ROOT, "etf_preference_bundle", "assets"), "etf_preference_bundle/assets"),
+    # 凍結時 phase3_system 是頂層套件 → engine 的 ASSETS=parents[1]/assets=_internal/assets，
+    # 故 assets 要放到 _internal 頂層的 "assets"（不是 etf_preference_bundle/assets）。
+    (os.path.join(ROOT, "etf_preference_bundle", "assets"), "assets"),
     (os.path.join(ROOT, "requirements.txt"), "."),
 ]
 
