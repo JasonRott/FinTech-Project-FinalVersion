@@ -1154,6 +1154,13 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 桌面捷徑 `桌面/ETF 偏好投組.lnk` 指向 `C:\Users\lojas\etf_build\dist\ETF偏好投組\ETF偏好投組.exe`（重建後同路徑覆蓋）。
 - 待辦：步驟②「執行分析」（完整 pipeline）在單機 exe 由空的 csv/json 起跑，Stage 0 會重抓行情、且可能需 .env 金鑰；本機測試可把專案的 `.env`+`csv/`+`json/` 複製進 exe 資料夾，對外發佈則需處理金鑰（或僅用免金鑰資料源）。
 
+## 2026-06-07：單機版實測「可正常全跑」+ 載入訊息誠實化 + 他人輸入 API 金鑰方式
+
+- **檢驗結論：單機 exe 其實可正常全跑**。讀 `etf_app.log`：偏好問答→執行分析→回測全部完成（產生 `user_results/new_user_1`，19 張圖 + 報表，**0 錯誤**），結果頁也成功載入所有圖。使用者感覺「卡住」其實是**首次載入 BGE-M3 約 30–60 秒**期間「自動逐題作答中…」訊息原寫「數秒」太樂觀。
+- **UX**：`app.js` 兩處載入訊息改「（首次載入模型約需 30–60 秒，請稍候，這不是當機）」。
+- **API 金鑰（他人如何輸入）**：用到 `AV_API_KEY`(Alpha Vantage)、`FINNHUB_API_KEY`(新聞/情緒)、`GEMINI_API_KEY`(僅 Gemini 訪談模式)。**用內附快取展示時三把都可不填**（走快取 + 免金鑰 yfinance；new_user_1 即是無 .env 跑成功的）。要金鑰時：複製 `.env.example`→`.env` 放 **exe 同層**即可。`frozen_main.py` 新增「顯式 `load_dotenv(APP_HOME/.env)`」（凍結時 parameters 的 load_dotenv 不會往 exe 夾找）；`etf_app.spec` 把 `.env.example` 打包到 exe 旁；`.env.example` 補充說明 + README 增 API 金鑰段。
+- 註：以上 UX/金鑰載入需「重建單機包」才會生效；現有包已可用（展示免金鑰）。`.env.example` 已先放進現有包。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

@@ -23,6 +23,13 @@ if getattr(sys, "frozen", False):
             sys.stderr = _logf
         except Exception:
             pass
+    # 讀取 exe 旁的 .env（使用者在此填 API 金鑰 AV_API_KEY / FINNHUB_API_KEY）。
+    # 凍結時 parameters.load_dotenv() 不會往 exe 資料夾找，故在此顯式載入。
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(os.path.join(APP_HOME, ".env"))
+    except Exception:
+        pass
 
 import threading  # noqa: E402
 import time  # noqa: E402

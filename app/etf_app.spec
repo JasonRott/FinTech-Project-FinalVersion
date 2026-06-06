@@ -31,6 +31,7 @@ datas += [
     # 故 assets 要放到 _internal 頂層的 "assets"（不是 etf_preference_bundle/assets）。
     (os.path.join(ROOT, "etf_preference_bundle", "assets"), "assets"),
     (os.path.join(ROOT, "requirements.txt"), "."),
+    (os.path.join(ROOT, ".env.example"), "."),   # 放到 exe 旁，使用者複製成 .env 填金鑰
 ]
 
 # 延遲匯入的專案模組（PyInstaller 靜態分析抓不到）

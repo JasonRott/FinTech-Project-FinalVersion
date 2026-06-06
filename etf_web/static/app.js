@@ -152,7 +152,7 @@ async function startSession() {
   const philo = ($("philo") || {}).value || "";
   $("conv").innerHTML = "";   // 清掉歡迎詞，進入對話
   appendConv("a", esc(philo) || "（未填理念）", "a");
-  $("input-area").innerHTML = `<div class="hint">建立個人化先驗中…（首次載入模型可能需數秒）</div>`;
+  $("input-area").innerHTML = `<div class="hint">建立個人化先驗中…（首次載入模型約需 30–60 秒，請稍候，這不是當機）</div>`;
   const res = await api("/api/pref/start", {philosophy: philo});
   appendConv("sys", "已依您的理念建立個人化先驗。", "sys");
   renderAction(res.action);
@@ -216,7 +216,7 @@ async function runPreset(key) {
   userName = (($("uname") || {}).value || "").trim() || userName;
   $("conv").innerHTML = "";
   appendConv("a", esc(p.philosophy), "a");
-  $("input-area").innerHTML = `<div class="hint">套用範例「${esc(p.label)}」，系統自動逐題作答中…（首次載入模型可能需數秒）</div>`;
+  $("input-area").innerHTML = `<div class="hint">套用範例「${esc(p.label)}」，系統自動逐題作答中…（首次載入模型約需 30–60 秒，請稍候，這不是當機）</div>`;
   let r = await api("/api/pref/start", {philosophy: p.philosophy});
   appendConv("sys", `已套用範例「${esc(p.label)}」並建立個人化先驗，將自動回答 9 題。`, "sys");
   let action = r.action, guard = 0;
