@@ -2128,39 +2128,55 @@ def _plot_preference_score_timeseries(
 
 
 def _plot_backtest_preference_radar(
-    preference_scores_df: pd.DataFrame,
+    dimension_df: pd.DataFrame,
     output_path: Path,
     benchmark_label: str = "VT",
     title_prefix: str = "",
 ) -> None:
-    """偏好維度雷達（回測）：系統(紅) vs 基準(藍)，9 維事後(forward)偏好子分數的回測期間平均。
-    一眼看出「相對使用者偏好，系統在哪些維度勝過 VT」。純診斷分數，不碰最佳化邏輯。
-    使用修正後的共同跨截面 MaxDD 尺度，故各維可公平比較。"""
-    if preference_scores_df is None or preference_scores_df.empty:
+    """實現特徵雷達（回測）：系統(紅) vs 基準(藍)，9 維用投組**實際實現的特徵**。
+    抗跌軸＝**全期最大回撤**（與摘要卡/績效圖一致，避免「每期子分數」與「全期 MaxDD」口徑矛盾）。
+    各軸跨所有策略 min-max 正規化（越外圈＝相對越好）。純展示，不碰最佳化邏輯。"""
+    if dimension_df is None or dimension_df.empty or "Strategy" not in dimension_df.columns:
         return
-    dims = [
-        ("Score_Return_CAGR", "報酬(β)"), ("Score_Return_Div", "股息"),
-        ("Score_Risk_Vol", "低波動"), ("Score_Risk_MaxDD", "抗跌"),
-        ("Score_Cost", "低成本"), ("Score_Liq_Volume", "成交量"),
-        ("Score_Liq_AUM", "基金規模"), ("Score_Div_Score", "分散"),
-        ("Score_FinBERT", "情緒"),
+    # (顯示標籤, 欄位, 方向 +1=越大越好/-1=越小越好)
+    specs_all = [
+        ("報酬 CAGR", "CAGR_%", +1),
+        ("殖利率", "Avg_Raw_Dividend_Yield_%", +1),
+        ("低波動", "Annualized_Volatility_%", -1),
+        ("抗跌(全期MaxDD)", "Max_Drawdown_%", +1),       # 負值，越接近 0（越大）越好
+        ("低成本", "Avg_Raw_Expense_Ratio_%", -1),
+        ("成交量", "Avg_Raw_Liquidity_Volume_M", +1),
+        ("基金規模", "Avg_Raw_Liquidity_AUM_B", +1),
+        ("分散(低HHI)", "Avg_Raw_Sector_HHI", -1),
+        ("情緒", "Avg_Raw_FinBERT_Score", +1),
     ]
-
-    def _means(role_prefix):
-        vals = []
-        for key, _lab in dims:
-            col = f"{role_prefix}_{key}"
-            if col not in preference_scores_df.columns:
-                return None
-            vals.append(float(pd.to_numeric(preference_scores_df[col], errors="coerce").mean()))
-        return vals
-
-    sys_vals = _means("Portfolio_Forward")
-    vt_vals = _means("Benchmark_Forward")
-    if sys_vals is None or vt_vals is None:
+    specs = [(lab, col, d) for lab, col, d in specs_all if col in dimension_df.columns]
+    if not specs:
+        return
+    df = dimension_df.drop_duplicates(subset="Strategy").set_index("Strategy")
+    sys_name = "Preference_Driven"
+    if sys_name not in df.index or benchmark_label not in df.index:
         return
 
-    labels = [lab for _k, lab in dims]
+    def _scaler(col, direction):
+        s = pd.to_numeric(df[col], errors="coerce")
+        vmin, vmax = float(s.min()), float(s.max())
+
+        def sc(v):
+            v = pd.to_numeric(v, errors="coerce")
+            if pd.isna(v) or vmax <= vmin:
+                return 0.5
+            t = (float(v) - vmin) / (vmax - vmin)   # 值越大 → 1
+            return t if direction > 0 else (1.0 - t)
+        return sc
+
+    sys_vals, vt_vals = [], []
+    for lab, col, d in specs:
+        f = _scaler(col, d)
+        sys_vals.append(max(f(df.loc[sys_name, col]), 0.04))   # 下限 0.04，最差者仍可見
+        vt_vals.append(max(f(df.loc[benchmark_label, col]), 0.04))
+
+    labels = [lab for lab, _c, _d in specs]
     angles = np.linspace(0, 2 * np.pi, len(labels), endpoint=False).tolist()
     angles += angles[:1]
     sys_p = sys_vals + sys_vals[:1]
@@ -2186,8 +2202,8 @@ def _plot_backtest_preference_radar(
     ax.plot(angles, sys_p, color="crimson", linewidth=2.4, label="System (Preference-Driven)")
     ax.fill(angles, sys_p, color="crimson", alpha=0.18)
     ax.set_title(
-        f"{title_prefix}偏好維度雷達：系統 vs {benchmark_label}\n"
-        f"（回測期間平均事後偏好子分數，越外圈越符合該維度）",
+        f"{title_prefix}實現特徵雷達：系統 vs {benchmark_label}\n"
+        f"（投組實際實現特徵；跨策略相對位置，越外圈越好；抗跌＝全期最大回撤）",
         fontsize=12, pad=24,
     )
     ax.legend(loc="upper right", bbox_to_anchor=(1.18, 1.12), fontsize=10)
@@ -2443,7 +2459,7 @@ def _write_unified_backtest_report(
             benchmark_label=config.benchmark_ticker,
         )
         _plot_backtest_preference_radar(
-            preference_scores_df,
+            dimension_comparison_df,
             png_dir / f"{prefix}_preference_radar_vs_benchmark.png",
             benchmark_label=config.benchmark_ticker,
         )

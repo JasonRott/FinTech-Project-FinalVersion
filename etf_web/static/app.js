@@ -243,7 +243,7 @@ function renderBacktest(fm) {
   const parts = [
     imgBlock(fm.nav, "淨值曲線（各策略 vs VT/VOO）"),
     imgBlock(fm.metrics_comparison, "關鍵指標對照（vs VT）"),
-    imgBlock(fm.backtest_radar, "偏好維度雷達：系統 vs VT"),
+    imgBlock(fm.backtest_radar, "實現特徵雷達：系統 vs VT（抗跌＝全期最大回撤，與上方一致）"),
     imgBlock(fm.v6, "偏好分數樣本外勝率時序（V-6）"),
   ].filter(Boolean).join("");
   box.innerHTML = parts || `<p class="muted">本次未產生回測圖。</p>`;

@@ -1058,6 +1058,13 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 已把三項改動接進 `etf_web/app.py`：① `_ENGINE_LOCK` 雙重檢查鎖 ② 模組載入即啟動 `_warmup()` daemon 執行緒（伺服器一開就預載 BGE-M3，首問不空等）③ `_finish` 擷取 `engine.history` 存 `_S["last_trace"]`，`/api/pref/weights` 回傳 `trace`（供學術留存/前端日後呈現）。
 - 驗證：app.py 編譯 OK；引擎含 `self.history`。
 
+## 2026-06-06：回測雷達改「實現特徵雷達」（修抗跌口徑矛盾，使用者確認）
+
+狀態：完成。**問題**：原雷達抗跌軸用「每期 forward 子分數平均」（income System 0.911 > VT 0.787，96% 期勝），但摘要/績效圖的抗跌是「**全期最大回撤**」（income System −38.45% 比 VT −33.72% 深）→ 雷達說系統贏、頭條說系統輸，口徑矛盾。
+- **修法（使用者選「實現特徵雷達」）**：`_plot_backtest_preference_radar` 改吃 `dimension_comparison_df`，9 軸全用投組**實際實現特徵**：CAGR_%、Avg_Raw_Dividend_Yield_%、Annualized_Volatility_%(反向)、**Max_Drawdown_%(全期)**、Avg_Raw_Expense_Ratio_%(反向)、Avg_Raw_Liquidity_Volume_M、Avg_Raw_Liquidity_AUM_B、Avg_Raw_Sector_HHI(反向)、Avg_Raw_FinBERT_Score；跨所有策略 min-max 正規化（下限 0.04），畫 System(紅) vs VT(藍)。標題改「實現特徵雷達…抗跌＝全期最大回撤」。
+- 結果：income 雷達抗跌 VT 在外（系統較深、輸）→ 與頭條/§5 一致；殖利率/低波動/分散 系統明顯在外（income 強項）。各 profile 重生 7 張。
+- 接點不變：仍輸出 `{prefix}_preference_radar_vs_benchmark.png`，dashboard `figures_map` 照抓；前端 caption 改「實現特徵雷達…」。win_VT（偏好分數）仍由 V-6 與摘要卡呈現，與本雷達各司其職。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項
