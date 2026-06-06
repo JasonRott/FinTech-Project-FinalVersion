@@ -7,6 +7,16 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+  <!-- 載入閘門：模型全部就緒前停在這頁，不讓使用者輸入 -->
+  <div id="loading" class="loading-screen">
+    <div class="loading-card">
+      <div class="loading-spinner"></div>
+      <div class="loading-title">正在載入模型，請稍候…</div>
+      <div class="loading-sub">首次啟動需載入偏好引擎（BGE-M3 ＋ 9 個 1D BNN），約 30–60 秒。<br>全部就緒後就會自動進入，即可開始輸入。</div>
+      <div id="loading-status" class="loading-status">準備中…</div>
+    </div>
+  </div>
+
   <header>
     <div class="header-inner">
       <button id="app-quit" class="quit-btn" title="關閉伺服器並結束程式">✕ 結束程式</button>

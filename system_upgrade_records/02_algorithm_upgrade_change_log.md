@@ -1175,6 +1175,14 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 前端：`app.js` 啟動心跳 `setInterval(ping,5000)`；header 加「✕ 結束程式」鈕 → 確認後 `POST /api/shutdown` 即時關閉並顯示「已結束程式，可關閉分頁」。`style.css` 加 `.quit-btn`。
 - 驗證：路由 `/api/ping`、`/api/shutdown` 註冊；`GET /api/ping`→{ok:true}；JS/CSS 括號平衡、心跳/鈕皆在。需重建單機包生效。
 
+## 2026-06-07：新增「載入閘門」(模型就緒前停在等待頁) + 修打包腳本編碼
+
+- **載入閘門（使用者要求）**：第一次進入先停在全螢幕「正在載入模型…」等待頁(spinner + 已等待秒數),輪詢 `/api/ready` 直到模型(BGE-M3+9 BNN)就緒才放使用者進偏好問答。徹底解決「按下去卡 30–60 秒像當機」。
+  - 後端 `etf_web/app.py`：`_S["engine_ready"]`（`_engine()` 建好引擎後設 True）+ `GET /api/ready` 回 `{ready}`。
+  - 前端：`index.html` 加 `#loading` 覆蓋層；`app.js` `startupGate()` 輪詢 ready→隱藏覆蓋層→`initPref()`；`style.css` 加 `.loading-screen/.loading-spinner` 等。
+- **打包腳本修復**：`app/打包單機版.ps1` 先前因 PS 5.1 解碼 UTF-8(無 BOM)的中文而 parse error → 內容改 ASCII 訊息 + **存成 UTF-8 with BOM**，PS 5.1 可正確讀。
+- 需重建單機包使閘門生效。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

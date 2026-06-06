@@ -433,5 +433,25 @@ function bind() {
   };
 }
 
+// 載入閘門：等模型就緒（/api/ready）再放使用者進偏好問答
+async function startupGate() {
+  const ov = $("loading");
+  let waited = 0;
+  const poll = async () => {
+    let ready = false;
+    try { ready = !!(await getJSON("/api/ready")).ready; } catch (e) {}
+    if (ready) {
+      if (ov) ov.style.display = "none";
+      initPref();
+      return;
+    }
+    waited += 2;
+    const st = $("loading-status");
+    if (st) st.textContent = `載入中…（已等待 ${waited} 秒，首次約需 30–60 秒）`;
+    setTimeout(poll, 2000);
+  };
+  poll();
+}
+
 bind();
-initPref();
+startupGate();

@@ -14,6 +14,19 @@ body{margin:0;overflow:hidden;display:flex;flex-direction:column;color:var(--txt
 @keyframes bgshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @media (prefers-reduced-motion: reduce){body{animation:none}}
 
+/* 載入閘門（模型就緒前的等待頁）*/
+.loading-screen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(125deg,#cfe2ff 0%,#cdf3ff 22%,#e6d8ff 46%,#ccf7e2 70%,#ffe7cf 100%);
+  background-size:400% 400%;animation:bgshift 18s ease-in-out infinite}
+.loading-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:36px 44px;
+  box-shadow:0 12px 40px rgba(30,50,90,.15);text-align:center;max-width:540px}
+.loading-spinner{width:56px;height:56px;margin:0 auto 18px;border:6px solid #dbeafe;border-top-color:var(--accent);
+  border-radius:50%;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-size:22px;font-weight:700;color:#0f2a5e;margin-bottom:10px}
+.loading-sub{font-size:15px;color:var(--muted);line-height:1.75}
+.loading-status{margin-top:14px;font-size:14px;color:var(--accent);font-weight:600}
+
 header{flex:0 0 auto;background:rgba(255,255,255,0.55);border-bottom:1px solid var(--line);backdrop-filter:blur(4px)}
 .header-inner{max-width:1760px;margin:0 auto;padding:10px 22px;position:relative}
 .quit-btn{position:absolute;top:12px;right:22px;background:#fff;color:var(--red);border:1px solid #f3c6c6;

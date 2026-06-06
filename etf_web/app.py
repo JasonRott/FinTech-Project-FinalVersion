@@ -63,7 +63,8 @@ _USER_RESULTS_ROOT = _PROJECT_ROOT / "user_results"
 
 # ── 偏好問答的單一會話狀態（沿用 bundle web 的提議流程）──
 _S = {"engine": None, "continue_full": False, "continue_reask": False,
-      "last_weights": None, "last_snapshot": None, "last_trace": [], "delivered": False}
+      "last_weights": None, "last_snapshot": None, "last_trace": [], "delivered": False,
+      "engine_ready": False}
 
 # ── pipeline 背景執行狀態 ──
 _RUN = {"state": "idle", "log": [], "user_dir": None, "error": None}
@@ -79,6 +80,7 @@ def _engine() -> Phase3Engine:
         with _ENGINE_LOCK:
             if _S["engine"] is None:
                 _S["engine"] = Phase3Engine()
+    _S["engine_ready"] = True   # 模型（BGE-M3 + 9 BNN）已載入，前端載入閘門可放行
     return _S["engine"]
 
 
@@ -156,6 +158,13 @@ def api_ping():
     """前端心跳；更新最後活躍時間，watchdog 用它判斷分頁是否已關閉。"""
     _HEARTBEAT["last"] = time.time()
     return jsonify({"ok": True})
+
+
+@app.get("/api/ready")
+def api_ready():
+    """模型是否已載入完成（前端載入閘門用：未 ready 前不讓使用者輸入）。"""
+    _HEARTBEAT["last"] = time.time()
+    return jsonify({"ready": bool(_S.get("engine_ready"))})
 
 
 @app.post("/api/shutdown")
