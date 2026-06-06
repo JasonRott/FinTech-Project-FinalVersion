@@ -1,0 +1,93 @@
+:root{
+  --bg:#0f1216; --panel:#171c22; --panel2:#1e242c; --line:#2a323c;
+  --txt:#e6ebf0; --muted:#8a97a6; --accent:#4f8cff; --accent2:#22c55e;
+  --warn:#f59e0b; --red:#ef4444; --top:#ffd166;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",Roboto,sans-serif;font-size:15px;line-height:1.5}
+header{background:linear-gradient(180deg,#141a21,#0f1216);border-bottom:1px solid var(--line)}
+.header-inner{max-width:1180px;margin:0 auto;padding:18px 20px}
+h1{margin:0;font-size:22px}
+.sub{margin:4px 0 0;color:var(--muted);font-size:13px}
+
+.stepbar{max-width:1180px;margin:14px auto 0;padding:0 20px;display:flex;gap:10px}
+.step{flex:1;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  color:var(--muted);font-size:14px;display:flex;align-items:center;gap:8px}
+.step .num{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--panel2);
+  align-items:center;justify-content:center;font-size:12px;border:1px solid var(--line)}
+.step.active{color:var(--txt);border-color:var(--accent)}
+.step.active .num{background:var(--accent);color:#fff;border-color:var(--accent)}
+.step.done .num{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+
+main{max-width:1180px;margin:16px auto;padding:0 20px 60px}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+h3{margin:0 0 8px;font-size:17px}
+.muted{color:var(--muted);font-size:13px}
+
+/* 對話 */
+.conv-panel{display:flex;flex-direction:column;min-height:520px}
+.conv{flex:1;overflow:auto;max-height:520px;padding-right:6px}
+.msg{margin:10px 0}
+.msg .role{font-size:12px;color:var(--muted);margin-bottom:3px}
+.msg .bubble{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;display:inline-block;max-width:92%}
+.msg.a{text-align:right}.msg.a .bubble{background:#1d2937;border-color:#2c4257}
+.msg.q .bubble{background:#1a2230}
+.msg.sys .bubble{background:transparent;border-style:dashed;color:var(--muted);font-size:13px}
+.tag{font-size:11px;padding:1px 7px;border-radius:20px;margin-right:6px}
+.tag-cover{background:#23405f;color:#bcd7ff}.tag-reask{background:#5a3b14;color:#ffd9a3}
+.reason{color:var(--muted);font-size:12px;margin-top:4px}
+.input-area{border-top:1px solid var(--line);margin-top:10px;padding-top:10px}
+textarea{width:100%;min-height:74px;background:var(--panel2);color:var(--txt);border:1px solid var(--line);
+  border-radius:9px;padding:9px;resize:vertical;font:inherit}
+.row{display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;font:inherit}
+.btn:disabled{opacity:.5;cursor:default}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:9px;padding:9px 14px;cursor:pointer;font:inherit}
+.hint{color:var(--muted);font-size:12px;margin-top:8px}
+.guide{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13px;margin-bottom:10px}
+.offer{background:var(--panel2);border:1px solid var(--accent);border-radius:10px;padding:12px}
+.offer .title{font-weight:600;margin-bottom:4px}.offer .msg{font-size:13px;color:var(--muted);margin-bottom:8px}
+
+/* 信念面板 */
+.belief-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.belief-title{font-weight:600}
+.badge{font-size:12px;padding:2px 9px;border-radius:20px;background:var(--panel2);border:1px solid var(--line)}
+.badge-cover{color:#bcd7ff}.badge-reask{color:#ffd9a3}.badge-done{color:#a7f3d0;border-color:var(--accent2)}
+.sigma-wrap{margin-bottom:12px}
+.sigma-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.sigma-bar{height:7px;background:var(--panel2);border-radius:5px;overflow:hidden}
+.sigma-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s}
+.sigma-sub{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:4px}
+.bar-row{display:grid;grid-template-columns:84px 1fr 46px;gap:8px;align-items:center;margin:7px 0}
+.bar-label{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-label.top{color:var(--top)}
+.track{position:relative;height:14px;background:var(--panel2);border-radius:7px;overflow:hidden}
+.ci-band{position:absolute;top:0;bottom:0;background:rgba(79,140,255,.18)}
+.fill{position:absolute;top:0;bottom:0;left:0;background:var(--accent);border-radius:7px}
+.fill.top{background:var(--top)}
+.bar-val{font-size:12px;text-align:right;color:var(--muted)}.bar-val.top{color:var(--top)}
+.ci-note{color:var(--muted);font-size:12px;margin-top:10px}
+
+/* 執行 */
+.run-opts{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.run-opts label{font-size:14px}
+select{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:7px;padding:4px 8px;font:inherit}
+.run-log{background:#0b0e12;border:1px solid var(--line);border-radius:9px;padding:12px;margin-top:12px;
+  height:340px;overflow:auto;font-family:ui-monospace,Consolas,monospace;font-size:12px;white-space:pre-wrap;color:#bcd0e0}
+
+/* 結果 */
+.tabbar{display:flex;gap:8px;margin:6px 0 12px}
+.tab{background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 14px;cursor:pointer;font:inherit}
+.tab.active{color:var(--txt);border-color:var(--accent)}
+.fig-group{margin-bottom:20px}
+.fig-group-title{font-size:13px;color:var(--muted);margin-bottom:8px;border-left:3px solid var(--accent);padding-left:8px}
+.fig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.fig{margin:0;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:8px}
+.fig img{width:100%;border-radius:6px;background:#fff}
+.fig figcaption{font-size:11px;color:var(--muted);margin-top:6px;word-break:break-all}
+.report{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:8px 12px;margin-bottom:10px}
+.report summary{cursor:pointer;font-size:13px}
+.report pre{white-space:pre-wrap;font-size:12px;color:#bcd0e0;max-height:420px;overflow:auto;margin-top:8px}

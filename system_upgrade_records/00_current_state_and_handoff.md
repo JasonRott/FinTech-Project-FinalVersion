@@ -23,8 +23,17 @@
 - 終端版仍可用：`preference_mode="preference_engine"`（`stage2_1_preference_engine_elicitation`，引擎路徑已改指 `etf_preference_bundle`，預設答完 9 題）。
 - BGE-M3 首次自動下載 ~2.2GB（或放 `etf_preference_bundle/encoder_model/` 離線）。網頁後端需 `flask>=3.0`（已加 requirements）。
 
-### preference 模式（四選一，輸出同一 JSON）
-`main.py` 的 `preference_mode`：`"web_preference"`（網頁問答→檔案交付，**使用者目前設這個**）/ `"preference_engine"`（終端逐題 BNN）/ `"static_ahp"`（AHP 模擬 / USER_PROFILES 原型）/ `"active_bayesian"`（Gemini）。
+### ★ main.py 單一開關 RUN_MODE（一鍵切換執行方式）★
+- `main.py` 頂部 `RUN_MODE`：
+  - `"terminal"`：一鍵終端問答（→ `preference_mode="preference_engine"`，引擎在 bundle），跑完整 pipeline + 問是否回測，全程終端。**目前預設。**
+  - `"web"`：啟動 ETF 網頁 `etf_web/`（port 8050），偏好問答→執行分析→結果呈現全部在瀏覽器。
+  - `"profile"`：不問答，用 `parameters.ACTIVE_USER_PROFILE`（靜態原型/AHP）跑 pipeline。
+- 底層 `PreferenceMode`（4 種，輸出同一 JSON）：`web_preference` / `preference_engine` / `static_ahp` / `active_bayesian`。
+
+### ★ ETF 網頁版 `etf_web/`（與「語意萃取網頁」分開的整合網頁）★
+- `etf_web/app.py`（Flask，port 8050）：① 偏好問答（重用 `etf_preference_bundle` 的 `Phase3Engine`，完成時 `recommender_hook` 寫權重 json）② `/api/run` 背景跑 `run_full_pipeline(web_preference)`+`run_preference_backtest_core`、`/api/status` 輪詢 ③ `/api/results`+`/results-file/<rel>` 讀 `LAST_MAIN_USER_DIR` 的圖與報表。`run_web.py` 啟動器、`templates/index.html`、`static/{app.js,style.css}`。
+- `pipeline_stages.run_preference_backtest_core(freq, preference_file, emit)`：非互動回測核心（終端 `stage3b` 與網頁共用；不動 backtest_engine 最佳化邏輯）。
+- 需 `flask>=3.0`。**內容/版面待細定；plumbing 已驗（路由/test client/py_compile），尚未做含模型的 live 全跑。**
 
 ### 使用者結果輸出
 - 主系統每次跑 → `user_results/new_user_{n}`（n=現有最大+1，永不覆寫）；回測巢狀其中。`new_user_*` 不入庫。

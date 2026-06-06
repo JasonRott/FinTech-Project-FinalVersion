@@ -581,6 +581,78 @@ def stage3_preference_portfolio_optimization() -> None:
     _announce_stage_end("stage3", _stage3_output_hint())
 
 
+def run_preference_backtest_core(
+    rebalance_freq: str = "Q",
+    preference_file: str = "json/stage2_ahp_global_weights.json",
+    emit=print,
+) -> bool:
+    """非互動版偏好回測核心（終端 prompt 與網頁版共用）。
+
+    讀取剛產生的偏好權重檔、用生產演算法（parameters.OPTIMIZATION_ARM，預設 C2）跑滾動回測；
+    資料/視窗固定在 10 年內（OOS 7 年 + lookback 3 年），起點動態（今天往前推），
+    7 年窗湊不到足夠標的時自動退到較近起點（仍 ≤ 10 年）。回測夾巢狀進主系統本次使用者資料夾。
+
+    `emit` 為輸出函式（預設 print；網頁版可傳入把訊息送進進度緩衝區）。回測成功回傳 True。
+    """
+    from datetime import datetime
+    from backtest_engine import run_rolling_backtest, BacktestConfig
+
+    freq_map = {"M": "月度", "Q": "季度", "6M": "半年", "Y": "年度"}
+    freq = rebalance_freq if rebalance_freq in freq_map else "Q"
+
+    # 取剛剛主系統建立的 user_results/new_user_*/ 路徑，讓本次回測夾巢狀進同一個使用者資料夾。
+    try:
+        import functions as _functions
+        _user_parent = getattr(_functions, "LAST_MAIN_USER_DIR", None)
+    except Exception:
+        _user_parent = None
+
+    _now = datetime.now()
+
+    def _years_ago(n: int) -> str:
+        return f"{_now.year - n:04d}-{_now.month:02d}-01"
+
+    _common = dict(
+        end_date=None,                                   # 用到資料最新日
+        lookback_years=PROMPT_BACKTEST_LOOKBACK_YEARS,   # 最多 3 年
+        rebalance_freq=freq,                             # 使用者選
+        preference_file=preference_file,                 # ★用剛產生的使用者偏好★
+        fetch_missing_data=True,                         # 僅補「缺資料」的標的（快取夠就不抓）
+        fetch_period="max",                              # 安全網：無快取時才會真的補抓
+        user_results_parent=_user_parent,                # 巢狀於主系統本次使用者資料夾內
+    )
+    _primary_start = _years_ago(PROMPT_BACKTEST_WINDOW_YEARS)            # 7 年前
+    _candidate_starts = [_primary_start, _years_ago(5), _years_ago(3)]  # 退而求其次：仍 ≤10 年
+    _probe = BacktestConfig(start_date=_primary_start, **_common)
+    emit(f"\n啟動偏好回測：演算法={parameters.OPTIMIZATION_ARM}、再平衡={freq_map[freq]}、"
+         f"OOS 視窗={_primary_start}~最新（約 {PROMPT_BACKTEST_WINDOW_YEARS} 年）、"
+         f"lookback={_probe.lookback_years} 年 → 資料跨度上限 {PROMPT_BACKTEST_MAX_DATA_YEARS} 年、"
+         f"基準={_probe.benchmark_ticker}")
+    emit("（資料/視窗固定在 10 年內；通常直接用既有快取，缺資料才會自動補抓…）")
+    _done = False
+    for _i, _sd in enumerate(_candidate_starts):
+        cfg = BacktestConfig(start_date=_sd, **_common)
+        try:
+            run_rolling_backtest(cfg)
+            _done = True
+            if _i > 0:
+                emit(f"（提示：{_primary_start} 起點在當前快取湊不到足夠標的，"
+                     f"已自動改用較近起點 {_sd}；視窗縮短但仍在 10 年內。）")
+            emit(f"\n✅ 偏好回測完成（起點 {_sd}）。輸出在 user_results/（backtest_* 夾）"
+                 f"與 backtest_report/。")
+            break
+        except ValueError as exc:
+            if "minimum history filter" in str(exc).lower() and _i < len(_candidate_starts) - 1:
+                emit(f"⚠️ 起點 {_sd} 無足夠歷史標的，改用較近起點重試…")
+                continue
+            emit(f"⚠️ 偏好回測失敗：{exc}")
+            break
+        except Exception as exc:
+            emit(f"⚠️ 偏好回測失敗：{exc}")
+            break
+    return _done
+
+
 def stage3b_optional_preference_backtest(
     preference_file: str = "json/stage2_ahp_global_weights.json",
 ) -> None:
@@ -608,65 +680,7 @@ def stage3b_optional_preference_backtest(
     except (EOFError, KeyboardInterrupt):
         raw = ""
     freq = raw if raw in freq_map else "Q"
-
-    from datetime import datetime
-    from backtest_engine import run_rolling_backtest, BacktestConfig
-
-    # 取剛剛主系統建立的 user_results/main_*/ 路徑，讓本次回測夾巢狀進同一個使用者資料夾。
-    try:
-        import functions as _functions
-        _user_parent = getattr(_functions, "LAST_MAIN_USER_DIR", None)
-    except Exception:
-        _user_parent = None
-
-    # 資料/視窗固定在 10 年內：OOS 視窗從「7 年前」開始、lookback 3 年 → 7+3=10。
-    # 起點動態（今天往前推 N 年、取當月 1 號），隨時間滑動但跨度恆 ≤ 10 年。
-    # 與既有 ~2016 起的回測快取相符，通常不需補抓；fetch 僅作為「缺資料」時的安全網
-    #   （快取已涵蓋就不會抓；fresh clone 無快取時才會補。無論如何回測只用到 10 年資料）。
-    # 若 7 年窗在當前快取湊不到足夠標的，會自動退到較近起點（視窗縮短，仍 ≤ 10 年）。
-    _now = datetime.now()
-
-    def _years_ago(n: int) -> str:
-        return f"{_now.year - n:04d}-{_now.month:02d}-01"
-
-    _common = dict(
-        end_date=None,                                   # 用到資料最新日
-        lookback_years=PROMPT_BACKTEST_LOOKBACK_YEARS,   # 最多 3 年
-        rebalance_freq=freq,                             # 使用者選
-        preference_file=preference_file,                 # ★用剛產生的使用者偏好★
-        fetch_missing_data=True,                         # 僅補「缺資料」的標的（快取夠就不抓）
-        fetch_period="max",                              # 安全網：無快取時才會真的補抓
-        user_results_parent=_user_parent,                # 巢狀於主系統本次使用者資料夾內
-    )
-    _primary_start = _years_ago(PROMPT_BACKTEST_WINDOW_YEARS)            # 7 年前
-    _candidate_starts = [_primary_start, _years_ago(5), _years_ago(3)]  # 退而求其次：仍 ≤10 年
-    _probe = BacktestConfig(start_date=_primary_start, **_common)
-    print(f"\n啟動偏好回測：演算法={parameters.OPTIMIZATION_ARM}、再平衡={freq_map[freq]}、"
-          f"OOS 視窗={_primary_start}~最新（約 {PROMPT_BACKTEST_WINDOW_YEARS} 年）、"
-          f"lookback={_probe.lookback_years} 年 → 資料跨度上限 {PROMPT_BACKTEST_MAX_DATA_YEARS} 年、"
-          f"基準={_probe.benchmark_ticker}")
-    print("（資料/視窗固定在 10 年內；通常直接用既有快取，缺資料才會自動補抓…）")
-    _done = False
-    for _i, _sd in enumerate(_candidate_starts):
-        cfg = BacktestConfig(start_date=_sd, **_common)
-        try:
-            run_rolling_backtest(cfg)
-            _done = True
-            if _i > 0:
-                print(f"（提示：{_primary_start} 起點在當前快取湊不到足夠標的，"
-                      f"已自動改用較近起點 {_sd}；視窗縮短但仍在 10 年內。）")
-            print(f"\n✅ 偏好回測完成（起點 {_sd}）。輸出在 user_results/（backtest_* 夾）"
-                  f"與 backtest_report/。")
-            break
-        except ValueError as exc:
-            if "minimum history filter" in str(exc).lower() and _i < len(_candidate_starts) - 1:
-                print(f"⚠️ 起點 {_sd} 無足夠歷史標的，改用較近起點重試…")
-                continue
-            print(f"⚠️ 偏好回測失敗：{exc}")
-            break
-        except Exception as exc:
-            print(f"⚠️ 偏好回測失敗：{exc}")
-            break
+    run_preference_backtest_core(rebalance_freq=freq, preference_file=preference_file)
 
 
 def run_full_pipeline(config: PipelineConfig | None = None) -> None:

@@ -949,6 +949,34 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - **終端版**：`preference_mode="preference_engine"` 跑 `main.py`（在終端逐題作答，沿用 bundle 引擎）。
 - 與 `ACTIVE_USER_PROFILE`（靜態原型）獨立。**待使用者刪除舊 `preference_engine/`。**
 
+## 2026-06-06：main.py 單一開關（一鍵終端問答）+ 新增 ETF 網頁版接口 `etf_web/`
+
+狀態：完成（接口骨架 + import/路由/plumbing 實測通過；內容版面待後續細定）。非 optimizer 改動。
+
+### main.py 開關（不依賴已移除的 preference_engine）
+- 頂部單一 `RUN_MODE`：`"terminal"`（一鍵終端問答→`preference_engine` 模式，引擎在 bundle）/ `"web"`（啟動 `etf_web`）/ `"profile"`（靜態原型/AHP，不問答）。`main()` 依此分派；web 模式呼叫 `etf_web.run_web.main()` 後 return。
+
+### 回測重構（為了非互動共用，不動 backtest_engine 最佳化邏輯）
+- `pipeline_stages.py` 抽出 `run_preference_backtest_core(rebalance_freq, preference_file, emit=print)`：原 `stage3b` 的回測核心（7+3≤10 年動態起點、退階、巢狀 user dir）。`stage3b_optional_preference_backtest` 改為「prompt 詢問 y/N + 頻率 → 呼叫 core」。`emit` 可換成把訊息送進網頁進度緩衝。
+
+### 新增 `etf_web/`（ETF 網頁版，模仿語意萃取網頁）
+- `app.py`（Flask 後端，port 8050）：
+  - **① 偏好問答**：重用 `etf_preference_bundle` 的 `Phase3Engine`（與語意萃取網頁同一套，含 T1/T2 早停/重問提議流程）；完成時 `recommender_hook.deliver_weights()` 把 9 維權重寫進 `json/stage2_ahp_global_weights.json`。端點 `/api/pref/{start,answer,choose,weights}`。
+  - **② 執行分析**：`POST /api/run` 開背景執行緒跑 `run_full_pipeline(preference_mode="web_preference", backtest_prompt=False)` + `run_preference_backtest_core`；`_Tee` 把 stdout/stderr 同時導進記憶體緩衝（write 包 try/except，比終端更耐 cp950 emoji）。`GET /api/status` 輪詢進度/狀態。
+  - **③ 結果呈現**：`GET /api/results` 走訪 `functions.LAST_MAIN_USER_DIR`，列出 png（依子夾分組）與 txt/md 報表內文；`GET /results-file/<relpath>` 提供 user_results 底下檔（有路徑穿越防護）。
+- `run_web.py`（啟動器，自動開瀏覽器）、`templates/index.html`（三步驟版面：問答／執行／結果）、`static/{app.js,style.css}`（前端，深色主題，沿用信念面板樣式）、`__init__.py`。
+- **與語意萃取網頁的差異**：bundle 的 `web/` 只做偏好誘出→交付；`etf_web/` 把「偏好→跑 pipeline→看結果」整條包進同一個瀏覽器流程（main 選 web 即全程網頁）。
+
+### 驗證
+- import：`pipeline_stages`（含 `run_preference_backtest_core`/`stage2_1_web_preference_ingest`、`PreferenceMode` 含 `web_preference`）、`etf_web.app`（10 條路由全註冊）皆 OK。flask 3.1.3 已裝。
+- test client：`GET /`→200、`/api/status`→idle、`/api/results`→空、static 200、路徑穿越→404。
+- py_compile：main/run_web/app/pipeline_stages 全過。
+- **尚未做完整 live run**（偏好問答需載 BGE-M3 ~2.2GB；跑 pipeline 需數分鐘）——plumbing 已驗，內容/版面待使用者細定。
+
+### 用法
+- 終端一鍵：`RUN_MODE="terminal"` → `python main.py`（終端問答→pipeline→問是否回測）。
+- 網頁：`RUN_MODE="web"` → `python main.py`（或 `python etf_web/run_web.py`）→ http://127.0.0.1:8050 全程在瀏覽器。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

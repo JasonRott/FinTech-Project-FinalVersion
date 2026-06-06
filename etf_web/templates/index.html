@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ETF 偏好驅動投資組合 · 網頁版</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>ETF 偏好驅動投資組合</h1>
+      <p class="sub">偏好問答 → 偏好驅動最佳化 + 歷史回測 → 結果一站式呈現（接口骨架，內容待細定）</p>
+    </div>
+  </header>
+
+  <!-- 步驟列 -->
+  <div class="stepbar">
+    <div class="step active" id="stepbar-1"><span class="num">1</span> 偏好問答</div>
+    <div class="step" id="stepbar-2"><span class="num">2</span> 執行分析</div>
+    <div class="step" id="stepbar-3"><span class="num">3</span> 結果呈現</div>
+  </div>
+
+  <main>
+    <!-- ① 偏好問答 -->
+    <section class="stage" id="stage-pref">
+      <div class="grid">
+        <div class="panel conv-panel">
+          <div id="conv" class="conv"></div>
+          <div id="input-area" class="input-area"></div>
+        </div>
+        <aside class="panel belief-panel">
+          <div class="belief-head">
+            <span class="belief-title">即時偏好信念</span>
+            <span id="phase-badge" class="badge badge-cover">尚未開始</span>
+          </div>
+          <div class="sigma-wrap">
+            <div class="sigma-row"><span>證據量 Σα</span>
+              <span><b id="sigma-val">0.00</b> / τ <span id="tau-val">2.50</span></span></div>
+            <div class="sigma-bar"><div id="sigma-fill" class="sigma-fill"></div></div>
+            <div class="sigma-sub"><span id="cover-val">覆蓋 0/9</span><span id="reask-val"></span></div>
+          </div>
+          <div id="bars" class="bars"></div>
+          <div id="ci-note" class="ci-note"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ② 執行分析 -->
+    <section class="stage" id="stage-run" hidden>
+      <div class="panel">
+        <h3>執行偏好驅動分析</h3>
+        <p class="muted">將用您剛剛的偏好權重跑完整流程（Stage 0~3）並做歷史回測。首次或無快取時會抓資料，需數分鐘。</p>
+        <div class="run-opts">
+          <label><input type="checkbox" id="opt-fetch" checked> 擷取/更新市場資料（取消則只用既有快取，較快）</label>
+          <label><input type="checkbox" id="opt-backtest" checked> 跑偏好歷史回測</label>
+          <label>再平衡頻率
+            <select id="opt-freq">
+              <option value="Q" selected>季度</option>
+              <option value="M">月度（慢）</option>
+              <option value="6M">半年</option>
+              <option value="Y">年度</option>
+            </select>
+          </label>
+        </div>
+        <div class="row">
+          <button class="btn" id="run-btn">開始執行</button>
+          <span id="run-state" class="muted"></span>
+        </div>
+        <pre id="run-log" class="run-log"></pre>
+      </div>
+    </section>
+
+    <!-- ③ 結果呈現 -->
+    <section class="stage" id="stage-results" hidden>
+      <div class="panel">
+        <h3>分析結果 <span id="results-dir" class="muted"></span></h3>
+        <div class="tabbar">
+          <button class="tab active" id="tab-fig">📊 圖表</button>
+          <button class="tab" id="tab-rep">📄 報表</button>
+        </div>
+        <div id="view-fig" class="view"><div id="figures" class="figures"></div></div>
+        <div id="view-rep" class="view" hidden><div id="reports"></div></div>
+        <div class="row"><button class="btn-ghost" id="restart">重新開始</button></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
