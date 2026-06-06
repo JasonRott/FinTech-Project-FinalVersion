@@ -36,7 +36,11 @@ import traceback
 from pathlib import Path
 
 # ── 路徑設定：專案根 + etf_preference_bundle（共用偏好引擎）──
-_PROJECT_ROOT = Path(__file__).resolve().parents[1]
+# 凍結（PyInstaller 單機版）時，可寫的「專案根」＝ exe 所在資料夾（執行時會 chdir 到此）。
+if getattr(sys, "frozen", False):
+    _PROJECT_ROOT = Path(sys.executable).resolve().parent
+else:
+    _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 _BUNDLE_DIR = _PROJECT_ROOT / "etf_preference_bundle"
 for _p in (str(_PROJECT_ROOT), str(_BUNDLE_DIR)):
     if _p not in sys.path:

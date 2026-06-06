@@ -50,7 +50,13 @@ powershell -ExecutionPolicy Bypass -File app\打包成zip.ps1
 
 ---
 
-## 進階：完全免裝 Python 的單檔 exe（體積大）
-若要對方**完全不用裝 Python/套件**，需用 PyInstaller 把 `etf_web/run_web.py` 連同 torch、transformers、sentence-transformers、scipy、flask… 一起凍結。
-- 體積會到 **2–4GB**（且模型 BGE-M3/FinBERT 仍需執行時下載或一併打包），打包與除錯（hidden imports、資料檔）較繁瑣，需在你的機器上反覆測試。
-- 不建議當預設交付方式；上面的「啟動器 exe + 整包」對展示/交付已足夠。
+## 進階：完全免裝 Python 的「單機資料夾」（體積大，但對方零安裝）
+若要對方**完全不用裝 Python/套件**，用 `app/etf_app.spec`（已備妥）把整個網頁版連同 torch、transformers、sentence-transformers、scipy、flask… 一起凍結成 **onedir 資料夾**：
+```bat
+pip install pyinstaller
+:: 建議輸出到 OneDrive 以外的路徑（避免同步卡住），例如 C:\etf_build
+pyinstaller app\etf_app.spec --noconfirm --distpath C:\etf_build\dist --workpath C:\etf_build\build
+```
+產出 `C:\etf_build\dist\ETF偏好投組\`（整個資料夾，約 **3–5GB**）。把**整個資料夾**壓縮傳給對方，對方解壓後**雙擊裡面的 `ETF偏好投組.exe`** 即可，**完全不用裝 Python**。
+- 模型 BGE-M3／FinBERT 仍會在「首次執行」自動下載（需聯網一次）。
+- 體積大、且 PyInstaller 偶爾需要補 hidden import；故平常交付建議用上面的「啟動器 exe／.bat ＋ 整包 zip」（小、夠用）；這個 onedir 版適合「對方完全不能裝 Python」時。

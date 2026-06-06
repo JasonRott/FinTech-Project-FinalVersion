@@ -1128,6 +1128,17 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
   - `README_應用程式.md`：完整步驟＋「完全免裝 Python 單檔(2–4GB)」進階說明。
   - `.gitignore`：`dist/`、`build_pyinstaller/`、`app/*.spec`、`app/*.exe` 不入庫（exe 本機建置、隨 zip 傳）。
 
+## 2026-06-06：完全免裝 Python 的「單機資料夾」打包（PyInstaller onedir）— 已實測
+
+狀態：完成並**實機測過一輪**（建置成功 + 凍結 exe 實際服務頁面）。非程式邏輯改動。
+
+- 新增 `app/frozen_main.py`（凍結進入點：chdir 到 exe 資料夾、建立輸出夾、啟動 etf_web.app）+ `app/etf_app.spec`（PyInstaller onedir 規格：`collect_all` torch/transformers/sentence_transformers/sklearn/scipy/yfinance…，datas 帶 templates/static/assets/requirements，hiddenimports 補延遲匯入的專案模組；路徑全用 `SPECPATH` 絕對化避免 .spec 相對解析歧義）。
+- **凍結相容路徑**：`etf_web/app.py` 與 `etf_preference_bundle/recommender_hook.py` 在 `sys.frozen` 時把「專案根」改成 exe 所在資料夾（可寫、與輸出一致）。
+- **實測**：`pyinstaller app/etf_app.spec`（輸出到 OneDrive 外的 C:\etf_build 避免同步卡住）→ 產出 `ETF偏好投組/`（exe 68MB + _internal，**共 5.0GB**）。啟動凍結 exe → 載入 torch 等全部相依、Flask 綁 8050；由 **凍結 exe 自身的 request log** 確認它服務了 `GET / 200`、`/static/app.js 200`、`/api/status 200`（templates/static/app 在凍結環境皆正常）。→ **完全免裝 Python 可行。**
+- 測完依使用者要求**釋放空間**：刪除 C:\etf_build（5GB）與 repo 內 dist/build 暫存，保留 spec/frozen_main（recipe）供日後重建。
+- `.gitignore`：`!app/etf_app.spec`（手寫 spec 入庫；PyInstaller 自動產生的其他 .spec 仍忽略）。
+- 註：測試時為了與使用者既有的 dev server（同樣佔 8050）區隔，曾暫停其 dev server 做隔離測試；使用者可隨時重跑 `python main.py` 復原。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

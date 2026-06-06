@@ -29,8 +29,13 @@ _PREF_DIMS = [
     "Liq_Volume", "Liq_AUM", "Div_Score", "FinBERT_score",
 ]
 
-# etf_preference_bundle/ 就在主專案根目錄底下 → 上一層即專案根
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+# etf_preference_bundle/ 就在主專案根目錄底下 → 上一層即專案根。
+# 凍結（PyInstaller 單機版）時，改用 exe 所在資料夾（可寫、與主程式一致）。
+import sys as _sys
+if getattr(_sys, "frozen", False):
+    _PROJECT_ROOT = Path(_sys.executable).resolve().parent
+else:
+    _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 _MAIN_WEIGHTS_JSON = _PROJECT_ROOT / "json" / "stage2_ahp_global_weights.json"
 
 

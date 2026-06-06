@@ -8,6 +8,7 @@ active_preference/.env
 dist/
 build_pyinstaller/
 app/*.spec
+!app/etf_app.spec
 app/*.exe
 
 # 實驗/執行日誌（集中於 logs/；functions.py 每次執行寫一個時間戳檔）
