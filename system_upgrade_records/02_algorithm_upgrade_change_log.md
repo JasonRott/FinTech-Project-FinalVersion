@@ -1065,6 +1065,16 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 結果：income 雷達抗跌 VT 在外（系統較深、輸）→ 與頭條/§5 一致；殖利率/低波動/分散 系統明顯在外（income 強項）。各 profile 重生 7 張。
 - 接點不變：仍輸出 `{prefix}_preference_radar_vs_benchmark.png`，dashboard `figures_map` 照抓；前端 caption 改「實現特徵雷達…」。win_VT（偏好分數）仍由 V-6 與摘要卡呈現，與本雷達各司其職。
 
+## 2026-06-06：ETF 網頁 — 字體放大 / 每答顯示 μ+σ / 推薦投組補圖 / 回測區瘦身+圖說
+
+狀態：完成（前端 + 後端 figures_map）。非 optimizer 改動。
+
+- **#1 字體放大**：`style.css` body 15→16.5px，並同步上修 h1(25)/h3(19)/step(15.5)/對話泡泡(16)/信念列(13.5)/摘要卡值(30)/dash 標題等，整體比例更大更好讀。
+- **μ+σ 顯示（使用者已在 bundle 加 sigma）**：確認引擎 `last_turn` 已含 `mu`/`sigma`，`/api/pref/answer` 也回傳；**但 etf_web 前端原本沒顯示** → `submitAnswer` 每答一題追加系統回饋泡泡「推估強度 μ=… · 不確定性 σ=… · 相關度 gate=…」+ 離題降權/重問修正提示。
+- **#3 推薦投組補圖**：dashboard `figures_map` 加 `weight_evolution`，在「② 推薦投組」持股長條下方加「回測歷史投組權重演化」圖 + 圖說。
+- **#4 回測區瘦身 + 圖說**：`figures_map` 用 `portfolio_performance`（含淨值+回撤，**取代淨值曲線**），保留 V-6；回測區由 grid 改 **單欄較大**（`.dash-figs`/`.fig-wide`，不密集），**每張圖下方加簡短文字說明**（`FIG_CAPS`）：portfolio_performance / metrics_comparison / 實現特徵雷達 / V-6 / 權重演化 / 主系統雷達 各一段。nav/drawdown/V-1/前緣等移到「④ 完整明細」。
+- 驗證：test client GET / 200、6 張關鍵圖全中、JS/CSS 括號平衡、FIG_CAPS/figWide/σ 回饋皆在。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

@@ -344,15 +344,14 @@ def _dashboard_data(ud):
                 return url
         return None
 
+    # 只放「儀表板上會呈現」的關鍵圖；其餘（nav/drawdown/V-1/前緣/年報酬…）留到④完整明細。
     fm = {
-        "nav": pick("_nav.png"),
+        "portfolio_performance": pick("portfolio_performance"),   # 淨值 + 回撤（取代淨值曲線）
         "metrics_comparison": pick("metrics_comparison"),
         "backtest_radar": pick("preference_radar_vs_benchmark"),
         "v6": pick("preference_score_timeseries"),
-        "v1": pick("preference_predictive_scatter"),
         "main_radar": pick("radar_chart"),
-        "frontier": pick("efficient frontier"),
-        "drawdown": pick("_drawdown.png"),
+        "weight_evolution": pick("weight_evolution"),             # 回測歷史投組權重演化
     }
     out["figures_map"] = fm
     out["key_urls"] = [u for u in fm.values() if u]

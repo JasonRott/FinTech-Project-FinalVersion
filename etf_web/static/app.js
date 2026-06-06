@@ -114,6 +114,20 @@ async function submitAnswer() {
   appendConv("a", esc(text), "a");
   $("input-area").innerHTML = `<div class="hint">推論中…（本地 BNN MC-dropout）</div>`;
   const res = await api("/api/pref/answer", {answer: text});
+  // 每答一題顯示推估強度 μ 與不確定性 σ（引擎 last_turn 提供）
+  const lt = res.last_turn;
+  if (lt && lt.mu != null) {
+    let fb = `推估強度 μ=<b>${Number(lt.mu).toFixed(2)}</b> · 不確定性 σ=<b>${Number(lt.sigma).toFixed(2)}</b> · 相關度 gate=${Number(lt.gate_rel).toFixed(2)}`;
+    if (lt.gate_rel <= 0.8) fb += ` <span class="warn">⚠ 可能離題，已降權</span>`;
+    if (lt.flagged_for_reask) fb += `<br><span class="warn">↳ 與您開場理念有些出入，已記下、稍後再確認一次。</span>`;
+    if (lt.is_reask) {
+      const r = Number(lt.revision || 0);
+      const note = Math.abs(r) < 0.05 ? "與先前一致，估計穩定"
+        : (r < 0 ? `已下修此面向估計（Δ${r.toFixed(2)}）` : `已上修此面向估計（Δ+${r.toFixed(2)}）`);
+      fb += `<br>↳ 重新確認：${note}`;
+    }
+    appendConv("sys", `<div class="fb">${fb}</div>`, "sys");
+  }
   renderAction(res.action);
 }
 
@@ -238,13 +252,31 @@ function imgBlock(url, caption) {
   return `<figure class="fig"><a href="${url}" target="_blank"><img loading="lazy" src="${url}" alt="${esc(caption)}"></a><figcaption>${esc(caption)}</figcaption></figure>`;
 }
 
+// 每張關鍵圖下方的簡短說明
+const FIG_CAPS = {
+  portfolio_performance: "投組淨值與回撤（各策略 vs VT/VOO）：上圖為累積淨值成長，下圖為每日回撤（drawdown）— 可直接看出大跌時系統的回撤深度與復原速度（含最大回撤）。",
+  metrics_comparison: "關鍵指標長條對照：各策略 vs VT 的累積報酬 / 年化報酬 / 波動 / Sharpe / 最大回撤（偏好組合＝紅、VT＝藍、其餘＝灰）。",
+  backtest_radar: "實現特徵雷達：系統（紅）vs VT（藍），9 維採投組實際實現特徵、跨策略相對位置；越外圈越好，抗跌＝全期最大回撤（與上方摘要一致）。",
+  v6: "偏好分數樣本外勝率時序（V-6）：每個再平衡期，系統的事後偏好分數 vs VT / 等權 / 最大夏普；標題的 % 為系統勝過各對照組的期數比例。",
+  main_radar: "主系統偏好雷達：本次推薦投組在 9 個偏好維度上的滿足度（單一截面）。",
+  weight_evolution: "回測歷史投組權重演化：每次再平衡時各持股的權重，看投組如何隨時間調整（與你的偏好對應）。",
+};
+
+function figWide(url, title, capKey) {
+  if (!url) return "";
+  const desc = FIG_CAPS[capKey] || "";
+  return `<figure class="fig-wide"><div class="fig-wide-title">${esc(title)}</div>
+    <a href="${url}" target="_blank"><img loading="lazy" src="${url}" alt="${esc(title)}"></a>
+    <figcaption class="fig-desc">${esc(desc)}</figcaption></figure>`;
+}
+
 function renderBacktest(fm) {
   const box = $("dash-backtest");
   const parts = [
-    imgBlock(fm.nav, "淨值曲線（各策略 vs VT/VOO）"),
-    imgBlock(fm.metrics_comparison, "關鍵指標對照（vs VT）"),
-    imgBlock(fm.backtest_radar, "實現特徵雷達：系統 vs VT（抗跌＝全期最大回撤，與上方一致）"),
-    imgBlock(fm.v6, "偏好分數樣本外勝率時序（V-6）"),
+    figWide(fm.portfolio_performance, "投組淨值與回撤 vs VT/VOO", "portfolio_performance"),
+    figWide(fm.metrics_comparison, "關鍵指標對照 vs VT", "metrics_comparison"),
+    figWide(fm.backtest_radar, "實現特徵雷達：系統 vs VT", "backtest_radar"),
+    figWide(fm.v6, "偏好分數樣本外勝率（V-6）", "v6"),
   ].filter(Boolean).join("");
   box.innerHTML = parts || `<p class="muted">本次未產生回測圖。</p>`;
 }
@@ -253,11 +285,15 @@ async function loadResults() {
   const r = await getJSON("/api/results");
   $("results-dir").textContent = r.user_dir ? ("· " + r.user_dir.split(/[\\/]/).pop()) : "";
   const d = r.dashboard || {};
+  const fm = d.figures_map || {};
   renderSummary(d.metrics);
   renderPrefBars(d.weights);
-  $("dash-main-radar").innerHTML = imgBlock((d.figures_map || {}).main_radar, "主系統偏好雷達（推薦投組）");
+  $("dash-main-radar").innerHTML = figWide(fm.main_radar, "主系統偏好雷達", "main_radar");
   renderHoldings(d.holdings);
-  renderBacktest(d.figures_map || {});
+  // #3：推薦投組區補上「回測歷史投組權重演化」圖
+  $("dash-holdings").insertAdjacentHTML("beforeend",
+    `<div style="margin-top:12px">${figWide(fm.weight_evolution, "回測歷史投組權重演化", "weight_evolution")}</div>`);
+  renderBacktest(fm);
 
   // ④ 完整明細（收合）
   const byGroup = {};
