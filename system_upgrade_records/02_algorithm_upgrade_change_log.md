@@ -1161,6 +1161,13 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - **API 金鑰（他人如何輸入）**：用到 `AV_API_KEY`(Alpha Vantage)、`FINNHUB_API_KEY`(新聞/情緒)、`GEMINI_API_KEY`(僅 Gemini 訪談模式)。**用內附快取展示時三把都可不填**（走快取 + 免金鑰 yfinance；new_user_1 即是無 .env 跑成功的）。要金鑰時：複製 `.env.example`→`.env` 放 **exe 同層**即可。`frozen_main.py` 新增「顯式 `load_dotenv(APP_HOME/.env)`」（凍結時 parameters 的 load_dotenv 不會往 exe 夾找）；`etf_app.spec` 把 `.env.example` 打包到 exe 旁；`.env.example` 補充說明 + README 增 API 金鑰段。
 - 註：以上 UX/金鑰載入需「重建單機包」才會生效；現有包已可用（展示免金鑰）。`.env.example` 已先放進現有包。
 
+## 2026-06-07：重建最終單機包（含誠實訊息 + 讀 exe 旁 .env）+ 一鍵打包腳本
+
+- 依使用者要求**重建單機包**（5.1GB @ `C:\etf_build\dist\ETF偏好投組\`）。實測：boot 200、`/api/pref/start` 回題目、served app.js 含新訊息「30–60 秒…不是當機」、assets 在 `_internal/assets`、行情/情緒快取已複製、`.env.example` 置於 exe 旁。
+- PyInstaller onedir 的 datas dest "." 會落到 `_internal`，**不在 exe 旁**；故 `.env.example` 改用建置後手動複製到 bundle 根（frozen_main 讀的是 exe 旁的 .env）。
+- 新增 `app/打包單機版.ps1`：一鍵 = pyinstaller onedir + 複製 `.env.example` 到 exe 旁 + 複製 csv/json/sentiment 快取 + 清中間檔。日後重建單機包只需這一行。
+- 桌面捷徑（`桌面/ETF 偏好投組.lnk`）已指向此 exe，重建同路徑覆蓋，雙擊即用。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項
