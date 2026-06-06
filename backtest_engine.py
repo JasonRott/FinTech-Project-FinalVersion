@@ -954,10 +954,16 @@ def calculate_portfolio_utility(
     global_weights: dict[str, float],
     config: BacktestConfig,
     benchmark_returns: pd.Series | None = None,
+    maxdd_bounds: tuple[float, float] | None = None,
 ) -> dict[str, float]:
     """
     用 functions.py Stage 3 的 calc_utility 同一套邏輯計算投組偏好效用。
     回傳總分與各構面分數，方便檢查系統是否在每個偏好面向都更符合使用者需求。
+
+    `maxdd_bounds`：抗跌(MaxDD)分數的「尺度上下界」。預設 None＝沿用「本投組自身持有標的」
+    的 MaxDD 分布建尺度；但這對**單一標的基準（如 VT）會退化**（上界=下界 → 不論實際回撤多大都得滿分 1.0）。
+    因此 V-6 比較評分時，呼叫端應傳入「同一個跨截面（評估universe全體）」的共同尺度，讓各策略
+    （含 VT）站在同一把尺上比較。此參數只影響評分尺度，不影響各投組『自身』實際回撤的計算。
     """
     if weights.empty or scaled_df.empty or returns_matrix.empty:
         return {}
@@ -981,7 +987,12 @@ def calculate_portfolio_utility(
     blended = _blended_preference_weights(global_weights)
     cov_matrix = returns.cov().values * 252
     returns_values_for_true_mdd = np.nan_to_num(returns.values, nan=0.0)
-    true_mdd_lower_bound, true_mdd_upper_bound = calculate_individual_maxdd_bounds(returns)
+    # 抗跌分數尺度：優先用呼叫端提供的「共同跨截面尺度」（避免單一標的基準退化得滿分）；
+    # 未提供時才退回「本投組自身持有標的」的尺度（沿用舊行為）。
+    if maxdd_bounds is not None:
+        true_mdd_lower_bound, true_mdd_upper_bound = maxdd_bounds
+    else:
+        true_mdd_lower_bound, true_mdd_upper_bound = calculate_individual_maxdd_bounds(returns)
     w = clean_weights.values
 
     # 報酬維度評分基礎：cagr（過去 CAGR 排名，現況）或 beta（系統性風險曝險，會持續）。
@@ -1064,7 +1075,12 @@ def build_period_dimension_row(
     config: BacktestConfig,
 ) -> dict[str, float]:
     """整理單一策略在單一持有期間的偏好維度與未來評價分數。"""
-    utility = calculate_portfolio_utility(weights, evaluation_scaled, evaluation_returns, global_weights, config)
+    # 抗跌分數同樣用「評估截面共同尺度」，避免單一標的基準（VT）退化得滿分。
+    _dim_maxdd_bounds = calculate_individual_maxdd_bounds(evaluation_returns)
+    utility = calculate_portfolio_utility(
+        weights, evaluation_scaled, evaluation_returns, global_weights, config,
+        maxdd_bounds=_dim_maxdd_bounds,
+    )
     raw_metrics = calculate_raw_dimension_metrics(weights, evaluation_feature_df, evaluation_returns)
     return {
         "Strategy": strategy,
@@ -2633,7 +2649,9 @@ def run_rolling_backtest(config: BacktestConfig | None = None) -> dict[str, pd.D
                 benchmark_income_rate_parts[benchmark].append(benchmark_income_rates_i.rename(benchmark))
                 benchmark_total_return_parts[benchmark].append(benchmark_total_returns_i.rename(benchmark))
 
-        ex_ante_score = calculate_portfolio_utility(weights, scaled_df, lookback_returns, global_weights, cfg, benchmark_returns=benchmark_lookback_returns)
+        # 抗跌分數的「共同尺度」：用候選池（lookback 截面）全體個股 MaxDD 分布建尺，ex-ante 各策略共用。
+        ex_ante_maxdd_bounds = calculate_individual_maxdd_bounds(lookback_returns)
+        ex_ante_score = calculate_portfolio_utility(weights, scaled_df, lookback_returns, global_weights, cfg, benchmark_returns=benchmark_lookback_returns, maxdd_bounds=ex_ante_maxdd_bounds)
 
         # 評估下一期偏好分數時，把 benchmark 也放進同一個截面，尺度才可直接比較。
         evaluation_tickers = [
@@ -2671,6 +2689,10 @@ def run_rolling_backtest(config: BacktestConfig | None = None) -> dict[str, pd.D
             else None
         )
 
+        # ★抗跌分數「共同尺度」★：用評估截面（含 VT 等基準）全體個股 MaxDD 分布建一把尺，
+        # 讓 System / VT / EqualWeight / MaxSharpe 都站在同一尺度比較。
+        # （修正：單一標的基準若各自建尺會退化成滿分 1.0，使抗跌權重高的使用者誤判 VT 必勝。）
+        eval_maxdd_bounds = calculate_individual_maxdd_bounds(evaluation_returns)
         forward_score = calculate_portfolio_utility(
             drifted_weights,
             evaluation_scaled,
@@ -2678,6 +2700,7 @@ def run_rolling_backtest(config: BacktestConfig | None = None) -> dict[str, pd.D
             global_weights,
             cfg,
             benchmark_returns=eval_bench_ret,
+            maxdd_bounds=eval_maxdd_bounds,
         )
         benchmark_score = calculate_portfolio_utility(
             primary_benchmark_drifted_weights,
@@ -2686,6 +2709,7 @@ def run_rolling_backtest(config: BacktestConfig | None = None) -> dict[str, pd.D
             global_weights,
             cfg,
             benchmark_returns=eval_bench_ret,
+            maxdd_bounds=eval_maxdd_bounds,
         )
         equal_score = calculate_portfolio_utility(
             equal_drifted_weights,
@@ -2694,6 +2718,7 @@ def run_rolling_backtest(config: BacktestConfig | None = None) -> dict[str, pd.D
             global_weights,
             cfg,
             benchmark_returns=eval_bench_ret,
+            maxdd_bounds=eval_maxdd_bounds,
         )
         max_sharpe_score = calculate_portfolio_utility(
             max_sharpe_drifted_weights,
@@ -2702,6 +2727,7 @@ def run_rolling_backtest(config: BacktestConfig | None = None) -> dict[str, pd.D
             global_weights,
             cfg,
             benchmark_returns=eval_bench_ret,
+            maxdd_bounds=eval_maxdd_bounds,
         )
 
         def flatten_score(prefix: str, score: dict[str, float]) -> dict[str, float]:

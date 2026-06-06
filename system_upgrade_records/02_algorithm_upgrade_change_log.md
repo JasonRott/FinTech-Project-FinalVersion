@@ -977,6 +977,25 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 終端一鍵：`RUN_MODE="terminal"` → `python main.py`（終端問答→pipeline→問是否回測）。
 - 網頁：`RUN_MODE="web"` → `python main.py`（或 `python etf_web/run_web.py`）→ http://127.0.0.1:8050 全程在瀏覽器。
 
+## 2026-06-06：ETF 網頁版 UX 修正 + 修「VT 偏好分數退化滿分」評分瑕疵
+
+狀態：完成（前端 4 項 + V-6 評分修正）。**最佳化器邏輯未動**（見下「一致性」）。
+
+### A. etf_web 前端 UX（純前端）
+1. **主視覺放大 + 整頁不出現視窗滾輪**：`style.css` 改為全視窗 flex（`html,body{height:100%}`、`body{overflow:hidden;display:flex;column}`），header/stepbar 固定高、`main` 吃滿剩餘高度，可見 `.stage` 撐滿（~85%），捲動只發生在內部面板（conv / run-log / results view，皆 `min-height:0;overflow:auto`）。`.stage[hidden]{display:none}` 確保隱藏。
+2. **跑程式視窗自動 tail**：`pollStatus` 每次更新 `run-log.scrollTop=scrollHeight`（自動跳到最後一行）；run-log 在新版面為 flex 子項 `flex:1;min-height:0`，自身內捲。
+3. **上方步驟列可點回看**（重點）：`app.js` 加 `reached={pref,run,results}` 進度旗標 + stepbar onclick → `showStage`；偏好問答永遠可回看（含**已跑完的 9 維權重**仍顯示在信念面板）；執行/結果到達過即可回看。`showStage` 改用 `reached` 標記 done。
+
+### B. ★修正：單一標的基準（VT）在抗跌維度被退化評分給滿分 1.0★
+- **使用者回報**：網頁版跑出「System 偏好分數贏 VT 僅 21%」，測試時幾乎沒出現過。
+- **查核（逐維平均，System vs VT）**：System 在 9 維有 **7 維贏或平**（股息 +0.172、成交量 +0.189、波動 +0.069、分散 +0.039、費用 +0.021、報酬β +0.002…），**只輸「抗跌 Risk_MaxDD」一項：System 0.506 vs VT 1.000（−0.494）**，而抗跌正是此網頁使用者的**最高權重 0.257** → 一項翻盤總分（System 0.692 vs VT 0.789）。
+- **根因**：`calculate_portfolio_utility` 算 true-MaxDD 分數時，用「**本投組自身持有標的**」建分數尺度（`calculate_individual_maxdd_bounds(returns)`）。單一標的基準（VT/VOO）只有一個值 → 上界=下界退化 → `calculate_true_maxdd_score` 回 **1.0**，不論 VT 實際回撤多深（VT 2020 實際 ~−34%）。多檔的 System 則得到正常相對分 ~0.5。對抗跌權重高的使用者，VT 幾乎必勝。
+- **修法（評分尺度，外科）**：`calculate_portfolio_utility` 新增可選參數 `maxdd_bounds`；V-6 評分呼叫端改傳「**同一個跨截面共同尺度**」——forward/benchmark/equal/maxsharpe 用評估截面（含 VT）全體個股 MaxDD 分布建尺（`eval_maxdd_bounds`）、ex-ante 用候選池 lookback 截面建尺、`build_period_dimension_row` 同步。各投組『自身』實際回撤計算不變，只把**比較尺度**統一，VT 不再免費滿分。
+- **驗證（合成資料單元測試）**：VT-like 單檔深回撤 → 舊：單檔尺度 (0.4772,0.4772) 退化 → MaxDD 分 **1.0**；新：共同尺度 (0.216,0.456) → VT 分 **0.0**（最深者）。退化消除、各策略同尺比較。實務上 VT 非最深 → 會得中等分；**預期 win-rate 大幅回升**（總差 0.097 幾乎全來自抗跌 0.257×0.494≈0.127；修後 System 應在多數期間領先）。實際新數字待重跑回測（web 重跑即更新）。
+
+### 一致性（重要）
+- **未動最佳化器**：`optimize_preference_portfolio`（line ~1175）仍以候選池 `calculate_individual_maxdd_bounds(returns)` 運作，與主系統一致；`calculate_true_maxdd_score` / `calculate_individual_maxdd_bounds` 函式本體未改（只在 `calculate_portfolio_utility` 加可選參數 + 改評分呼叫端）。投組權重、NAV、夏普、最大回撤績效圖**完全不變**；只有 V-6 偏好分數比較（診斷層）變公平。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

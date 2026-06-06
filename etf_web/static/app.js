@@ -11,12 +11,15 @@ async function api(path, body) {
 async function getJSON(path) { const r = await fetch(path); return r.json(); }
 function esc(s){return (s==null?"":String(s)).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
 
+// 各步驟是否已到達過（用於 stepbar 完成標記 + 允許自由回看；偏好問答永遠可回看，#5）
+const reached = {pref: true, run: false, results: false};
+
 function showStage(name) {
   ["pref", "run", "results"].forEach((s, i) => {
     $("stage-" + s).hidden = (s !== name);
-    $("stepbar-" + (i + 1)).classList.toggle("active", s === name);
-    $("stepbar-" + (i + 1)).classList.toggle("done",
-      (["pref","run","results"].indexOf(name) > i));
+    const el = $("stepbar-" + (i + 1));
+    el.classList.toggle("active", s === name);
+    el.classList.toggle("done", reached[s] && s !== name);
   });
 }
 
@@ -113,8 +116,10 @@ function onPrefDone(s, reason) {
   renderBelief(s);
   $("phase-badge").textContent = "已完成"; $("phase-badge").className = "badge badge-done";
   appendConv("sys", `偏好問答完成：${esc(reason||"")}。權重已交付，請至步驟 2 執行分析。`, "sys");
+  reached.run = true;
   const ia = $("input-area");
-  ia.innerHTML = `<div class="row"><button class="btn" id="to-run">前往執行分析 →</button></div>`;
+  ia.innerHTML = `<div class="hint">問答已完成。隨時可點上方「① 偏好問答」回來檢視此權重結果。</div>
+    <div class="row"><button class="btn" id="to-run">前往執行分析 →</button></div>`;
   $("to-run").onclick = () => showStage("run");
 }
 
@@ -154,12 +159,14 @@ async function runPipeline() {
 
 async function pollStatus() {
   const s = await getJSON("/api/status");
-  $("run-log").textContent = s.log || "";
-  $("run-log").scrollTop = $("run-log").scrollHeight;
+  const el = $("run-log");
+  el.textContent = s.log || "";
+  el.scrollTop = el.scrollHeight;   // 自動跳到最後一行（tail，#3）
   if (s.state === "done") {
     clearInterval(statusTimer); statusTimer = null;
     $("run-state").textContent = "✅ 完成";
     $("run-btn").disabled = false;
+    reached.results = true;
     await loadResults();
     showStage("results");
   } else if (s.state === "error") {
@@ -194,6 +201,11 @@ async function loadResults() {
 function bind() {
   $("run-btn").onclick = runPipeline;
   $("restart").onclick = () => { location.reload(); };
+  // 上方步驟列可點：偏好問答永遠可回看（含已跑完的權重）；執行/結果到達過即可回看（#5）
+  const names = ["pref", "run", "results"];
+  names.forEach((s, i) => {
+    $("stepbar-" + (i + 1)).onclick = () => { if (reached[s]) showStage(s); };
+  });
   $("tab-fig").onclick = () => { $("view-fig").hidden=false; $("view-rep").hidden=true;
     $("tab-fig").classList.add("active"); $("tab-rep").classList.remove("active"); };
   $("tab-rep").onclick = () => { $("view-fig").hidden=true; $("view-rep").hidden=false;
