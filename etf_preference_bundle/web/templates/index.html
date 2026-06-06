@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ETF 投資偏好訪談 · Phase 3</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>ETF 投資偏好訪談</h1>
+      <p class="sub">Bayesian 主動誘出原型 · 依您的回答即時推估 9 個 ETF 面向的偏好權重與不確定性</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- 左：對話 -->
+    <section class="panel conv-panel">
+      <div id="conv" class="conv"></div>
+      <div id="input-area" class="input-area"></div>
+    </section>
+
+    <!-- 右：即時信念 -->
+    <aside class="panel belief-panel">
+      <div class="belief-head">
+        <span class="belief-title">即時偏好信念</span>
+        <span id="phase-badge" class="badge badge-cover">尚未開始</span>
+      </div>
+
+      <div class="sigma-wrap">
+        <div class="sigma-row">
+          <span>證據量 Σα</span>
+          <span><b id="sigma-val">0.00</b> / τ <span id="tau-val">2.50</span></span>
+        </div>
+        <div class="sigma-bar"><div id="sigma-fill" class="sigma-fill"></div></div>
+        <div class="sigma-sub"><span id="cover-val">覆蓋 0/9</span><span id="reask-val"></span></div>
+      </div>
+
+      <div id="bars" class="bars"></div>
+
+      <div id="pending" class="pending"></div>
+      <div id="ci-note" class="ci-note"></div>
+    </aside>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

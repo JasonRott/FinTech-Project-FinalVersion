@@ -919,6 +919,36 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - 接進 `_write_unified_backtest_report`（檔名 `{prefix}_metrics_comparison.png`）→ **未來每次回測自動產生**，並落在 `03_performance_figures/`（分類 by 檔名）。output inventory 同步加列。
 - 已用既有 summary CSV 為 showcase 七位使用者各補生成一張（標題 `{profile}_回測績效對照…`），目視確認正確。
 
+## 2026-06-06：接上「網頁版」偏好誘出 `etf_preference_bundle`（取代 `preference_engine`）
+
+狀態：完成（程式接好 + 兩段橋接實測通過）。非 optimizer 改動（新的偏好來源/交付方式）。
+
+### 背景
+- 使用者上傳 `etf_preference_bundle/`（= 舊 `preference_engine` 的超集：同一套 `phase3_system/` 引擎 + `assets/`，外加 **Flask 網頁層** `web/`、`run_web.py`、`recommender_hook.py` 交付接點）。接好後使用者會**刪除舊的 `preference_engine/`**。
+- 網頁與主系統是**兩個行程**，故採**檔案交付**橋接（非 in-process）。
+
+### 兩段橋接（web → 主系統）
+1. **`etf_preference_bundle/recommender_hook.deliver_weights(weights, snapshot)`**（已改寫）：問答完成時（網頁 `web/app.py._finish` 或函式庫 `integrate_example.run` 都會呼叫此唯一接點），把 9 維權重**正規化（補齊9維、總和=1）後直寫主系統 `json/stage2_ahp_global_weights.json`**（canonical `{CR, Global_Weights, Source, Sigma_alpha, n_covered, ci_trustworthy, ci_note}`，格式同 AHP 路徑）。路徑用 `Path(__file__).parent.parent/"json"/...`（bundle 在專案根底下）。
+2. **`pipeline_stages.stage2_1_web_preference_ingest()`**（新增）：`main.py` 端讀取網頁最近一次結果。來源優先序 `etf_preference_bundle/web/last_result.json`（含完整快照）⇒ 既有 `json/stage2_ahp_global_weights.json`（hook 直寫檔）。正規化 9 維後寫 canonical payload。**找不到 → fallback 等權重 + 提示先跑網頁**，管線不中斷。
+
+### 改了什麼
+- `etf_preference_bundle/recommender_hook.py`：實作上述直寫主系統 json（原本只 `return weights`）。
+- `pipeline_stages.py`：`PreferenceMode` 加 `"web_preference"`；新增 `stage2_1_web_preference_ingest()`；router 加分支；`stage2_1_preference_engine_elicitation()` 的 `_eng_dir` **由 `preference_engine` 改指 `etf_preference_bundle`**（終端模式刪舊資料夾後仍可用，引擎/assets 解析自 bundle）；Source 字串改 `etf_preference_bundle …`。
+- `main.py`：`preference_mode` 改 `"web_preference"`（兩步流程：先 `python etf_preference_bundle/run_web.py` 瀏覽器完成問答 → 再 `python main.py` 讀取），註解列出 4 種模式。
+- `.gitignore`：忽略 `etf_preference_bundle/encoder_model/`（BGE-M3 ~2.2GB）、`etf_preference_bundle/**/__pycache__/`、`etf_preference_bundle/web/last_result.json`（暫存結果）；舊 `preference_engine/` 規則保留以防殘留。
+- `requirements.txt`：加 `flask>=3.0`（網頁後端；torch/sentence-transformers/scipy/numpy 已有）。
+
+### 驗證
+- 段①：`deliver_weights(未正規化9維, snap)` → 主 json 正確產生，`Global_Weights` 9 維 sum=1、Source/快照欄位齊全。✓
+- 段②：放一份模擬 `web/last_result.json` → `stage2_1_web_preference_ingest()` 讀到、正規化 sum=1、`n_covered=9`/`ci_trustworthy=True` 帶入、Source 標來源檔。✓
+- 終端模式 import 路徑改 bundle 後仍可載入 `phase3_system`（引擎/assets 在 bundle 內解析正常）。
+- 註：`from functions import log` 在 cp950 終端會印出既有 emoji 編碼警告（與本次無關，功能不受影響）。
+
+### 用法
+- **網頁版**：`python etf_preference_bundle/run_web.py` → http://127.0.0.1:8000 完成問答（自動交付）→ `python main.py`（`web_preference`）續跑 stage2_2/3/回測。
+- **終端版**：`preference_mode="preference_engine"` 跑 `main.py`（在終端逐題作答，沿用 bundle 引擎）。
+- 與 `ACTIVE_USER_PROFILE`（靜態原型）獨立。**待使用者刪除舊 `preference_engine/`。**
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

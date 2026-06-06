@@ -29,7 +29,12 @@ active_preference/results/
 local_finbert/model.safetensors
 local_finbert/pytorch_model.bin
 
-# preference_engine 的 BGE-M3 編碼器（~2.2GB，首次執行自動下載；assets/ 小檔保留追蹤）
+# etf_preference_bundle 的 BGE-M3 編碼器（~2.2GB，首次執行自動下載；assets/ 小檔保留追蹤）
+etf_preference_bundle/encoder_model/
+etf_preference_bundle/**/__pycache__/
+etf_preference_bundle/web/last_result.json
+
+# 舊版 preference_engine（已由 etf_preference_bundle 取代；保留規則以防殘留）
 preference_engine/encoder_model/
 preference_engine/__pycache__/
 preference_engine/phase3_system/__pycache__/

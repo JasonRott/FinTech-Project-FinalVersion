@@ -1,0 +1,9 @@
+# 大模型不入庫(執行時自動下載 BAAI/bge-m3)
+encoder_model/
+# 執行時輸出
+web/last_result.json
+# 快取
+__pycache__/
+**/__pycache__/
+*.pyc
+.cache/

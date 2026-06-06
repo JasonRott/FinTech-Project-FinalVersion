@@ -15,7 +15,7 @@ from typing import Literal
 
 import parameters
 
-PreferenceMode = Literal["static_ahp", "active_bayesian", "preference_engine"]
+PreferenceMode = Literal["static_ahp", "active_bayesian", "preference_engine", "web_preference"]
 
 
 STAGE_NAMES = {
@@ -351,13 +351,13 @@ def stage2_1_preference_engine_elicitation(
     import sys as _sys
     from functions import log
 
-    _eng_dir = str(Path(__file__).resolve().parent / "preference_engine")
+    _eng_dir = str(Path(__file__).resolve().parent / "etf_preference_bundle")
     if _eng_dir not in _sys.path:
         _sys.path.insert(0, _eng_dir)
     try:
         from phase3_system import Phase3Engine  # type: ignore
     except Exception as exc:  # 套件/相依缺失 → 退回既有 fallback 權重，管線不中斷
-        log.error(f"無法載入 preference_engine（{exc}）；改用 fallback 權重。")
+        log.error(f"無法載入 etf_preference_bundle（{exc}）；改用 fallback 權重。")
         output = _export_fallback_active_bayesian_weights(output_path)
         _announce_stage_end("stage2_1_active", str(output))
         return output
@@ -425,7 +425,7 @@ def stage2_1_preference_engine_elicitation(
     payload = {
         "CR": 0.0,
         "Global_Weights": w,
-        "Source": "preference_engine (Phase3 BNN elicitation)",
+        "Source": "etf_preference_bundle terminal (Phase3 BNN elicitation)",
         "Sigma_alpha": snap.get("Sigma_alpha"),
         "n_covered": snap.get("n_covered"),
         "ci_trustworthy": snap.get("ci_trustworthy"),
@@ -433,6 +433,96 @@ def stage2_1_preference_engine_elicitation(
     }
     output.write_text(json.dumps(payload, ensure_ascii=False, indent=4), encoding="utf-8")
     log.info(f"Stage 2_1-C - preference_engine 偏好誘出完成（9 維權重已寫入 {output}）。")
+    _announce_stage_end("stage2_1_active", str(output))
+    return output
+
+
+def stage2_1_web_preference_ingest(
+    output_path: str = "json/stage2_ahp_global_weights.json",
+) -> Path:
+    """Stage 2_1-D：讀取「網頁版偏好誘出」(`etf_preference_bundle` 網頁問答) 最近一次完成的
+    9 維權重，寫成下游認得的 `Global_Weights` JSON（與 AHP 路徑同格式）。
+
+    使用流程（兩步、跨行程）：
+      1) `python etf_preference_bundle/run_web.py` → 瀏覽器完成問答；
+         完成時 `recommender_hook.deliver_weights()` 會把權重交付到主系統
+         `json/stage2_ahp_global_weights.json`，並同時留一份 `etf_preference_bundle/web/last_result.json`。
+      2) `python main.py`（preference_mode="web_preference"）→ 本函式讀取該結果、正規化 9 維、續跑下游。
+
+    來源優先序：`etf_preference_bundle/web/last_result.json` ⇒ 既有 `output_path`（hook 直寫的檔）。
+    都找不到時 → 退回 fallback 等權重，並提示先跑網頁問答，管線不中斷。
+    """
+    _announce_stage_start(
+        "stage2_1_active",
+        "讀取網頁版偏好誘出（etf_preference_bundle 網頁問答）最近一次完成的 9 維權重。",
+    )
+    from functions import log
+
+    bundle_dir = Path(__file__).resolve().parent / "etf_preference_bundle"
+    last_result = bundle_dir / "web" / "last_result.json"
+
+    weights: dict | None = None
+    snap: dict = {}
+    source_file: str | None = None
+
+    # ① 優先讀網頁版完成時寫出的 last_result.json（最權威、含完整快照）
+    if last_result.exists():
+        try:
+            data = json.loads(last_result.read_text(encoding="utf-8"))
+            weights = data.get("weights") or {}
+            snap = data.get("snapshot") or {}
+            source_file = str(last_result)
+        except Exception as exc:
+            log.error(f"無法解析 {last_result}（{exc}）；改試既有權重檔。")
+
+    # ② 退而求其次：hook 已直寫的主系統權重檔
+    if not weights:
+        existing = Path(output_path)
+        if existing.exists():
+            try:
+                data = json.loads(existing.read_text(encoding="utf-8"))
+                gw = data.get("Global_Weights") or {}
+                if gw:
+                    weights = gw
+                    snap = {
+                        "Sigma_alpha": data.get("Sigma_alpha"),
+                        "n_covered": data.get("n_covered"),
+                        "ci_trustworthy": data.get("ci_trustworthy"),
+                        "ci_note": data.get("ci_note"),
+                    }
+                    source_file = str(existing)
+            except Exception as exc:
+                log.error(f"無法解析 {existing}（{exc}）。")
+
+    # ③ 都沒有 → fallback，提示先跑網頁
+    if not weights:
+        log.error(
+            "找不到網頁版偏好結果（etf_preference_bundle/web/last_result.json）。"
+            "請先執行 `python etf_preference_bundle/run_web.py` 在瀏覽器完成問答後再跑 main.py；"
+            "本次先用 fallback 等權重維持管線。"
+        )
+        output = _export_fallback_active_bayesian_weights(output_path)
+        _announce_stage_end("stage2_1_active", str(output))
+        return output
+
+    # --- 防呆：確保 9 維齊全、總和正規化為 1 ---
+    w = {d: float(weights.get(d, 0.0)) for d in _PREF_DIMS}
+    total = sum(w.values()) or 1.0
+    w = {d: v / total for d, v in w.items()}
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "CR": 0.0,
+        "Global_Weights": w,
+        "Source": f"etf_preference_bundle web ({source_file})",
+        "Sigma_alpha": snap.get("Sigma_alpha"),
+        "n_covered": snap.get("n_covered"),
+        "ci_trustworthy": snap.get("ci_trustworthy"),
+        "ci_note": snap.get("ci_note"),
+    }
+    output.write_text(json.dumps(payload, ensure_ascii=False, indent=4), encoding="utf-8")
+    log.info(f"Stage 2_1-D - 網頁版偏好權重已寫入 {output}（來源：{source_file}）。")
     _announce_stage_end("stage2_1_active", str(output))
     return output
 
@@ -445,6 +535,8 @@ def stage2_1_preference_extraction(
     """Stage 2_1 router for the supported preference extraction methods."""
     if mode == "static_ahp":
         return stage2_1_static_ahp_preference_extraction(output_path=output_path)
+    if mode == "web_preference":
+        return stage2_1_web_preference_ingest(output_path=output_path)
     if mode == "preference_engine":
         return stage2_1_preference_engine_elicitation(
             output_path=output_path,

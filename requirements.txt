@@ -24,5 +24,7 @@ seaborn>=0.12.0
 # Environment variable loading
 python-dotenv>=1.0.0
 
-# Stage 2_1 preference_engine（投資理念 + 逐輪問答 → 9 維偏好權重；BGE-M3 文字編碼）
+# Stage 2_1 etf_preference_bundle（投資理念 + 逐輪問答 → 9 維偏好權重；BGE-M3 文字編碼）
 sentence-transformers>=2.2.0
+# etf_preference_bundle 網頁版偏好誘出（run_web.py 的 Flask 後端）
+flask>=3.0
