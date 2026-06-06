@@ -1075,6 +1075,22 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - **#4 回測區瘦身 + 圖說**：`figures_map` 用 `portfolio_performance`（含淨值+回撤，**取代淨值曲線**），保留 V-6；回測區由 grid 改 **單欄較大**（`.dash-figs`/`.fig-wide`，不密集），**每張圖下方加簡短文字說明**（`FIG_CAPS`）：portfolio_performance / metrics_comparison / 實現特徵雷達 / V-6 / 權重演化 / 主系統雷達 各一段。nav/drawdown/V-1/前緣等移到「④ 完整明細」。
 - 驗證：test client GET / 200、6 張關鍵圖全中、JS/CSS 括號平衡、FIG_CAPS/figWide/σ 回饋皆在。
 
+## 2026-06-06：修「未產生回測摘要」(頻率前綴 bug) + 版面加寬/字再大/回測兩欄；win_VT 低非 bug
+
+狀態：完成（A 修好 + 版面 + B 查核澄清）。
+
+### A.（大問題）「本次未產生回測摘要」根因 = dashboard CSV 比對綁死前綴
+- 使用者這次選**年度(Y)** 再平衡 → 檔名前綴是 `backtest_y_*`，但 `etf_web/app.py._dashboard_data` 硬寫 `backtest_q_summary.csv` / `backtest_q_preference_scores.csv` → 找不到 → `metrics=None` → 顯示「未產生回測摘要」。（圖是用子字串挑的，所以照常顯示，只有 CSV 漏掉。）
+- **修法**：改用**後綴**比對且不綁頻率：`endswith("_summary.csv") and "04_data_csv" in path` / `endswith("_preference_scores.csv")` / `endswith("_weights.csv") and "/02_portfolio/"`。對 q/m/6m/y 全頻率通用。驗證 new_user_6（年度）→ metrics 正確讀出。
+
+### B.（大問題）win_VT=0% —— 查核結論：**非 bug，且非 MaxDD 修正的回歸**
+- 本次偏好：**費用率 0.336(最高) + 基金規模 0.146 + 分散 0.206 + 抗跌 0.209**。逐維 System vs VT：輸的只有 **Cost（System 0.636 vs VT 0.962）** 與 **AUM（0.394 vs 0.918）**；其餘多數**System 贏**（含 **MaxDD +0.184**，證明退化修正有效）。
+- 缺口幾乎全來自 Cost(權重 0.336)＋AUM(0.146)：VT 費用率 0.03%、規模全市場最大 → 結構上無法被「精選少數特化 ETF」的投組超越。使用者這次描述的偏好（最便宜+最大+最分散）≈ **VT 本身的定義** → VT 近乎最優、win_VT 低是誠實結果。
+- 對照：之前 21%/低部分是 **MaxDD 退化 bug**（已修）；這次 0% 是**偏好結構性偏向 VT**（成本/規模），兩者不同。系統的強項在「VT 平庸的維度」（收入/殖利率、高 beta 成長、低波防禦）；對純成本/規模/分散偏好，最誠實答案就是「買 VT」。**不改程式**（造假讓系統贏不誠實）。
+
+### 版面（使用者要求）
+- `style.css`：內容 `max-width 1400→1760px`（用上兩邊空間）；**回測區 `.dash-figs` 改 2 欄 grid**（`repeat(auto-fit,minmax(560px,1fr))`→寬螢幕兩張兩張橫放、窄螢幕自動單欄）；`.fig-wide` 移除 820px 上限改填滿欄位；字體再上修（body 16.5→17.5、h1 28、摘要卡值 34、dash-head 25、dash-title 18…）。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項

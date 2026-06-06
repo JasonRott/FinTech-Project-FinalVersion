@@ -284,14 +284,16 @@ def _dashboard_data(ud):
     for dp, _d, files in os.walk(ud):
         for f in files:
             full = os.path.join(dp, f)
+            fwd = full.replace("\\", "/")
             low = f.lower()
             if low.endswith(".png"):
                 png_by_name[f] = "/results-file/" + os.path.relpath(full, root).replace("\\", "/")
-            if low.endswith("backtest_q_summary.csv"):
+            # 回測 CSV 的前綴隨再平衡頻率變動（backtest_q / backtest_y / backtest_m / backtest_6m）→ 用後綴比對，不綁前綴。
+            if low.endswith("_summary.csv") and "04_data_csv" in fwd:
                 summary_p = full
-            elif low.endswith("backtest_q_preference_scores.csv"):
+            elif low.endswith("_preference_scores.csv"):
                 pref_p = full
-            elif low.endswith("_weights.csv") and (os.sep + "02_portfolio" + os.sep) in full:
+            elif low.endswith("_weights.csv") and "/02_portfolio/" in fwd:
                 port_w = full
 
     # 關鍵數字（系統 vs VT）

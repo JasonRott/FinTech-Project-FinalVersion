@@ -7,7 +7,7 @@
 html,body{height:100%}
 /* 固定主視覺、整頁不出現視窗滾輪；捲動只發生在內部面板 */
 body{margin:0;overflow:hidden;display:flex;flex-direction:column;color:var(--txt);
-  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",Roboto,sans-serif;font-size:16.5px;line-height:1.55;
+  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",Roboto,sans-serif;font-size:17.5px;line-height:1.6;
   /* 明亮動態漸層背景（GPU 友善：只動 background-position；尊重 reduced-motion）*/
   background:linear-gradient(125deg,#eaf2ff 0%,#eafbff 28%,#f3edff 55%,#eafef3 78%,#fff6ec 100%);
   background-size:300% 300%;animation:bgshift 26s ease-in-out infinite;}
@@ -15,11 +15,11 @@ body{margin:0;overflow:hidden;display:flex;flex-direction:column;color:var(--txt
 @media (prefers-reduced-motion: reduce){body{animation:none}}
 
 header{flex:0 0 auto;background:rgba(255,255,255,0.55);border-bottom:1px solid var(--line);backdrop-filter:blur(4px)}
-.header-inner{max-width:1400px;margin:0 auto;padding:10px 22px}
-h1{margin:0;font-size:25px;color:#0f2a5e}
+.header-inner{max-width:1760px;margin:0 auto;padding:10px 22px}
+h1{margin:0;font-size:28px;color:#0f2a5e}
 .sub{margin:2px 0 0;color:var(--muted);font-size:13.5px}
 
-.stepbar{flex:0 0 auto;max-width:1400px;width:100%;margin:10px auto 0;padding:0 22px;display:flex;gap:10px}
+.stepbar{flex:0 0 auto;max-width:1760px;width:100%;margin:10px auto 0;padding:0 22px;display:flex;gap:10px}
 .step{flex:1;padding:10px 12px;background:rgba(255,255,255,0.8);border:1px solid var(--line);border-radius:10px;
   color:var(--muted);font-size:15.5px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
   transition:border-color .15s,color .15s,box-shadow .15s}
@@ -30,7 +30,7 @@ h1{margin:0;font-size:25px;color:#0f2a5e}
 .step.active .num{background:var(--accent);color:#fff;border-color:var(--accent)}
 .step.done .num{background:var(--accent2);color:#fff;border-color:var(--accent2)}
 
-main{flex:1 1 auto;min-height:0;max-width:1400px;width:100%;margin:12px auto;padding:0 22px 14px;display:flex}
+main{flex:1 1 auto;min-height:0;max-width:1760px;width:100%;margin:12px auto;padding:0 22px 14px;display:flex}
 .stage{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
 .stage[hidden]{display:none}
 
@@ -104,11 +104,11 @@ select{background:#fbfdff;color:var(--txt);border:1px solid var(--line);border-r
 #stage-results .panel{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
 .dash-scroll{flex:1 1 auto;min-height:0;overflow:auto;padding-right:6px}
 .dash-footer{flex:0 0 auto;padding-top:10px;border-top:1px solid var(--line);margin-top:8px}
-.dash-head{font-size:22px;font-weight:600;color:#0f2a5e;margin-bottom:12px}
+.dash-head{font-size:25px;font-weight:600;color:#0f2a5e;margin-bottom:12px}
 .dash-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin-bottom:18px}
 .stat-card{background:linear-gradient(160deg,#ffffff,#f3f8ff);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
 .stat-card .k{font-size:13.5px;color:var(--muted)}
-.stat-card .v{font-size:30px;font-weight:700;margin-top:2px;color:#0f2a5e}
+.stat-card .v{font-size:34px;font-weight:700;margin-top:2px;color:#0f2a5e}
 .stat-card .cmp{font-size:12.5px;color:var(--muted);margin-top:3px}
 .stat-card.good .v{color:var(--accent2)}
 .stat-card.bad .v{color:var(--red)}
@@ -117,7 +117,7 @@ select{background:#fbfdff;color:var(--txt);border:1px solid var(--line);border-r
 .dash-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
 @media(max-width:900px){.dash-2col{grid-template-columns:1fr}}
 .dash-block{margin-bottom:18px}
-.dash-title{font-size:16px;font-weight:600;color:#0f2a5e;border-left:3px solid var(--accent);padding-left:8px;margin-bottom:10px}
+.dash-title{font-size:18px;font-weight:600;color:#0f2a5e;border-left:4px solid var(--accent);padding-left:9px;margin-bottom:10px}
 .hold-row{display:grid;grid-template-columns:70px 1fr 56px;gap:8px;align-items:center;margin:7px 0}
 .hold-etf{font-weight:600;font-size:15px;color:#0f2a5e}
 .hold-track{position:relative;height:16px;background:var(--panel2);border-radius:8px;overflow:hidden}
@@ -125,12 +125,12 @@ select{background:#fbfdff;color:var(--txt);border:1px solid var(--line);border-r
 .hold-w{font-size:13.5px;text-align:right;color:var(--muted)}
 .dash-img img{width:100%;border-radius:8px;border:1px solid var(--line);background:#fff}
 .dash-img figcaption{font-size:12px;color:var(--muted);margin-top:4px}
-/* ④ 回測：1 欄、較大、每張下方說明（不密集）*/
-.dash-figs{display:flex;flex-direction:column;gap:18px}
-.fig-wide{margin:0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;max-width:820px;width:100%}
-.fig-wide-title{font-size:15px;font-weight:600;color:#0f2a5e;margin-bottom:8px}
+/* ④ 回測：兩張兩張橫放（寬螢幕 2 欄、窄螢幕自動 1 欄）、每張下方說明 */
+.dash-figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(560px,1fr));gap:18px}
+.fig-wide{margin:0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;width:100%}
+.fig-wide-title{font-size:16px;font-weight:600;color:#0f2a5e;margin-bottom:8px}
 .fig-wide img{width:100%;border-radius:8px;border:1px solid var(--line);background:#fff}
-.fig-desc{font-size:13.5px;color:var(--muted);margin-top:8px;line-height:1.6}
+.fig-desc{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.6}
 .fig-group{margin-bottom:20px}
 .fig-group-title{font-size:13px;color:var(--muted);margin-bottom:8px;border-left:3px solid var(--accent);padding-left:8px}
 .fig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
