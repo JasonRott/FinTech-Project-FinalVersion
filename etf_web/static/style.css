@@ -9,8 +9,8 @@ html,body{height:100%}
 body{margin:0;overflow:hidden;display:flex;flex-direction:column;color:var(--txt);
   font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",Roboto,sans-serif;font-size:17.5px;line-height:1.6;
   /* 明亮動態漸層背景（GPU 友善：只動 background-position；尊重 reduced-motion）*/
-  background:linear-gradient(125deg,#eaf2ff 0%,#eafbff 28%,#f3edff 55%,#eafef3 78%,#fff6ec 100%);
-  background-size:300% 300%;animation:bgshift 26s ease-in-out infinite;}
+  background:linear-gradient(125deg,#cfe2ff 0%,#cdf3ff 22%,#e6d8ff 46%,#ccf7e2 70%,#ffe7cf 100%);
+  background-size:400% 400%;animation:bgshift 18s ease-in-out infinite;}
 @keyframes bgshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @media (prefers-reduced-motion: reduce){body{animation:none}}
 
@@ -68,8 +68,18 @@ textarea{width:100%;min-height:70px;background:#fbfdff;color:var(--txt);border:1
   box-shadow:0 2px 8px rgba(59,130,246,.25)}
 .btn:disabled{opacity:.5;cursor:default;box-shadow:none}
 .btn-ghost{background:#fff;color:var(--muted);border:1px solid var(--line);border-radius:9px;padding:9px 14px;cursor:pointer;font:inherit}
-.hint{color:var(--muted);font-size:12px;margin-top:8px}
-.guide{background:#f4f7fb;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13px;margin-bottom:10px}
+.hint{color:var(--muted);font-size:14px;margin-top:8px}
+.guide{background:#f4f7fb;border:1px solid var(--line);border-radius:9px;padding:11px 14px;font-size:15.5px;margin-bottom:10px}
+/* 第一頁歡迎詞（填滿左側空白）*/
+.welcome{background:#f4f9ff;border:1px solid #d7e6fb;border-radius:14px;padding:22px 24px;font-size:18px;line-height:1.8;color:#243b5e}
+.welcome-h{font-size:23px;font-weight:700;color:#0f2a5e;margin-bottom:12px}
+.welcome p{margin:10px 0}
+.welcome-tip{color:var(--accent);font-weight:600}
+/* 名稱輸入 */
+.field{display:block;margin-bottom:10px}
+.field>span{display:block;font-size:14.5px;color:var(--muted);margin-bottom:5px}
+.field input{width:100%;background:#fbfdff;color:var(--txt);border:1px solid var(--line);border-radius:9px;padding:11px;font:inherit}
+.field-label{font-size:15px;color:var(--muted);margin:6px 0 4px}
 .offer{background:#f4f9ff;border:1px solid var(--accent);border-radius:10px;padding:12px}
 .offer .title{font-weight:600;margin-bottom:4px}.offer .msg{font-size:13px;color:var(--muted);margin-bottom:8px}
 

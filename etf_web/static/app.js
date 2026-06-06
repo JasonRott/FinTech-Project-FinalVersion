@@ -2,6 +2,7 @@
 const $ = (id) => document.getElementById(id);
 let lastSnap = null;
 let statusTimer = null;
+let userName = "";   // 使用者填的名稱（空則 fallback new_user）
 
 async function api(path, body) {
   const r = await fetch(path, {method: "POST", headers: {"Content-Type": "application/json"},
@@ -36,7 +37,7 @@ function scrollConv() {
 function appendConv(role, html, cls) {
   const d = document.createElement("div");
   d.className = "msg " + (cls || role);
-  const r = role === "q" ? "顧問" : role === "a" ? "您" : "系統";
+  const r = role === "q" ? "顧問" : role === "a" ? (userName || "您") : "系統";
   d.innerHTML = `<div class="role">${r}</div><div class="bubble">${html}</div>`;
   const c = $("conv"); c.appendChild(d); c.scrollTop = c.scrollHeight;
   return d;
@@ -148,7 +149,9 @@ function onPrefDone(s, reason) {
 }
 
 async function startSession() {
+  userName = (($("uname") || {}).value || "").trim();
   const philo = ($("philo") || {}).value || "";
+  $("conv").innerHTML = "";   // 清掉歡迎詞，進入對話
   appendConv("a", esc(philo) || "（未填理念）", "a");
   $("input-area").innerHTML = `<div class="hint">建立個人化先驗中…（首次載入模型可能需數秒）</div>`;
   const res = await api("/api/pref/start", {philosophy: philo});
@@ -158,14 +161,23 @@ async function startSession() {
 
 function initPref() {
   showStage("pref");
-  $("conv").innerHTML = "";
+  $("conv").innerHTML = `
+    <div class="welcome">
+      <div class="welcome-h">👋 歡迎使用 ETF 偏好驅動投資組合</div>
+      <p>本系統用「投資理念 ＋ 逐題問答」推估你對 <b>9 個 ETF 面向</b>的偏好，再自動建構並回測一個專屬投組，與市場基準 VT 對照。</p>
+      <p><b>流程</b>：① <b>偏好問答</b>（回答幾個問題，右側即時更新偏好信念）→ ② <b>執行分析</b>（自動跑 DEA 篩選／最佳化／歷史回測）→ ③ <b>結果呈現</b>（投組權重、績效、vs VT）。</p>
+      <p><b>作答建議</b>：用自然語句、<b>具體明確</b>地表達 —— 越重視的面向清楚說它對你多重要、會怎麼影響取捨；不在乎的也直接說願意妥協。<br>
+      例如：「我很在意<b>低費用</b>和<b>分散</b>，報酬普通就好，但<b>很怕大跌</b>。」</p>
+      <p class="welcome-tip">先在下方填上你的名稱與投資理念，按「開始問答」即可。</p>
+    </div>`;
   renderBelief({phase:"coverage",n_covered:0,n_reasks:0,Sigma_alpha:0,tau:2.50,stop_progress:0,ranking:[],ci_note:""});
   $("input-area").innerHTML = `
-    <div class="guide"><b>作答方式</b>　請盡量<b>具體、明確</b>表達偏好：越重視的面向清楚強調，越不在乎的也請說出願意妥協。</div>
-    <div class="role" style="margin-bottom:4px">開場</div>
+    <label class="field"><span>你的名稱（選填，會用在結果標題與資料夾名稱；留空則用 new_user）</span>
+      <input id="uname" type="text" placeholder="例如 Jason" autocomplete="off"></label>
+    <div class="role field-label">開場：你的投資理念</div>
     <textarea id="philo" placeholder="請用幾句話描述您整體的 ETF 投資理念，以及最重視的幾個方向…"></textarea>
     <div class="row"><button class="btn" id="go">開始問答</button></div>
-    <div class="hint">本地模型（BGE-M3 + 9 個 1D BNN），不接生成式 LLM。</div>`;
+    <div class="hint">本地模型（BGE-M3 ＋ 9 個 1D BNN），不接生成式 LLM。</div>`;
   $("go").onclick = startSession;
 }
 
@@ -173,7 +185,7 @@ function initPref() {
 async function runPipeline() {
   $("run-btn").disabled = true;
   $("run-state").textContent = "啟動中…";
-  const opts = {fetch: $("opt-fetch").checked, backtest: $("opt-backtest").checked, freq: $("opt-freq").value};
+  const opts = {fetch: $("opt-fetch").checked, backtest: $("opt-backtest").checked, freq: $("opt-freq").value, name: userName};
   const res = await api("/api/run", opts);
   if (!res.started) { $("run-state").textContent = res.reason || "無法啟動"; $("run-btn").disabled = false; return; }
   $("run-state").textContent = "執行中…（可離開分頁，回來會繼續顯示）";
@@ -283,7 +295,7 @@ function renderBacktest(fm) {
 
 async function loadResults() {
   const r = await getJSON("/api/results");
-  $("results-dir").textContent = r.user_dir ? ("· " + r.user_dir.split(/[\\/]/).pop()) : "";
+  $("results-dir").textContent = "· " + (userName || (r.user_dir ? r.user_dir.split(/[\\/]/).pop() : ""));
   const d = r.dashboard || {};
   const fm = d.figures_map || {};
   renderSummary(d.metrics);

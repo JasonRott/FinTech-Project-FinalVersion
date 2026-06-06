@@ -3427,7 +3427,17 @@ def run_stage3_pipeline():
             if _m and os.path.isdir(os.path.join(_user_root, _name)):
                 _idx.append(int(_m.group(1)))
         _next_n = (max(_idx) + 1) if _idx else 1
-        _dest = os.path.join(_user_root, f"new_user_{_next_n}")
+        # 自訂名稱（網頁可填）取代 new_user_{n}；未填則 fallback 回 new_user_{n}。
+        _custom = globals().get("CUSTOM_RUN_NAME") or getattr(parameters, "CUSTOM_RUN_NAME", None)
+        _safe = _re.sub(r"[^\w\-]+", "_", str(_custom).strip()).strip("_")[:40] if _custom else ""
+        if _safe:
+            _dest = os.path.join(_user_root, _safe)
+            _k = 2
+            while os.path.isdir(_dest):          # 同名已存在 → 加序號，不覆蓋既有
+                _dest = os.path.join(_user_root, f"{_safe}_{_k}")
+                _k += 1
+        else:
+            _dest = os.path.join(_user_root, f"new_user_{_next_n}")
         # 對外公開本次使用者資料夾路徑，讓接續的 prompt 回測（stage3b）把回測夾巢狀進來。
         globals()["LAST_MAIN_USER_DIR"] = _dest
         _groups = {

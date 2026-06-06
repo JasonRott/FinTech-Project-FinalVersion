@@ -4,6 +4,9 @@
 開 http://127.0.0.1:8050 ，整個流程（偏好問答 → 執行分析 → 結果呈現）都在瀏覽器上完成。
 首次啟動會載入偏好引擎的本地模型（BGE-M3 + 9 個 1D BNN），請稍候數秒。
 """
+import os
+os.environ.setdefault("MPLBACKEND", "Agg")  # 非互動後端：背景執行緒產圖不會觸發 Tk 崩潰
+
 import sys
 import threading
 import time

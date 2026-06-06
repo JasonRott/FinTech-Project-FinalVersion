@@ -23,9 +23,13 @@ API：
 """
 from __future__ import annotations
 
+import os
+# 背景執行緒會產生 matplotlib 圖；強制非互動 Agg 後端，避免 Tk 在非主執行緒崩潰
+# （RuntimeError: main thread is not in main loop / Tcl_AsyncDelete）。必須在 matplotlib 首次匯入前設定。
+os.environ.setdefault("MPLBACKEND", "Agg")
+
 import csv
 import json
-import os
 import sys
 import threading
 import traceback
@@ -204,6 +208,9 @@ def _run_pipeline(opts):
             PipelineConfig, run_full_pipeline, run_preference_backtest_core,
         )
         import functions
+
+        # 自訂使用者名稱 → user_results 資料夾名（空則 fallback 回 new_user_{n}）
+        functions.CUSTOM_RUN_NAME = (str(opts.get("name") or "").strip() or None)
 
         cfg = PipelineConfig(
             run_stage0_fetch=bool(opts.get("fetch", True)),

@@ -1091,6 +1091,16 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 ### 版面（使用者要求）
 - `style.css`：內容 `max-width 1400→1760px`（用上兩邊空間）；**回測區 `.dash-figs` 改 2 欄 grid**（`repeat(auto-fit,minmax(560px,1fr))`→寬螢幕兩張兩張橫放、窄螢幕自動單欄）；`.fig-wide` 移除 820px 上限改填滿欄位；字體再上修（body 16.5→17.5、h1 28、摘要卡值 34、dash-head 25、dash-title 18…）。
 
+## 2026-06-06：修 matplotlib 背景執行緒崩潰 + 第一頁歡迎詞/自訂名稱 + 字體/動態背景加強
+
+狀態：完成。
+
+- **★大 bug：`RuntimeError: main thread is not in main loop` / `Tcl_AsyncDelete`★**：functions.py/backtest_engine.py 用 matplotlib 預設後端（Windows = TkAgg，需主執行緒）；網頁版在**背景執行緒**跑 pipeline 產圖 → Tk 在非主執行緒崩潰。**修法**：`etf_web/app.py` 與 `run_web.py` 最上方 `os.environ.setdefault("MPLBACKEND","Agg")`（非互動後端，需在 matplotlib 首次匯入前設）。驗證：Agg 生效、背景執行緒 savefig 不再崩。
+- **自訂使用者名稱取代 new_user**：`functions.py` user_results 收集處改為——有 `globals()["CUSTOM_RUN_NAME"]`（或 `parameters.CUSTOM_RUN_NAME`）就用**清理後的名稱**當資料夾（`[^\w\-]→_`，支援中文；同名加序號不覆蓋），**未填則 fallback `new_user_{n}`**。`etf_web._run_pipeline` 從 `/api/run` 的 `name` 設定 `functions.CUSTOM_RUN_NAME`。前端第一頁加名稱輸入框，名稱用於對話「您」標籤與結果標題。custom 名資料夾一樣被 gitignore。
+- **第一頁歡迎詞**：左側原本大片空白 → `initPref` 在對話區放歡迎卡（歡迎、功能介紹、① ② ③ 流程、具體作答建議與範例句）；按「開始問答」才清掉進入對話。
+- **字體再放大（第一頁）**：welcome 18px/標題 23、guide 15.5、hint 14、field 標籤 14.5、欄位輸入 inherit(17.5)。
+- **動態背景加強**：漸層色更飽和（少白）、`background-size 300→400%`、動畫 `26s→18s`，效果更明顯（仍只動 background-position、GPU 友善、reduced-motion 自動關）。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項
