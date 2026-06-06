@@ -1183,6 +1183,13 @@ VT 參考 CAGR 13.51%。問題：傾斜目標 s 含資本利得排名(Norm_Retur
 - **打包腳本修復**：`app/打包單機版.ps1` 先前因 PS 5.1 解碼 UTF-8(無 BOM)的中文而 parse error → 內容改 ASCII 訊息 + **存成 UTF-8 with BOM**，PS 5.1 可正確讀。
 - 需重建單機包使閘門生效。
 
+## 2026-06-07：BGE-M3 打包進單機版（離線、免下載）+ 產出可傳送 zip
+
+- `app/etf_app.spec` 加 `encoder_model/bge-m3`（2.2GB）→ `_internal/encoder_model/bge-m3`，對應 engine 凍結時 `ENCODER_PATH=parents[1]/encoder_model/bge-m3`。encoder `local=Path(model_path).exists()→True` → `SentenceTransformer(local_files_only=True)` 從包內載入,**對方完全免下載模型**。FinBERT 不打包（使用者未用情緒分析；本來也只在執行時才下載、不在包內）。
+- 重建單機包（含 BGE-M3）→ 7.2GB。實測啟動:log 顯示 BGE-M3 權重 391/391 載入、`/api/ready=true`(~4s)、瀏覽器自動開 → 離線載入成功。
+- 清掉測試產物（new_user_*、etf_app.log），用 7-Zip 壓成單一可傳送檔 `C:\Users\lojas\etf_build\ETF偏好投組_單機版.zip`。
+- 交付方式（最終）:把這個 zip 給對方 → 解壓 → 雙擊 `ETF偏好投組.exe`,**完全免裝 Python、免下載模型**,首次直接可用（行情/情緒快取也在包內,展示免金鑰）。
+
 ## 6. 改動紀錄模板
 
 ## 7. 下一個聊天室交接注意事項
