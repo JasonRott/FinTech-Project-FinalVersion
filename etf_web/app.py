@@ -55,6 +55,21 @@ from recommender_hook import deliver_weights   # noqa: E402
 
 app = Flask(__name__)
 
+
+@app.context_processor
+def _asset_versions():
+    """以靜態檔 mtime 當版本號，模板用 ?v={{ asset_v('app.js') }} 防瀏覽器快取舊版。
+    每次重建 build 後檔案 mtime 改變→網址改變→瀏覽器強制重抓，避免「改了卻看到舊的」。"""
+    _sdir = Path(app.static_folder or "")
+
+    def asset_v(name):
+        try:
+            return int((_sdir / name).stat().st_mtime)
+        except Exception:
+            return 0
+
+    return {"asset_v": asset_v}
+
 SHORT = {"Return_CAGR": "資本增值", "Return_Div": "股息現金流", "Risk_Vol": "波動穩健",
          "Risk_MaxDD": "抗跌", "Cost_ExpRatio": "費用率", "Liq_Volume": "成交量",
          "Liq_AUM": "基金規模", "Div_Score": "分散度", "FinBERT_score": "市場情緒"}

@@ -108,26 +108,29 @@ function renderAction(action) {
   scrollConv();   // 版面定案後再捲到底（修「答完沒自動到最下面、看不到題目」）
 }
 
+// 每答一題顯示推估強度 μ／不確定性 σ／相關度 gate（引擎 last_turn 提供）。
+// 手動作答(submitAnswer)與範例一鍵帶入(runPreset)共用，避免兩邊行為不一致。
+function renderTurnFeedback(lt) {
+  if (!lt || lt.mu == null) return;
+  let fb = `推估強度 μ=<b>${Number(lt.mu).toFixed(2)}</b> · 不確定性 σ=<b>${Number(lt.sigma).toFixed(2)}</b> · 相關度 gate=${Number(lt.gate_rel).toFixed(2)}`;
+  if (lt.gate_rel <= 0.8) fb += ` <span class="warn">⚠ 可能離題，已降權</span>`;
+  if (lt.flagged_for_reask) fb += `<br><span class="warn">↳ 與您開場理念有些出入，已記下、稍後再確認一次。</span>`;
+  if (lt.is_reask) {
+    const r = Number(lt.revision || 0);
+    const note = Math.abs(r) < 0.05 ? "與先前一致，估計穩定"
+      : (r < 0 ? `已下修此面向估計（Δ${r.toFixed(2)}）` : `已上修此面向估計（Δ+${r.toFixed(2)}）`);
+    fb += `<br>↳ 重新確認：${note}`;
+  }
+  appendConv("sys", `<div class="fb">${fb}</div>`, "sys");
+}
+
 async function submitAnswer() {
   const t = $("ans"); if (!t) return;
   const text = t.value.trim(); if (!text) { t.focus(); return; }
   appendConv("a", esc(text), "a");
   $("input-area").innerHTML = `<div class="hint">推論中…（本地 BNN MC-dropout）</div>`;
   const res = await api("/api/pref/answer", {answer: text});
-  // 每答一題顯示推估強度 μ 與不確定性 σ（引擎 last_turn 提供）
-  const lt = res.last_turn;
-  if (lt && lt.mu != null) {
-    let fb = `推估強度 μ=<b>${Number(lt.mu).toFixed(2)}</b> · 不確定性 σ=<b>${Number(lt.sigma).toFixed(2)}</b> · 相關度 gate=${Number(lt.gate_rel).toFixed(2)}`;
-    if (lt.gate_rel <= 0.8) fb += ` <span class="warn">⚠ 可能離題，已降權</span>`;
-    if (lt.flagged_for_reask) fb += `<br><span class="warn">↳ 與您開場理念有些出入，已記下、稍後再確認一次。</span>`;
-    if (lt.is_reask) {
-      const r = Number(lt.revision || 0);
-      const note = Math.abs(r) < 0.05 ? "與先前一致，估計穩定"
-        : (r < 0 ? `已下修此面向估計（Δ${r.toFixed(2)}）` : `已上修此面向估計（Δ+${r.toFixed(2)}）`);
-      fb += `<br>↳ 重新確認：${note}`;
-    }
-    appendConv("sys", `<div class="fb">${fb}</div>`, "sys");
-  }
+  renderTurnFeedback(res.last_turn);
   renderAction(res.action);
 }
 
@@ -228,7 +231,9 @@ async function runPreset(key) {
       appendConv("q", `<span class="tag tag-cover">第 ${q.step} 題 · ${esc(q.dim_label)}</span> ${esc(q.question)}`, "q");
       appendConv("a", esc(ans), "a");
       scrollConv();
-      action = (await api("/api/pref/answer", {answer: ans})).action;
+      const res = await api("/api/pref/answer", {answer: ans});
+      renderTurnFeedback(res.last_turn);   // 範例帶入也顯示每題 μ／σ／gate（修：原本只取 .action）
+      action = res.action;
     } else if (action.type === "offer") {
       action = (await api("/api/pref/choose", {kind: action.kind, decision: "continue"})).action;
     } else if (action.type === "done") {

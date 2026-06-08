@@ -125,3 +125,5 @@
 - Windows cp950 主控台對 log 裡 emoji 會噴 `UnicodeEncodeError`（非致命，被 logging 攔截）；跑指令加 `PYTHONIOENCODING=utf-8`。
 - 跑回測前確認快取存在：`csv/backtest_close_price_db.csv` 等、`csv/stage0_final_matrix.csv`、`json/stage2_ahp_global_weights.json`、`sentiment_engine/data/sentiment_daily_cache.csv`（`fetch_missing_data=False` 用快取）。
 - 多 profile sweep 會暫時改寫 `json/stage2_ahp_global_weights.json`，腳本結束會還原（注意若中斷需手動還原成 return_leaning 權重）。
+- **網頁版 app 跑在埠 8050**（5000 常被 Intel OneApp.IGCC 顯卡服務佔走）；同一埠跨多次 build → 瀏覽器靠網址快取 `static/app.js`，會發生「改了卻看到舊版」。後端其實正常（live `/api/pref/answer` 確有回 `last_turn`）。**臨時解：Ctrl+Shift+R 硬重載 / 關分頁開新分頁 / 無痕。永久解（2026-06-08）：`etf_web/app.py` 加 `asset_v()` context processor + `index.html` 對 style.css/app.js 加 `?v={mtime}` 版本號，檔案一變網址就變、瀏覽器強制重抓。此修正需重建 exe 後對凍結版生效。**
+- **BUG 修正（2026-06-08）：範例偏好一鍵帶入時不顯示每題 μ/σ/gate 回饋。** 根因：`etf_web/static/app.js` 的 `runPreset()` 只取回應 `.action`、丟掉 `last_turn`（手動 `submitAnswer` 正常）。修法：抽出共用函式 `renderTurnFeedback(lt)`，手動與範例兩流程共用；`runPreset` 改為接完整回應並每題呼叫之。已熱更新到 `etf_build/dist/.../_internal/etf_web/static/app.js`（Flask static 即時讀磁碟，故現跑的 exe 已生效）。**待辦：重建 exe + 重壓 zip 才能把此修正與 `?v=` 防快取一起帶進可分發版。**

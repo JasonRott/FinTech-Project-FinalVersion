@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ETF 偏好驅動投資組合 · 網頁版</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ asset_v('style.css') }}">
 </head>
 <body>
   <!-- 載入閘門：模型全部就緒前停在這頁，不讓使用者輸入 -->
@@ -119,6 +119,6 @@
     </section>
   </main>
 
-  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <script src="{{ url_for('static', filename='app.js') }}?v={{ asset_v('app.js') }}"></script>
 </body>
 </html>
