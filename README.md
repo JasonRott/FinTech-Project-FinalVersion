@@ -2,6 +2,7 @@
 **Preference-Driven Smart ETF Portfolio Optimization**
 
 > 結合作業研究（OR）與金融科技（FinTech）：以 DEA 效率篩選、AHP / LLM 偏好提取、以及一套**有 Black-Litterman / CAPM 理論地基的 profile-dependent 投組最佳化**，為投資人量身打造客製化 ETF 投資組合。
+> Hugging Face 網頁: https://huggingface.co/spaces/JasonRott/FinTech-FinalProject-Group7
 
 ---
 
